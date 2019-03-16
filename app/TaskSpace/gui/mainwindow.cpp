@@ -105,17 +105,17 @@ void MainWindow::showDashboardTab()
     qDeleteAll(ui->mainFrame->children());
     QHBoxLayout *layout = new QHBoxLayout(ui->mainFrame);
 
-    QFrame *backlogFrame = new QFrame(ui->mainFrame);
-    backlogFrame->setLayout(new QVBoxLayout(backlogFrame));
-        QLabel *backlogLabel = new QLabel("Backlog", backlogFrame);
-        backlogLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
-        backlogLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-        backlogFrame->layout()->addWidget(backlogLabel);
-        backlogFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
-        backlogFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
-        backlogFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
-        backlogFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
-    layout->addWidget(backlogFrame);
+    QFrame *todotasksFrame = new QFrame(ui->mainFrame);
+    todotasksFrame->setLayout(new QVBoxLayout(todotasksFrame));
+        QLabel *todotasksLabel = new QLabel("ToDo Tasks", todotasksFrame);
+        todotasksLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+        todotasksLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+        todotasksFrame->layout()->addWidget(todotasksLabel);
+        todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
+        todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
+        todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
+        todotasksFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+    layout->addWidget(todotasksFrame);
     layout->setStretch(0, 4);
 
     QFrame *toolsFrame = new QFrame(ui->mainFrame);
@@ -131,7 +131,7 @@ void MainWindow::showDashboardTab()
             QProgressBar *focusTimerProgressBar = new QProgressBar(focusTimerFrame);
             focusTimerFrame->layout()->addWidget(focusTimerProgressBar);
 
-            QtMaterialRaisedButton *focusTimerStartButton = new QtMaterialRaisedButton("Start Timer", backlogFrame);
+            QtMaterialRaisedButton *focusTimerStartButton = new QtMaterialRaisedButton("Start Timer", focusTimerFrame);
             QObject::connect(focusTimerStartButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
             focusTimerFrame->layout()->addWidget(focusTimerStartButton);
 
@@ -146,9 +146,9 @@ void MainWindow::showDashboardTab()
             otherToolsLabel->setFont(QFont("Roboto", 16, QFont::Normal));
             otherToolsFrame->layout()->addWidget(otherToolsLabel);
 
-            otherToolsFrame->layout()->addWidget(new QtMaterialRaisedButton("Go to Log", backlogFrame));
-            otherToolsFrame->layout()->addWidget(new QtMaterialRaisedButton("Open Calendar", backlogFrame));
-            otherToolsFrame->layout()->addWidget(new QtMaterialRaisedButton("Sync", backlogFrame));
+            otherToolsFrame->layout()->addWidget(new QtMaterialRaisedButton("Go to Log", otherToolsFrame));
+            otherToolsFrame->layout()->addWidget(new QtMaterialRaisedButton("Open Calendar", otherToolsFrame));
+            otherToolsFrame->layout()->addWidget(new QtMaterialRaisedButton("Sync", otherToolsFrame));
             otherToolsFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
         timersFrameLayout->addWidget(otherToolsFrame);
         timersFrameLayout->setStretch(1, 3);
