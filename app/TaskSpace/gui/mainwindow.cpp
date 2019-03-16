@@ -53,6 +53,11 @@ void MainWindow::setupWidgets()
     QObject::connect(backlogButton, SIGNAL(clicked()), this, SLOT(showBacklogTab()));
     drawerLayout->addWidget(backlogButton);
 
+    QtMaterialFlatButton* archiveButton = new QtMaterialFlatButton("Archive", m_drawer);
+    archiveButton->setForegroundColor(QColor("#333"));
+    //QObject::connect(archiveButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
+    drawerLayout->addWidget(archiveButton);
+
     QtMaterialFlatButton* calendarButton = new QtMaterialFlatButton("Calendar", m_drawer);
     calendarButton->setForegroundColor(QColor("#333"));
     QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarTab()));
@@ -62,6 +67,17 @@ void MainWindow::setupWidgets()
     notesButton->setForegroundColor(QColor("#333"));
     QObject::connect(notesButton, SIGNAL(clicked()), this, SLOT(showNotesTab()));
     drawerLayout->addWidget(notesButton);
+
+    QtMaterialFlatButton* statisticsButton = new QtMaterialFlatButton("Statistics", m_drawer);
+    statisticsButton->setForegroundColor(QColor("#333"));
+    //QObject::connect(statisticsButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
+    drawerLayout->addWidget(statisticsButton);
+
+    QtMaterialFlatButton* settingsButton = new QtMaterialFlatButton("Settings", m_drawer);
+    settingsButton->setForegroundColor(QColor("#333"));
+    //QObject::connect(settingsButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
+    drawerLayout->addWidget(settingsButton);
+
 
     drawerLayout->addStretch(3);
 
