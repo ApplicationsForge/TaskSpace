@@ -8,6 +8,7 @@
 #include <QTimeEdit>
 #include <QDebug>
 #include <QDialog>
+#include <QScrollArea>
 
 #include "models/router.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"
@@ -18,6 +19,8 @@
 #include "libs/qt-material-widgets-master/components/qtmaterialdialog.h"
 
 #include "libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h"
+
+#include "gui/widgets/task_list_widget.h"
 
 namespace Ui {
 class MainWindow;

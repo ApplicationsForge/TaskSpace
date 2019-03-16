@@ -76,7 +76,9 @@ SOURCES += \
     libs/qt-material-widgets-master/components/lib/qtmaterialstatetransition.cpp \
     libs/qt-material-widgets-master/components/lib/qtmaterialstyle.cpp \
     libs/qt-material-widgets-master/components/lib/qtmaterialtheme.cpp \
-    libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.cpp
+    libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.cpp \
+    gui/widgets/my_list_widget.cpp \
+    gui/widgets/task_list_widget.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -159,7 +161,9 @@ HEADERS += \
     libs/qt-material-widgets-master/components/lib/qtmaterialstyle.h \
     libs/qt-material-widgets-master/components/lib/qtmaterialtheme_p.h \
     libs/qt-material-widgets-master/components/lib/qtmaterialtheme.h \
-    libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h
+    libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h \
+    gui/widgets/my_list_widget.h \
+    gui/widgets/task_list_widget.h
 
 FORMS += \
         gui/mainwindow.ui
