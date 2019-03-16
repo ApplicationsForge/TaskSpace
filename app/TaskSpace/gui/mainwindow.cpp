@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     this->setupWidgets();
+
+    window()->showMaximized();
 }
 
 MainWindow::~MainWindow()
