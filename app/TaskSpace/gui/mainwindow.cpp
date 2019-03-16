@@ -22,7 +22,7 @@ MainWindow::~MainWindow()
 void MainWindow::setupWidgets()
 {
     // устновка темной темы
-    this->setStyleSheet("background-color: #555;");
+    //this->setStyleSheet("background-color: #555;");
 
     // установка оформления statusBar
     ui->statusBar->setStyleSheet("background-color: #333; color: #33bb33");
@@ -40,33 +40,33 @@ void MainWindow::setupWidgets()
     menuTitleLabel->setMinimumHeight(30);
     menuTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
     menuTitleLabel->setFont(QFont("Roboto", 16, QFont::Medium));
-    menuTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #fff; }");
+    menuTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
     drawerLayout->addWidget(menuTitleLabel);
 
     QtMaterialFlatButton* dashboardButton = new QtMaterialFlatButton("Dashboard", m_drawer);
-    dashboardButton->setForegroundColor(QColor("#fff"));
+    dashboardButton->setForegroundColor(QColor("#333"));
     QObject::connect(dashboardButton, SIGNAL(clicked()), this, SLOT(showDashboardTab()));
     drawerLayout->addWidget(dashboardButton);
 
     QtMaterialFlatButton* backlogButton = new QtMaterialFlatButton("Backlog", m_drawer);
-    backlogButton->setForegroundColor(QColor("#fff"));
+    backlogButton->setForegroundColor(QColor("#333"));
     QObject::connect(backlogButton, SIGNAL(clicked()), this, SLOT(showBacklogTab()));
     drawerLayout->addWidget(backlogButton);
 
     QtMaterialFlatButton* calendarButton = new QtMaterialFlatButton("Calendar", m_drawer);
-    calendarButton->setForegroundColor(QColor("#fff"));
+    calendarButton->setForegroundColor(QColor("#333"));
     QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarTab()));
     drawerLayout->addWidget(calendarButton);
 
     QtMaterialFlatButton* notesButton = new QtMaterialFlatButton("Notes", m_drawer);
-    notesButton->setForegroundColor(QColor("#fff"));
+    notesButton->setForegroundColor(QColor("#333"));
     QObject::connect(notesButton, SIGNAL(clicked()), this, SLOT(showNotesTab()));
     drawerLayout->addWidget(notesButton);
 
     drawerLayout->addStretch(3);
 
     QtMaterialFlatButton* closeDrawerButton = new QtMaterialFlatButton("Close", m_drawer);
-    closeDrawerButton->setForegroundColor(QColor("#fff"));
+    closeDrawerButton->setForegroundColor(QColor("#333"));
     QObject::connect(closeDrawerButton, SIGNAL(clicked()), m_drawer, SLOT(closeDrawer()));
     drawerLayout->addWidget(closeDrawerButton);
 
@@ -141,7 +141,7 @@ void MainWindow::showBacklogTab()
         QLabel *backlogTitleLabel = new QLabel("Backlog", ui->mainFrame);
         backlogTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
         backlogTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
-        backlogTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #fff; }");
+        backlogTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
         layout->addWidget(backlogTitleLabel);
 
         QFrame *actionsFrame = new QFrame(ui->mainFrame);
@@ -174,7 +174,7 @@ void MainWindow::showBacklogTab()
                     taskListWidget->list()->setDragEnabled(true);
                     taskListWidget->list()->setDropIndicatorShown(true);
                     taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
-                    taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #fff; padding: 10px; }");
+                    taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #333; padding: 10px; }");
                         for(int i = 0; i < 1000; i++)
                         {
                             QString title = status + QStringLiteral(" ") + QString::number(i);

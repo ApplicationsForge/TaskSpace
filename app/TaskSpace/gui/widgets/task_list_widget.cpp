@@ -8,7 +8,7 @@ TaskListWidget::TaskListWidget(QString label, QWidget *parent) :
 {
     m_label->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
     m_label->setFont(QFont("Roboto", 14, QFont::Normal));
-    m_label->setStyleSheet("QLabel { background-color: transparent; color: #fff; }");
+    m_label->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
 
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     this->setMinimumWidth(m_width);
