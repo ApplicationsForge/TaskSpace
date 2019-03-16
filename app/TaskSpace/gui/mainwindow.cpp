@@ -172,26 +172,13 @@ void MainWindow::showBacklogTab()
                     taskListWidget->list()->setDragEnabled(true);
                     taskListWidget->list()->setDropIndicatorShown(true);
                     taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
-                    taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #fff; }");
-                        for(int i = 0; i < 1000; i++)
+                    taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #fff; padding: 10px;}");
+                        for(int i = 0; i < 10; i++)
                         {
                             QString title = status + QStringLiteral(" ") + QString::number(i);
                             QListWidgetItem *item = new QListWidgetItem(title);
-                            item->setTextAlignment(Qt::TopLeftCorner);
-                            backlogTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-                            //item->setSizeHint(QSize(300, 50));
-                            /*MyListWidgetItem* board =
-                                    new MyListWidgetItem(
-                                        QString::number(i),
-                                        title,
-                                        "",
-                                        QDateTime::currentDateTime().date(),
-                                        QStringList {"+tag1", "+tag2"},
-                                        QStringList {"@Xtail", "@Teammate"},
-                                        taskListWidget);
-                            item->setSizeHint(board->minimumSizeHint());*/
+                            item->setFont(QFont("Roboto", 14, QFont::Normal));
                             taskListWidget->list()->addItem(item);
-                            //taskListWidget->list()->setItemWidget(item, board);
                         }
                     scrollAreaContent->layout()->addWidget(taskListWidget);
                 }
