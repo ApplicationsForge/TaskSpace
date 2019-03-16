@@ -143,44 +143,30 @@ void MainWindow::showBacklogTab()
             scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
             scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             scrollAreaContent->layout()->setMargin(0);
-                TaskListWidget* productBacklogListWidget = new TaskListWidget("Product Backlog", scrollAreaContent);
-                productBacklogListWidget->list()->setDragEnabled(true);
-                productBacklogListWidget->list()->setDropIndicatorShown(true);
-                productBacklogListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
-                    for(int i = 0; i < 100; i++)
-                    {
-                        QListWidgetItem *item = new QListWidgetItem(QString::number(i));
-                        /*MyListWidgetItem* board =
-                                new MyListWidgetItem(QString::number(i), "test task", "","", QStringList(), QStringList(), productBacklogListWidget);
-                        item->setSizeHint(board->minimumSizeHint());*/
-                        productBacklogListWidget->list()->addItem(item);
-                        //productBacklogListWidget->list()->setItemWidget(item, board);
-                    }
-                scrollAreaContent->layout()->addWidget(productBacklogListWidget);
-
-                TaskListWidget* sprintBacklogListWidget = new TaskListWidget("Sprint Backlog", scrollAreaContent);
-                sprintBacklogListWidget->list()->setDragEnabled(true);
-                sprintBacklogListWidget->list()->setDropIndicatorShown(true);
-                sprintBacklogListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
-                scrollAreaContent->layout()->addWidget(sprintBacklogListWidget);
-
-                TaskListWidget* inProgressListWidget = new TaskListWidget("In Progress", scrollAreaContent);
-                inProgressListWidget->list()->setDragEnabled(true);
-                inProgressListWidget->list()->setDropIndicatorShown(true);
-                inProgressListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
-                scrollAreaContent->layout()->addWidget(inProgressListWidget);
-
-                TaskListWidget* testingListWidget = new TaskListWidget("Testing", scrollAreaContent);
-                testingListWidget->list()->setDragEnabled(true);
-                testingListWidget->list()->setDropIndicatorShown(true);
-                testingListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
-                scrollAreaContent->layout()->addWidget(testingListWidget);
-
-                TaskListWidget* doneListWidget = new TaskListWidget("Done", scrollAreaContent);
-                doneListWidget->list()->setDragEnabled(true);
-                doneListWidget->list()->setDropIndicatorShown(true);
-                doneListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
-                scrollAreaContent->layout()->addWidget(doneListWidget);
+                QStringList avaliableStatuses = {
+                    "Product Backlog",
+                    "Sprint Backlog",
+                    "In Progress",
+                    "Testing",
+                    "Done"
+                };
+                for(auto status : avaliableStatuses)
+                {
+                    TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
+                    taskListWidget->list()->setDragEnabled(true);
+                    taskListWidget->list()->setDropIndicatorShown(true);
+                    taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
+                        for(int i = 0; i < 10; i++)
+                        {
+                            QListWidgetItem *item = new QListWidgetItem(QString::number(i));
+                            /*MyListWidgetItem* board =
+                                    new MyListWidgetItem(QString::number(i), "test task", "","", QStringList(), QStringList(), productBacklogListWidget);
+                            item->setSizeHint(board->minimumSizeHint());*/
+                            taskListWidget->list()->addItem(item);
+                            //productBacklogListWidget->list()->setItemWidget(item, board);
+                        }
+                    scrollAreaContent->layout()->addWidget(taskListWidget);
+                }
         scrollArea->setWidget(scrollAreaContent);
     layout->addWidget(scrollArea);
     ui->mainFrame->setLayout(layout);
