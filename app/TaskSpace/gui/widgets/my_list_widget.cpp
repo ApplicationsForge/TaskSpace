@@ -3,7 +3,6 @@
 MyListWidget::MyListWidget(QWidget *parent) :
     QListWidget(parent)
 {
-
 }
 
 void MyListWidget::keyPressEvent(QKeyEvent *keyEvent)

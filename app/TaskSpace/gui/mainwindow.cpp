@@ -174,7 +174,7 @@ void MainWindow::showBacklogTab()
                     taskListWidget->list()->setDragEnabled(true);
                     taskListWidget->list()->setDropIndicatorShown(true);
                     taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
-                    taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #fff; padding: 10px;}");
+                    taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #fff; padding: 10px; }");
                         for(int i = 0; i < 1000; i++)
                         {
                             QString title = status + QStringLiteral(" ") + QString::number(i);
