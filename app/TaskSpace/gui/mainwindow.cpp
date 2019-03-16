@@ -4,7 +4,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_appBar(new QtMaterialAppBar)
+    m_appBar(new QtMaterialAppBar(this)),
+    m_drawer(new QtMaterialDrawer(this))
 {
     ui->setupUi(this);
 
@@ -23,6 +24,25 @@ void MainWindow::setupWidgets()
     ui->statusBar->setFont(QFont("Consolas", 14));
     ui->statusBar->showMessage(tr("State: ready 0123456789"));
 
+    // установка оформления меню слева
+    QVBoxLayout *drawerLayout = new QVBoxLayout;
+    m_drawer->setDrawerLayout(drawerLayout);
+
+    QVector<QString> labels = {"Motion", "Style", "Layout", "Components", "Patterns", "Growth & communications", "Usability", "Platforms", "Resources"};
+
+    QVector<QString>::iterator it;
+    for (it = labels.begin(); it != labels.end(); ++it) {
+        QLabel *label = new QLabel(*it);
+        label->setMinimumHeight(30);
+        label->setFont(QFont("Roboto", 10, QFont::Medium));
+        drawerLayout->addWidget(label);
+    }
+
+    drawerLayout->addStretch(3);
+    m_drawer->setContentsMargins(10, 0, 0, 0);
+    m_drawer->setClickOutsideToClose(true);
+    m_drawer->setOverlayMode(true);
+
     // установка оформления mainToolBar
     QLabel *label = new QLabel("Here is your TaskSpace");
     label->setAttribute(Qt::WA_TranslucentBackground);
@@ -37,6 +57,8 @@ void MainWindow::setupWidgets()
 
     QtMaterialIconButton *button = new QtMaterialIconButton(QtMaterialTheme::icon("navigation", "menu"));
     button->setIconSize(QSize(24, 24));
+    QObject::connect(button, SIGNAL(clicked()), m_drawer, SLOT(openDrawer()));
+
     m_appBar->appBarLayout()->addWidget(button);
     m_appBar->appBarLayout()->addWidget(label);
     m_appBar->appBarLayout()->addStretch(1);

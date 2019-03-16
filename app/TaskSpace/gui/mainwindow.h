@@ -9,7 +9,7 @@
 #include "libs/qt-material-widgets-master/components/qtmaterialiconbutton.h"
 #include "libs/qt-material-widgets-master/components/lib/qtmaterialtheme.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialraisedbutton.h"
-
+#include "libs/qt-material-widgets-master/components/qtmaterialdrawer.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +26,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QtMaterialAppBar *const m_appBar;
+    QtMaterialDrawer *const m_drawer;
 
     void setupWidgets();
 };
