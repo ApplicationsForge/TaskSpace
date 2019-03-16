@@ -139,10 +139,10 @@ void MainWindow::showBacklogTab()
         QScrollArea *scrollArea = new QScrollArea(ui->mainFrame);
         scrollArea->setWidgetResizable(true);
         scrollArea->setStyleSheet("QScrollArea { border: 0px; }");
-
             QWidget *scrollAreaContent = new QWidget(scrollArea);
             scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
             scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+            scrollAreaContent->layout()->setMargin(0);
                 TaskListWidget* productBacklogListWidget = new TaskListWidget("Product Backlog", scrollAreaContent);
                 productBacklogListWidget->list()->setDragEnabled(true);
                 productBacklogListWidget->list()->setDropIndicatorShown(true);

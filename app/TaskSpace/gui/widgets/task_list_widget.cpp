@@ -18,7 +18,8 @@ TaskListWidget::TaskListWidget(QString label, QWidget *parent) :
     mainLayout->setContentsMargins(5, 5, 5, 5);
         mainLayout->addWidget(m_label);
         mainLayout->addWidget(m_list);
-        this->setLayout(mainLayout);
+        mainLayout->addItem(new QSpacerItem(10, 25, QSizePolicy::Expanding, QSizePolicy::Fixed));
+    this->setLayout(mainLayout);
 }
 
 MyListWidget *TaskListWidget::list()
