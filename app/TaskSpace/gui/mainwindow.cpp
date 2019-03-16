@@ -73,6 +73,6 @@ void MainWindow::setupWidgets()
     ui->mainToolBar->setMovable(false);
     ui->mainToolBar->setStyleSheet("QToolBar { border: 0px }");
 
-    ui->backlogScrollArea->setLayout(new QHBoxLayout(ui->backlogScrollArea));
-    ui->backlogScrollArea->layout()->addWidget(new QtMaterialRaisedButton("Hello World", ui->backlogScrollArea));
+    ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
+    ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Hello World", ui->mainFrame));
 }
