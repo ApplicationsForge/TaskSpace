@@ -4,6 +4,9 @@
 #include <QMainWindow>
 
 #include "models/router.h"
+#include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"
+#include "libs/qt-material-widgets-master/components/qtmaterialiconbutton.h"
+#include "libs/qt-material-widgets-master/components/lib/qtmaterialtheme.h"
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +22,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QtMaterialAppBar *const m_appBar;
+
+    void setupWidgets();
 };
 
 #endif // MAINWINDOW_H
