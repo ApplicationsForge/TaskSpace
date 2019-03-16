@@ -173,11 +173,11 @@ void MainWindow::showBacklogTab()
                     taskListWidget->list()->setDropIndicatorShown(true);
                     taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
                     taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #fff; padding: 10px;}");
-                        for(int i = 0; i < 10; i++)
+                        for(int i = 0; i < 1000; i++)
                         {
                             QString title = status + QStringLiteral(" ") + QString::number(i);
                             QListWidgetItem *item = new QListWidgetItem(title);
-                            item->setFont(QFont("Roboto", 14, QFont::Normal));
+                            //item->setFont(QFont("Roboto", 14, QFont::Normal));
                             taskListWidget->list()->addItem(item);
                         }
                     scrollAreaContent->layout()->addWidget(taskListWidget);
