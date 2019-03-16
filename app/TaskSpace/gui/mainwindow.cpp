@@ -40,10 +40,12 @@ void MainWindow::setupWidgets()
     m_appBar->appBarLayout()->addWidget(button);
     m_appBar->appBarLayout()->addWidget(label);
     m_appBar->appBarLayout()->addStretch(1);
+    m_appBar->setBackgroundColor(QColor("#333"));
     button->setColor(Qt::white);
     button->setFixedWidth(42);
 
     ui->mainToolBar->addWidget(m_appBar);
     ui->mainToolBar->setFloatable(false);
     ui->mainToolBar->setMovable(false);
+    ui->mainToolBar->setStyleSheet("QToolBar { border: 0px }");
 }
