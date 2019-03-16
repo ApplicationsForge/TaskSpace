@@ -31,6 +31,12 @@ void MainWindow::setupWidgets()
     m_drawer->setClickOutsideToClose(true);
     m_drawer->setOverlayMode(true);
 
+    QLabel* menuTitleLabel = new QLabel("Menu", m_drawer);
+    menuTitleLabel->setMinimumHeight(30);
+    menuTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+    menuTitleLabel->setFont(QFont("Roboto", 16, QFont::Medium));
+    drawerLayout->addWidget(menuTitleLabel);
+
     QtMaterialFlatButton* dashboardButton = new QtMaterialFlatButton("Dashboard", m_drawer);
     QObject::connect(dashboardButton, SIGNAL(clicked()), this, SLOT(showDashboardTab()));
     drawerLayout->addWidget(dashboardButton);
@@ -79,16 +85,40 @@ void MainWindow::setupWidgets()
     ui->mainToolBar->addWidget(m_appBar);
     ui->mainToolBar->setFloatable(false);
     ui->mainToolBar->setMovable(false);
-    ui->mainToolBar->setStyleSheet("QToolBar { border: 0px }");
+    ui->mainToolBar->setStyleSheet("QToolBar { border: 0px; }");
 
     this->showDashboardTab();
 }
 
 void MainWindow::showDashboardTab()
 {
+
     qDeleteAll(ui->mainFrame->children());
-    ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
-    ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", ui->mainFrame));
+    QHBoxLayout *layout = new QHBoxLayout(ui->mainFrame);
+
+    QFrame *backlogFrame = new QFrame(ui->mainFrame);
+    backlogFrame->setLayout(new QVBoxLayout(backlogFrame));
+        QLabel *backlogLabel = new QLabel("Backlog", backlogFrame);
+        backlogLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+        backlogLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+        backlogFrame->layout()->addWidget(backlogLabel);
+        backlogFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
+        backlogFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
+        backlogFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
+        backlogFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+    layout->addWidget(backlogFrame);
+    layout->setStretch(0, 3);
+
+    QFrame *timersFrame = new QFrame(ui->mainFrame);
+    timersFrame->setLayout(new QVBoxLayout(timersFrame));
+        timersFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
+        timersFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
+        timersFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
+
+    layout->addWidget(timersFrame);
+    layout->setStretch(1, 1);
+
+    ui->mainFrame->setLayout(layout);
 }
 
 void MainWindow::showBacklogTab()

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <QSpacerItem>
 
 #include "models/router.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"

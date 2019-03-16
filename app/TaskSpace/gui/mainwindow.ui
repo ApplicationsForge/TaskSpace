@@ -19,7 +19,7 @@
      <widget class="QFrame" name="mainFrame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>3</horstretch>
+        <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
