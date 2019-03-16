@@ -107,15 +107,43 @@ void MainWindow::showDashboardTab()
         backlogFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
         backlogFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
     layout->addWidget(backlogFrame);
-    layout->setStretch(0, 3);
+    layout->setStretch(0, 4);
 
-    QFrame *timersFrame = new QFrame(ui->mainFrame);
-    timersFrame->setLayout(new QVBoxLayout(timersFrame));
-        timersFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
-        timersFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
-        timersFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", backlogFrame));
+    QFrame *toolsFrame = new QFrame(ui->mainFrame);
+    QVBoxLayout *timersFrameLayout = new QVBoxLayout(toolsFrame);
+    toolsFrame->setLayout(timersFrameLayout);
+        QFrame *focusTimerFrame = new QFrame(toolsFrame);
+        focusTimerFrame->setLayout(new QVBoxLayout(focusTimerFrame));
+            QLabel *focusTimerLabel = new QLabel("FocusTimer", focusTimerFrame);
+            focusTimerLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+            focusTimerLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+            focusTimerFrame->layout()->addWidget(focusTimerLabel);
 
-    layout->addWidget(timersFrame);
+            QProgressBar *focusTimerProgressBar = new QProgressBar(focusTimerFrame);
+            focusTimerFrame->layout()->addWidget(focusTimerProgressBar);
+
+            QtMaterialRaisedButton *focusTimerStartButton = new QtMaterialRaisedButton("Start Timer", backlogFrame);
+            QObject::connect(focusTimerStartButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
+            focusTimerFrame->layout()->addWidget(focusTimerStartButton);
+
+            focusTimerFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        timersFrameLayout->addWidget(focusTimerFrame);
+        timersFrameLayout->setStretch(0, 1);
+
+        QFrame *otherToolsFrame = new QFrame(toolsFrame);
+        otherToolsFrame->setLayout(new QVBoxLayout(otherToolsFrame));
+            QLabel *otherToolsLabel = new QLabel("Other Tools", otherToolsFrame);
+            otherToolsLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+            otherToolsLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+            otherToolsFrame->layout()->addWidget(otherToolsLabel);
+
+            otherToolsFrame->layout()->addWidget(new QtMaterialRaisedButton("Go to Log", backlogFrame));
+            otherToolsFrame->layout()->addWidget(new QtMaterialRaisedButton("Open Calendar", backlogFrame));
+            otherToolsFrame->layout()->addWidget(new QtMaterialRaisedButton("Sync", backlogFrame));
+            otherToolsFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        timersFrameLayout->addWidget(otherToolsFrame);
+        timersFrameLayout->setStretch(1, 3);
+    layout->addWidget(toolsFrame);
     layout->setStretch(1, 1);
 
     ui->mainFrame->setLayout(layout);
@@ -163,4 +191,12 @@ void MainWindow::showGauge()
     speedGauge->addBackground(3);
 
     ui->mainFrame->layout()->addWidget(speedGauge);
+}
+
+void MainWindow::showFocusTimerDialog()
+{
+    QDialog *focusTimerDialog = new QDialog(this);
+    focusTimerDialog->setWindowTitle("Focus Timer Dialog");
+    focusTimerDialog->setMinimumSize(400, 300);
+    focusTimerDialog->exec();
 }
