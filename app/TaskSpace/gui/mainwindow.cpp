@@ -40,16 +40,6 @@ void MainWindow::setupWidgets()
     QtMaterialFlatButton* notesButton = new QtMaterialFlatButton("Notes", m_drawer);
     drawerLayout->addWidget(notesButton);
 
-
-    /*QVector<QString> labels = {"Motion", "Style", "Layout", "Components", "Patterns", "Growth & communications", "Usability", "Platforms", "Resources"};
-    QVector<QString>::iterator it;
-    for (it = labels.begin(); it != labels.end(); ++it) {
-        QLabel *label = new QLabel(*it);
-        label->setMinimumHeight(30);
-        label->setFont(QFont("Roboto", 10, QFont::Medium));
-        drawerLayout->addWidget(label);
-    }*/
-
     drawerLayout->addStretch(3);
     m_drawer->setContentsMargins(10, 0, 0, 0);
     m_drawer->setClickOutsideToClose(true);
