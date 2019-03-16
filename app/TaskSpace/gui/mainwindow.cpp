@@ -38,27 +38,33 @@ void MainWindow::setupWidgets()
     menuTitleLabel->setMinimumHeight(30);
     menuTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
     menuTitleLabel->setFont(QFont("Roboto", 16, QFont::Medium));
+    menuTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #fff; }");
     drawerLayout->addWidget(menuTitleLabel);
 
     QtMaterialFlatButton* dashboardButton = new QtMaterialFlatButton("Dashboard", m_drawer);
+    dashboardButton->setForegroundColor(QColor("#fff"));
     QObject::connect(dashboardButton, SIGNAL(clicked()), this, SLOT(showDashboardTab()));
     drawerLayout->addWidget(dashboardButton);
 
     QtMaterialFlatButton* backlogButton = new QtMaterialFlatButton("Backlog", m_drawer);
+    backlogButton->setForegroundColor(QColor("#fff"));
     QObject::connect(backlogButton, SIGNAL(clicked()), this, SLOT(showBacklogTab()));
     drawerLayout->addWidget(backlogButton);
 
     QtMaterialFlatButton* calendarButton = new QtMaterialFlatButton("Calendar", m_drawer);
+    calendarButton->setForegroundColor(QColor("#fff"));
     QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarTab()));
     drawerLayout->addWidget(calendarButton);
 
     QtMaterialFlatButton* notesButton = new QtMaterialFlatButton("Notes", m_drawer);
+    notesButton->setForegroundColor(QColor("#fff"));
     QObject::connect(notesButton, SIGNAL(clicked()), this, SLOT(showNotesTab()));
     drawerLayout->addWidget(notesButton);
 
     drawerLayout->addStretch(3);
 
     QtMaterialFlatButton* closeDrawerButton = new QtMaterialFlatButton("Close", m_drawer);
+    closeDrawerButton->setForegroundColor(QColor("#fff"));
     QObject::connect(closeDrawerButton, SIGNAL(clicked()), m_drawer, SLOT(closeDrawer()));
     drawerLayout->addWidget(closeDrawerButton);
 
