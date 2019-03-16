@@ -43,22 +43,6 @@
         <number>5</number>
        </property>
        <item row="0" column="0">
-        <widget class="QLabel" name="backlogLabel">
-         <property name="font">
-          <font>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Backlog</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
         <widget class="QScrollArea" name="backlogScrollArea">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -72,7 +56,7 @@
             <x>0</x>
             <y>0</y>
             <width>565</width>
-            <height>480</height>
+            <height>504</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout">
@@ -88,69 +72,6 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QListWidget" name="listWidget">
-             <property name="dragEnabled">
-              <bool>false</bool>
-             </property>
-             <property name="dragDropMode">
-              <enum>QAbstractItemView::DragDrop</enum>
-             </property>
-             <property name="defaultDropAction">
-              <enum>Qt::MoveAction</enum>
-             </property>
-             <property name="alternatingRowColors">
-              <bool>true</bool>
-             </property>
-             <item>
-              <property name="text">
-               <string>task1</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>task2</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>task3</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListWidget" name="listWidget_2">
-             <property name="dragEnabled">
-              <bool>false</bool>
-             </property>
-             <property name="dragDropMode">
-              <enum>QAbstractItemView::DragDrop</enum>
-             </property>
-             <property name="defaultDropAction">
-              <enum>Qt::MoveAction</enum>
-             </property>
-             <property name="alternatingRowColors">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QListWidget" name="listWidget_3">
-             <property name="dragEnabled">
-              <bool>false</bool>
-             </property>
-             <property name="dragDropMode">
-              <enum>QAbstractItemView::DragDrop</enum>
-             </property>
-             <property name="defaultDropAction">
-              <enum>Qt::MoveAction</enum>
-             </property>
-             <property name="alternatingRowColors">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
           </layout>
          </widget>
         </widget>
