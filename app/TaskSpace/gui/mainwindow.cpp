@@ -138,6 +138,8 @@ void MainWindow::showBacklogTab()
     QVBoxLayout *layout = new QVBoxLayout(ui->mainFrame);
         QScrollArea *scrollArea = new QScrollArea(ui->mainFrame);
         scrollArea->setWidgetResizable(true);
+        scrollArea->setStyleSheet("QScrollArea { border: 0px; }");
+
             QWidget *scrollAreaContent = new QWidget(scrollArea);
             scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
             scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
