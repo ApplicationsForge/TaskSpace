@@ -78,7 +78,8 @@ SOURCES += \
     libs/qt-material-widgets-master/components/lib/qtmaterialtheme.cpp \
     libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.cpp \
     gui/widgets/my_list_widget.cpp \
-    gui/widgets/task_list_widget.cpp
+    gui/widgets/task_list_widget.cpp \
+    gui/widgets/my_list_widget_item.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -163,7 +164,8 @@ HEADERS += \
     libs/qt-material-widgets-master/components/lib/qtmaterialtheme.h \
     libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h \
     gui/widgets/my_list_widget.h \
-    gui/widgets/task_list_widget.h
+    gui/widgets/task_list_widget.h \
+    gui/widgets/my_list_widget_item.h
 
 FORMS += \
         gui/mainwindow.ui

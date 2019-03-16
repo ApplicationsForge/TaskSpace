@@ -21,6 +21,7 @@
 #include "libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h"
 
 #include "gui/widgets/task_list_widget.h"
+#include "gui/widgets/my_list_widget_item.h"
 
 namespace Ui {
 class MainWindow;
