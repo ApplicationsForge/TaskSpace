@@ -19,6 +19,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupWidgets()
 {
+    // устновка темной темы
+    this->setStyleSheet("background-color: #555;");
+
     // установка оформления statusBar
     ui->statusBar->setStyleSheet("background-color: #333; color: #33bb33");
     ui->statusBar->setFont(QFont("Consolas", 14));
