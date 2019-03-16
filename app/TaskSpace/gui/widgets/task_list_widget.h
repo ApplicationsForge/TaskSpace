@@ -13,10 +13,12 @@ class TaskListWidget : public QWidget
 public:
     explicit TaskListWidget(QString label = "", QWidget *parent = nullptr);
 
+    MyListWidget* list();
+
 private:
     QLabel* m_label;
     MyListWidget* m_list;
-    int m_size;
+    int m_width;
 
 signals:
 

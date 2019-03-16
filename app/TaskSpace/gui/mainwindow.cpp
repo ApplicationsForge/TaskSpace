@@ -136,25 +136,31 @@ void MainWindow::showBacklogTab()
 {
     qDeleteAll(ui->mainFrame->children());
     QVBoxLayout *layout = new QVBoxLayout(ui->mainFrame);
-        QScrollArea *taskListScrollArea = new QScrollArea(ui->mainFrame);
-            QWidget *taskListScrollAreaContent = new QWidget(taskListScrollArea);
-            taskListScrollAreaContent->setLayout(new QHBoxLayout(taskListScrollAreaContent));
-                TaskListWidget* productBacklogListWidget = new TaskListWidget("Product Backlog", taskListScrollAreaContent);
-                taskListScrollAreaContent->layout()->addWidget(productBacklogListWidget);
+        QScrollArea *scrollArea = new QScrollArea(ui->mainFrame);
+        scrollArea->setWidgetResizable(true);
+            QWidget *scrollAreaContent = new QWidget(scrollArea);
+            scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
+            scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+                TaskListWidget* productBacklogListWidget = new TaskListWidget("Product Backlog", scrollAreaContent);
+                    for(int i = 0; i < 100; i++)
+                    {
+                        productBacklogListWidget->list()->addItem(QString::number(i));
+                    }
+                scrollAreaContent->layout()->addWidget(productBacklogListWidget);
 
-                TaskListWidget* sprintBacklogListWidget = new TaskListWidget("Sprint Backlog", taskListScrollAreaContent);
-                taskListScrollAreaContent->layout()->addWidget(sprintBacklogListWidget);
+                TaskListWidget* sprintBacklogListWidget = new TaskListWidget("Sprint Backlog", scrollAreaContent);
+                scrollAreaContent->layout()->addWidget(sprintBacklogListWidget);
 
-                TaskListWidget* inProgressListWidget = new TaskListWidget("In Progress", taskListScrollAreaContent);
-                taskListScrollAreaContent->layout()->addWidget(inProgressListWidget);
+                TaskListWidget* inProgressListWidget = new TaskListWidget("In Progress", scrollAreaContent);
+                scrollAreaContent->layout()->addWidget(inProgressListWidget);
 
-                TaskListWidget* testingListWidget = new TaskListWidget("Testing", taskListScrollAreaContent);
-                taskListScrollAreaContent->layout()->addWidget(testingListWidget);
+                TaskListWidget* testingListWidget = new TaskListWidget("Testing", scrollAreaContent);
+                scrollAreaContent->layout()->addWidget(testingListWidget);
 
-                TaskListWidget* doneListWidget = new TaskListWidget("Done", taskListScrollAreaContent);
-                taskListScrollAreaContent->layout()->addWidget(doneListWidget);
-        taskListScrollArea->setWidget(taskListScrollAreaContent);
-    layout->addWidget(taskListScrollArea);
+                TaskListWidget* doneListWidget = new TaskListWidget("Done", scrollAreaContent);
+                scrollAreaContent->layout()->addWidget(doneListWidget);
+        scrollArea->setWidget(scrollAreaContent);
+    layout->addWidget(scrollArea);
     ui->mainFrame->setLayout(layout);
 }
 
