@@ -29,15 +29,19 @@ void MainWindow::setupWidgets()
     m_drawer->setDrawerLayout(drawerLayout);
 
     QtMaterialFlatButton* dashboardButton = new QtMaterialFlatButton("Dashboard", m_drawer);
+    QObject::connect(dashboardButton, SIGNAL(clicked()), this, SLOT(showDashboardTab()));
     drawerLayout->addWidget(dashboardButton);
 
     QtMaterialFlatButton* backlogButton = new QtMaterialFlatButton("Backlog", m_drawer);
+    QObject::connect(backlogButton, SIGNAL(clicked()), this, SLOT(showBacklogTab()));
     drawerLayout->addWidget(backlogButton);
 
     QtMaterialFlatButton* calendarButton = new QtMaterialFlatButton("Calendar", m_drawer);
+    QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarTab()));
     drawerLayout->addWidget(calendarButton);
 
     QtMaterialFlatButton* notesButton = new QtMaterialFlatButton("Notes", m_drawer);
+    QObject::connect(notesButton, SIGNAL(clicked()), this, SLOT(showNotesTab()));
     drawerLayout->addWidget(notesButton);
 
     drawerLayout->addStretch(3);
@@ -73,6 +77,33 @@ void MainWindow::setupWidgets()
     ui->mainToolBar->setMovable(false);
     ui->mainToolBar->setStyleSheet("QToolBar { border: 0px }");
 
+    this->showDashboardTab();
+}
+
+void MainWindow::showDashboardTab()
+{
+    qDeleteAll(ui->mainFrame->children());
     ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
-    ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Hello World", ui->mainFrame));
+    ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", ui->mainFrame));
+}
+
+void MainWindow::showBacklogTab()
+{
+    qDeleteAll(ui->mainFrame->children());
+    ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
+    ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Backlog", ui->mainFrame));
+}
+
+void MainWindow::showCalendarTab()
+{
+    qDeleteAll(ui->mainFrame->children());
+    ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
+    ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Calendar", ui->mainFrame));
+}
+
+void MainWindow::showNotesTab()
+{
+    qDeleteAll(ui->mainFrame->children());
+    ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
+    ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Notes", ui->mainFrame));
 }

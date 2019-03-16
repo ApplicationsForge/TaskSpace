@@ -25,10 +25,21 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
     QtMaterialAppBar *const m_appBar;
     QtMaterialDrawer *const m_drawer;
 
     void setupWidgets();
+
+private slots:
+
+    void showDashboardTab();
+
+    void showBacklogTab();
+
+    void showCalendarTab();
+
+    void showNotesTab();
 };
 
 #endif // MAINWINDOW_H
