@@ -27,6 +27,9 @@ void MainWindow::setupWidgets()
     // установка оформления меню слева
     QVBoxLayout *drawerLayout = new QVBoxLayout(m_drawer);
     m_drawer->setDrawerLayout(drawerLayout);
+    m_drawer->setContentsMargins(10, 0, 0, 0);
+    m_drawer->setClickOutsideToClose(true);
+    m_drawer->setOverlayMode(true);
 
     QtMaterialFlatButton* dashboardButton = new QtMaterialFlatButton("Dashboard", m_drawer);
     QObject::connect(dashboardButton, SIGNAL(clicked()), this, SLOT(showDashboardTab()));
@@ -45,9 +48,10 @@ void MainWindow::setupWidgets()
     drawerLayout->addWidget(notesButton);
 
     drawerLayout->addStretch(3);
-    m_drawer->setContentsMargins(10, 0, 0, 0);
-    m_drawer->setClickOutsideToClose(true);
-    m_drawer->setOverlayMode(true);
+
+    QtMaterialFlatButton* closeDrawerButton = new QtMaterialFlatButton("Close", m_drawer);
+    QObject::connect(closeDrawerButton, SIGNAL(clicked()), m_drawer, SLOT(closeDrawer()));
+    drawerLayout->addWidget(closeDrawerButton);
 
     // установка оформления mainToolBar
     QLabel *label = new QLabel("Here is your TaskSpace");
