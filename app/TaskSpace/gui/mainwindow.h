@@ -17,6 +17,7 @@
 #include "libs/qt-material-widgets-master/components/qtmaterialraisedbutton.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialdrawer.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialdialog.h"
+#include "libs/qt-material-widgets-master/components/qtmaterialfab.h"
 
 #include "libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h"
 

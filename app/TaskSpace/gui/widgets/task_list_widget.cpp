@@ -15,10 +15,9 @@ TaskListWidget::TaskListWidget(QString label, QWidget *parent) :
     this->setMaximumWidth(m_width);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(5, 5, 5, 5);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
         mainLayout->addWidget(m_label);
         mainLayout->addWidget(m_list);
-        mainLayout->addItem(new QSpacerItem(10, 25, QSizePolicy::Expanding, QSizePolicy::Fixed));
     this->setLayout(mainLayout);
 }
 

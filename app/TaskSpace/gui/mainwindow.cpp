@@ -142,13 +142,23 @@ void MainWindow::showBacklogTab()
         backlogTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #fff; }");
         layout->addWidget(backlogTitleLabel);
 
+        QFrame *actionsFrame = new QFrame(ui->mainFrame);
+        actionsFrame->setLayout(new QHBoxLayout(actionsFrame));
+        actionsFrame->setContentsMargins(0, 0, 0, 0);
+            actionsFrame->layout()->addWidget(new QtMaterialRaisedButton("Add New Task", actionsFrame));
+            actionsFrame->layout()->addWidget(new QtMaterialRaisedButton("Remove Task", actionsFrame));
+            actionsFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+            actionsFrame->layout()->addWidget(new QtMaterialRaisedButton("Sync Tasks With Trello", actionsFrame));
+        layout->addWidget(actionsFrame);
+
         QScrollArea *scrollArea = new QScrollArea(ui->mainFrame);
         scrollArea->setWidgetResizable(true);
         scrollArea->setStyleSheet("QScrollArea { border: 0px; }");
+        scrollArea->setContentsMargins(0, 0, 0, 0);
             QWidget *scrollAreaContent = new QWidget(scrollArea);
             scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
             scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            scrollAreaContent->layout()->setMargin(0);
+            scrollAreaContent->setContentsMargins(0, 0, 0, 10);
                 QStringList avaliableStatuses = {
                     "Product Backlog",
                     "Sprint Backlog",
@@ -164,7 +174,7 @@ void MainWindow::showBacklogTab()
                     taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
                         for(int i = 0; i < 10; i++)
                         {
-                            QListWidgetItem *item = new QListWidgetItem(QString::number(i));
+                            QListWidgetItem *item = new QListWidgetItem(status + QStringLiteral(" ") + QString::number(i));
                             /*MyListWidgetItem* board =
                                     new MyListWidgetItem(QString::number(i), "test task", "","", QStringList(), QStringList(), productBacklogListWidget);
                             item->setSizeHint(board->minimumSizeHint());*/
