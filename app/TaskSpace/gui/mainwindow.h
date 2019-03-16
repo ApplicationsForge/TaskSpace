@@ -11,6 +11,8 @@
 #include "libs/qt-material-widgets-master/components/qtmaterialraisedbutton.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialdrawer.h"
 
+#include "libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -40,6 +42,8 @@ private slots:
     void showCalendarTab();
 
     void showNotesTab();
+
+    void showGauge();
 };
 
 #endif // MAINWINDOW_H

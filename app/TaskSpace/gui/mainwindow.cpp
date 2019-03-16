@@ -110,4 +110,27 @@ void MainWindow::showNotesTab()
     qDeleteAll(ui->mainFrame->children());
     ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
     ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Notes", ui->mainFrame));
+
+    this->showGauge();
+}
+
+void MainWindow::showGauge()
+{
+    QcGaugeWidget* speedGauge = new QcGaugeWidget(this);
+    QcBackgroundItem *bkg = speedGauge->addBackground(50);
+    bkg->clearrColors();
+    bkg->addColor(float(0.1), Qt::black);
+
+    QcLabelItem *lab = speedGauge->addLabel(30);
+    lab->setColor(Qt::blue);
+    lab->setText("0");
+
+    QcNeedleItem *speedNeedle;
+    speedNeedle = speedGauge->addNeedle(45);
+    speedNeedle->setLabel(lab);
+    speedNeedle->setColor(Qt::blue);
+    speedNeedle->setValueRange(0,100);
+    speedGauge->addBackground(3);
+
+    ui->mainFrame->layout()->addWidget(speedGauge);
 }

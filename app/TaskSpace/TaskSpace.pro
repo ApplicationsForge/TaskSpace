@@ -75,7 +75,8 @@ SOURCES += \
     libs/qt-material-widgets-master/components/lib/qtmaterialrippleoverlay.cpp \
     libs/qt-material-widgets-master/components/lib/qtmaterialstatetransition.cpp \
     libs/qt-material-widgets-master/components/lib/qtmaterialstyle.cpp \
-    libs/qt-material-widgets-master/components/lib/qtmaterialtheme.cpp
+    libs/qt-material-widgets-master/components/lib/qtmaterialtheme.cpp \
+    libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -157,7 +158,8 @@ HEADERS += \
     libs/qt-material-widgets-master/components/lib/qtmaterialstyle_p.h \
     libs/qt-material-widgets-master/components/lib/qtmaterialstyle.h \
     libs/qt-material-widgets-master/components/lib/qtmaterialtheme_p.h \
-    libs/qt-material-widgets-master/components/lib/qtmaterialtheme.h
+    libs/qt-material-widgets-master/components/lib/qtmaterialtheme.h \
+    libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h
 
 FORMS += \
         gui/mainwindow.ui
@@ -1144,4 +1146,5 @@ DISTFILES += \
     libs/qt-material-widgets-master/components/icons/toggle/svg/production/ic_radio_button_unchecked_24px.svg \
     libs/qt-material-widgets-master/components/icons/toggle/svg/production/ic_star_24px.svg \
     libs/qt-material-widgets-master/components/icons/toggle/svg/production/ic_star_border_24px.svg \
-    libs/qt-material-widgets-master/components/icons/toggle/svg/production/ic_star_half_24px.svg
+    libs/qt-material-widgets-master/components/icons/toggle/svg/production/ic_star_half_24px.svg \
+    libs/Qt-custom-gauge-widget-master/LICENSE
