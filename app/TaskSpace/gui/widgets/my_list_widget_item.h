@@ -2,38 +2,48 @@
 #define MY_LIST_WIDGET_ITEM_H
 
 #include <QWidget>
+#include <QListWidgetItem>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QSpacerItem>
 #include <QTextEdit>
 #include <QDebug>
+#include <QDate>
 
 class MyListWidgetItem : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MyListWidgetItem(QString index, QString title, QString description, QString date, QStringList tags, QStringList users, QWidget *parent = nullptr);
+    explicit MyListWidgetItem(QString index, QString title, QWidget *parent = nullptr);
+    explicit MyListWidgetItem(QString index, QString title, QString description = "", QDate date = QDateTime::currentDateTime().date(), QStringList tags = QStringList(), QStringList users = QStringList(), QWidget *parent = nullptr);
 
     QString index() const;
+    void setIndex(const QString &index);
 
     QString title() const;
+    void setTitle(const QString &title);
 
     QString description() const;
+    void setDescription(const QString &description);
 
-    QString tags() const;
+    QDate date() const;
+    void setDate(const QDate &date);
 
-    QString users() const;
+    QStringList tags() const;
+    void setTags(const QStringList &tags);
 
-    QString date() const;
+    QStringList users() const;
+    void setUsers(const QStringList &users);
 
 private:
     QString m_index;
     QString m_title;
     QString m_description;
-    QString m_date;
+    QDate m_date;
     QStringList m_tags;
     QStringList m_users;
+    int m_width;
 
 signals:
 

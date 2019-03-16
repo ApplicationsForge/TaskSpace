@@ -172,14 +172,26 @@ void MainWindow::showBacklogTab()
                     taskListWidget->list()->setDragEnabled(true);
                     taskListWidget->list()->setDropIndicatorShown(true);
                     taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
-                        for(int i = 0; i < 10; i++)
+                    taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #fff; }");
+                        for(int i = 0; i < 1000; i++)
                         {
-                            QListWidgetItem *item = new QListWidgetItem(status + QStringLiteral(" ") + QString::number(i));
+                            QString title = status + QStringLiteral(" ") + QString::number(i);
+                            QListWidgetItem *item = new QListWidgetItem(title);
+                            item->setTextAlignment(Qt::TopLeftCorner);
+                            backlogTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+                            //item->setSizeHint(QSize(300, 50));
                             /*MyListWidgetItem* board =
-                                    new MyListWidgetItem(QString::number(i), "test task", "","", QStringList(), QStringList(), productBacklogListWidget);
+                                    new MyListWidgetItem(
+                                        QString::number(i),
+                                        title,
+                                        "",
+                                        QDateTime::currentDateTime().date(),
+                                        QStringList {"+tag1", "+tag2"},
+                                        QStringList {"@Xtail", "@Teammate"},
+                                        taskListWidget);
                             item->setSizeHint(board->minimumSizeHint());*/
                             taskListWidget->list()->addItem(item);
-                            //productBacklogListWidget->list()->setItemWidget(item, board);
+                            //taskListWidget->list()->setItemWidget(item, board);
                         }
                     scrollAreaContent->layout()->addWidget(taskListWidget);
                 }
