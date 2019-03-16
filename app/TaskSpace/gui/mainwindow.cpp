@@ -138,6 +138,7 @@ void MainWindow::showBacklogTab()
 {
     qDeleteAll(ui->mainFrame->children());
     QVBoxLayout *layout = new QVBoxLayout(ui->mainFrame);
+    layout->setSpacing(0);
         QLabel *backlogTitleLabel = new QLabel("Backlog", ui->mainFrame);
         backlogTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
         backlogTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
