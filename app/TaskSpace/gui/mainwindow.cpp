@@ -136,6 +136,12 @@ void MainWindow::showBacklogTab()
 {
     qDeleteAll(ui->mainFrame->children());
     QVBoxLayout *layout = new QVBoxLayout(ui->mainFrame);
+        QLabel *backlogTitleLabel = new QLabel("Backlog", ui->mainFrame);
+        backlogTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+        backlogTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
+        backlogTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #fff; }");
+        layout->addWidget(backlogTitleLabel);
+
         QScrollArea *scrollArea = new QScrollArea(ui->mainFrame);
         scrollArea->setWidgetResizable(true);
         scrollArea->setStyleSheet("QScrollArea { border: 0px; }");
@@ -167,8 +173,8 @@ void MainWindow::showBacklogTab()
                         }
                     scrollAreaContent->layout()->addWidget(taskListWidget);
                 }
-        scrollArea->setWidget(scrollAreaContent);
-    layout->addWidget(scrollArea);
+            scrollArea->setWidget(scrollAreaContent);
+        layout->addWidget(scrollArea);
     ui->mainFrame->setLayout(layout);
 }
 
