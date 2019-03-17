@@ -71,6 +71,7 @@ private slots:
     void showFocusTimerDialog();
 
     void onSelectDbToolButton_clicked();
+    void onRouter_TasksUpdated();
 };
 
 #endif // MAINWINDOW_H

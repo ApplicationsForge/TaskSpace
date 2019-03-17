@@ -37,6 +37,7 @@ void MainWindow::setupWidgets()
     this->setupSettingsTab();
 
     this->showBacklogTab();
+    this->onRouter_TasksUpdated();
 }
 
 void MainWindow::setupAppBar()
@@ -208,17 +209,13 @@ void MainWindow::setupBacklogTab()
                 for(auto status : avaliableStatuses)
                 {
                     TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
+                    taskListWidget->setObjectName(status + "TaskListWidget");
+                    m_widgets.insert(taskListWidget->objectName(), taskListWidget);
                     taskListWidget->list()->setDragEnabled(true);
                     taskListWidget->list()->setDropIndicatorShown(true);
                     taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
                     taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #333; padding: 10px; }");
                     taskListWidget->list()->setAlternatingRowColors(true);
-                        /*for(int i = 0; i < 1000; i++)
-                        {
-                            QString title = "[" + QString::number(i) + "] " + status;
-                            QListWidgetItem *item = new QListWidgetItem(title);
-                            taskListWidget->list()->addItem(item);
-                        }*/
                     scrollAreaContent->layout()->addWidget(taskListWidget);
                 }
             scrollArea->setWidget(scrollAreaContent);
@@ -332,5 +329,23 @@ void MainWindow::onSelectDbToolButton_clicked()
     if(path.length() > 0)
     {
         router.getRepository()->setDbPath(path);
+    }
+}
+
+void MainWindow::onRouter_TasksUpdated()
+{
+    Router& router = Router::getInstance();
+    QList<Task> tasks = router.getRepository()->getMockTasks();
+
+    for(auto task : tasks)
+    {
+        QString taskListWidgetName = task.status() + "TaskListWidget";
+        if(!m_widgets.contains(taskListWidgetName)) {
+            continue;
+        }
+
+        TaskListWidget* list = qobject_cast<TaskListWidget*>(m_widgets[taskListWidgetName]);
+        QListWidgetItem *item = new QListWidgetItem(task.decoratedBaseInformation());
+        list->list()->addItem(item);
     }
 }

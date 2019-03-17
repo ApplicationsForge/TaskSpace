@@ -7,6 +7,7 @@
 #include <QtDebug>
 
 #include "models/settings_manager/settings_manager.h"
+#include "models/types/task/task.h"
 
 class Router;
 
@@ -21,6 +22,7 @@ public:
     void setDbPath(const QString &dbPath);
 
     QStringList getAvaliableStatuses();
+    QList<Task> getMockTasks();
 
 private:
     QScopedPointer<SettingsManager> m_settingsManager;

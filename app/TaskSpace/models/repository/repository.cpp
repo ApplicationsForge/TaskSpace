@@ -35,6 +35,17 @@ QStringList Repository::getAvaliableStatuses()
     return avaliableStatuses;
 }
 
+QList<Task> Repository::getMockTasks()
+{
+    QStringList avaliableStatuses = this->getAvaliableStatuses();
+    QList<Task> tasks = QList<Task>();
+    for(int i = 0; i < 1000; i++)
+    {
+        tasks.append(Task(size_t(i), "example task", avaliableStatuses.first()));
+    }
+    return tasks;
+}
+
 void Repository::loadSettings()
 {
     try {
