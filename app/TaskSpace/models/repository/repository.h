@@ -17,14 +17,10 @@ public:
     explicit Repository(QObject *parent = nullptr);
     ~Repository();
 
-    QString helloString() const;
-    void setHelloString(const QString &helloString);
-
     QString dbPath() const;
     void setDbPath(const QString &dbPath);
 
 private:
-    QString m_helloString = "Here is your TaskSpace!";
     QScopedPointer<SettingsManager> m_settingsManager;
 
     QString m_dbPath;
