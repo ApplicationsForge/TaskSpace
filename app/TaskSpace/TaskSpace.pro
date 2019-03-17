@@ -84,7 +84,11 @@ SOURCES += \
     models/settings_manager/settings_manager.cpp \
     libs/orm-qt-master/src/activerecord.cpp \
     libs/orm-qt-master/src/query.cpp \
-    models/types/sqlite_adapter/sqlite_adapter.cpp
+    models/types/sqlite_adapter/sqlite_adapter.cpp \
+    models/types/task/task.cpp \
+    models/types/teammate/teammate.cpp \
+    models/types/status/status.cpp \
+    models/types/tag/tag.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -175,7 +179,11 @@ HEADERS += \
     libs/orm-qt-master/src/activerecord.h \
     libs/orm-qt-master/src/orm-qt_global.h \
     libs/orm-qt-master/src/query.h \
-    models/types/sqlite_adapter/sqlite_adapter.h
+    models/types/sqlite_adapter/sqlite_adapter.h \
+    models/types/task/task.h \
+    models/types/teammate/teammate.h \
+    models/types/status/status.h \
+    models/types/tag/tag.h
 
 FORMS += \
         gui/mainwindow.ui
