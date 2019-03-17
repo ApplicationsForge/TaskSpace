@@ -287,5 +287,11 @@ bool Repository::initDb(QString path)
     QString addFirstTaskRequest = "INSERT INTO tasks (title, status_id, teammate_id) VALUES(\"MyFirstTask\", 1, NULL);";
     qDebug() << SQLiteAdapter::executeSQL(path, addFirstTaskRequest);
 
+    QString addSecondTaskRequest = "INSERT INTO tasks (title, status_id, teammate_id) VALUES(\"SecondTask\", 1, NULL);";
+    qDebug() << SQLiteAdapter::executeSQL(path, addSecondTaskRequest);
+
+    QString addThirdTaskRequest = "INSERT INTO tasks (title, status_id, teammate_id) VALUES(\"ThirdTask\", 1, NULL);";
+    qDebug() << SQLiteAdapter::executeSQL(path, addThirdTaskRequest);
+
     return QFile::exists(path);
 }

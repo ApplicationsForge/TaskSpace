@@ -62,6 +62,7 @@ signals:
     void dbPathChanged(QString path);
 
 public slots:
+    //void changeTaskStatus(size_t taskId, Status);
 };
 
 #endif // REPOSITORY_H
