@@ -20,6 +20,8 @@ public:
     QString dbPath() const;
     void setDbPath(const QString &dbPath);
 
+    QStringList getAvaliableStatuses();
+
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
 

@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->initWidgets();
+    this->setupWidgets();
 
     // cоздаем модель
     Router::getInstance();
@@ -23,22 +23,22 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::initWidgets()
+void MainWindow::setupWidgets()
 {
     // устновка темной темы
     //this->setStyleSheet("background-color: #555;");
 
     ui->mainWidget->setLayout(new QVBoxLayout(ui->mainWidget));
-    this->initAppBar();
-    this->initDrawer();
-    this->initStatusBar();
-    this->initDashboard();
-    this->initBacklog();
+    this->setupAppBar();
+    this->setupDrawer();
+    this->setupStatusBar();
+    this->setupDashboardTab();
+    this->setupBacklogTab();
 
     this->showBacklogTab();
 }
 
-void MainWindow::initAppBar()
+void MainWindow::setupAppBar()
 {
     // установка оформления mainToolBar
     QLabel *label = new QLabel("Here is your TaskSpace");
@@ -69,7 +69,7 @@ void MainWindow::initAppBar()
     ui->mainToolBar->setStyleSheet("QToolBar { border: 0px; }");
 }
 
-void MainWindow::initDrawer()
+void MainWindow::setupDrawer()
 {
     // установка оформления меню слева
     QVBoxLayout *drawerLayout = new QVBoxLayout(m_drawer);
@@ -129,7 +129,7 @@ void MainWindow::initDrawer()
     drawerLayout->addWidget(closeDrawerButton);
 }
 
-void MainWindow::initStatusBar()
+void MainWindow::setupStatusBar()
 {
     // установка оформления statusBar
     ui->statusBar->setStyleSheet("background-color: #333; color: #33bb33");
@@ -137,76 +137,65 @@ void MainWindow::initStatusBar()
     ui->statusBar->showMessage(tr("State: ready 0123456789"));
 }
 
-void MainWindow::initDashboard()
+void MainWindow::setupDashboardTab()
 {
     QWidget* container = new QWidget(ui->mainWidget);
     container->setObjectName("dashboardContainerWidget");
     m_widgets.insert(container->objectName(), container);
-    QVBoxLayout *containerLayout = new QVBoxLayout(container);
-        containerLayout->addWidget(new QtMaterialRaisedButton("Dashboard", container));
+    QHBoxLayout *containerLayout = new QHBoxLayout(container);
+        QFrame *todotasksFrame = new QFrame(container);
+        todotasksFrame->setLayout(new QVBoxLayout(todotasksFrame));
+            QLabel *todotasksLabel = new QLabel("ToDo Tasks", todotasksFrame);
+            todotasksLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+            todotasksLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+            todotasksFrame->layout()->addWidget(todotasksLabel);
+            todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
+            todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
+            todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
+            todotasksFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        containerLayout->addWidget(todotasksFrame);
+        containerLayout->setStretch(0, 4);
+
+        QFrame *toolsFrame = new QFrame(container);
+        QVBoxLayout *toolsFrameLayout = new QVBoxLayout(toolsFrame);
+        toolsFrame->setLayout(toolsFrameLayout);
+            QtMaterialRaisedButton *focusTimerButton = new QtMaterialRaisedButton("Focus Timer", toolsFrame);
+            QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
+            toolsFrameLayout->addWidget(focusTimerButton);
+
+            toolsFrameLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        containerLayout->addWidget(toolsFrame);
+        containerLayout->setStretch(1, 1);
     container->setLayout(containerLayout);
     ui->mainWidget->layout()->addWidget(container);
     container->hide();
-
-    /*QHBoxLayout *layout = new QHBoxLayout(ui->mainFrame);
-
-    QFrame *todotasksFrame = new QFrame(ui->mainFrame);
-    todotasksFrame->setLayout(new QVBoxLayout(todotasksFrame));
-        QLabel *todotasksLabel = new QLabel("ToDo Tasks", todotasksFrame);
-        todotasksLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
-        todotasksLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-        todotasksFrame->layout()->addWidget(todotasksLabel);
-        todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
-        todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
-        todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
-        todotasksFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
-    layout->addWidget(todotasksFrame);
-    layout->setStretch(0, 4);
-
-    QFrame *toolsFrame = new QFrame(ui->mainFrame);
-    QVBoxLayout *toolsFrameLayout = new QVBoxLayout(toolsFrame);
-    toolsFrame->setLayout(toolsFrameLayout);
-        QtMaterialRaisedButton *focusTimerButton = new QtMaterialRaisedButton("Focus Timer", toolsFrame);
-        QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
-        toolsFrameLayout->addWidget(focusTimerButton);
-
-        toolsFrameLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
-    layout->addWidget(toolsFrame);
-    layout->setStretch(1, 1);
-
-    ui->mainFrame->setLayout(layout);*/
 }
 
-void MainWindow::initBacklog()
+void MainWindow::setupBacklogTab()
 {
+    Router &router = Router::getInstance();
+
     QWidget* container = new QWidget(ui->mainWidget);
     container->setObjectName("backlogContainerWidget");
     m_widgets.insert(container->objectName(), container);
     QVBoxLayout *containerLayout = new QVBoxLayout(container);
-        containerLayout->addWidget(new QtMaterialRaisedButton("Backlog", container));
-    container->setLayout(containerLayout);
-    ui->mainWidget->layout()->addWidget(container);
-    container->hide();
-
-    /*ui->mainFrame->layout()
-    QVBoxLayout *layout = new QVBoxLayout(ui->mainFrame);
-    layout->setSpacing(0);
-        QLabel *backlogTitleLabel = new QLabel("Backlog", ui->mainFrame);
+    containerLayout->setSpacing(0);
+        QLabel *backlogTitleLabel = new QLabel("Backlog", container);
         backlogTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
         backlogTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
         backlogTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
-        layout->addWidget(backlogTitleLabel);
+        containerLayout->addWidget(backlogTitleLabel);
 
-        QFrame *actionsFrame = new QFrame(ui->mainFrame);
+        QFrame *actionsFrame = new QFrame(container);
         actionsFrame->setLayout(new QHBoxLayout(actionsFrame));
         actionsFrame->setContentsMargins(0, 0, 0, 0);
             actionsFrame->layout()->addWidget(new QtMaterialRaisedButton("Add New Task", actionsFrame));
             actionsFrame->layout()->addWidget(new QtMaterialRaisedButton("Remove Task", actionsFrame));
             actionsFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
             actionsFrame->layout()->addWidget(new QtMaterialRaisedButton("Sync Tasks With Trello", actionsFrame));
-        layout->addWidget(actionsFrame);
+        containerLayout->addWidget(actionsFrame);
 
-        QScrollArea *scrollArea = new QScrollArea(ui->mainFrame);
+        QScrollArea *scrollArea = new QScrollArea(container);
         scrollArea->setWidgetResizable(true);
         scrollArea->setStyleSheet("QScrollArea { border: 0px; }");
         scrollArea->setContentsMargins(0, 0, 0, 0);
@@ -214,13 +203,7 @@ void MainWindow::initBacklog()
             scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
             scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             scrollAreaContent->setContentsMargins(0, 0, 0, 10);
-                QStringList avaliableStatuses = {
-                    "Product Backlog",
-                    "Sprint Backlog",
-                    "In Progress",
-                    "Testing",
-                    "Done"
-                };
+                QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
                 for(auto status : avaliableStatuses)
                 {
                     TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
@@ -229,34 +212,31 @@ void MainWindow::initBacklog()
                     taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
                     taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #333; padding: 10px; }");
                     taskListWidget->list()->setAlternatingRowColors(true);
-                        for(int i = 0; i < 1000; i++)
+                        /*for(int i = 0; i < 1000; i++)
                         {
                             QString title = "[" + QString::number(i) + "] " + status;
                             QListWidgetItem *item = new QListWidgetItem(title);
-                            //item->setFont(QFont("Roboto", 14, QFont::Normal));
                             taskListWidget->list()->addItem(item);
-                        }
+                        }*/
                     scrollAreaContent->layout()->addWidget(taskListWidget);
                 }
             scrollArea->setWidget(scrollAreaContent);
-        layout->addWidget(scrollArea);
-    ui->mainFrame->setLayout(layout);*/
+        containerLayout->addWidget(scrollArea);
+    container->setLayout(containerLayout);
+    ui->mainWidget->layout()->addWidget(container);
+    container->hide();
 }
 
 void MainWindow::showDashboardTab()
 {
     m_widgets["dashboardContainerWidget"]->show();
     m_widgets["backlogContainerWidget"]->hide();
-    //qDeleteAll(ui->mainFrame->children());
-
 }
 
 void MainWindow::showBacklogTab()
 {
     m_widgets["dashboardContainerWidget"]->hide();
     m_widgets["backlogContainerWidget"]->show();
-    //qDeleteAll(ui->mainFrame->children());
-
 }
 
 void MainWindow::showCalendarTab()

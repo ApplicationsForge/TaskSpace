@@ -46,12 +46,12 @@ private:
     QtMaterialAppBar *const m_appBar;
     QtMaterialDrawer *const m_drawer;
 
-    void initWidgets();
-    void initAppBar();
-    void initDrawer();
-    void initStatusBar();
-    void initDashboard();
-    void initBacklog();
+    void setupWidgets();
+    void setupAppBar();
+    void setupDrawer();
+    void setupStatusBar();
+    void setupDashboardTab();
+    void setupBacklogTab();
 
 private slots:
 

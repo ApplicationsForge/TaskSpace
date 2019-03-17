@@ -23,6 +23,18 @@ void Repository::setDbPath(const QString &dbPath)
     emit this->dbPathChanged(m_dbPath);
 }
 
+QStringList Repository::getAvaliableStatuses()
+{
+    QStringList avaliableStatuses = {
+        "Product Backlog",
+        "Sprint Backlog",
+        "In Progress",
+        "Testing",
+        "Done"
+    };
+    return avaliableStatuses;
+}
+
 void Repository::loadSettings()
 {
     try {
