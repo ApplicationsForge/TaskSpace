@@ -10,6 +10,7 @@
 #include <QDialog>
 #include <QScrollArea>
 #include <QToolButton>
+#include <QFileDialog>
 
 #include "models/router.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"

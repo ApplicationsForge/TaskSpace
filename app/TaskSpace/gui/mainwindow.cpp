@@ -284,5 +284,10 @@ void MainWindow::showFocusTimerDialog()
 
 void MainWindow::onSelectDbToolButton_clicked()
 {
-    qDebug() << "selectDBClicked";
+    Router& router = Router::getInstance();
+    QString path = QFileDialog::getOpenFileName(this, "Select Database", "", "*.db");
+    if(path.length() > 0)
+    {
+        router.getRepository()->setDbPath(path);
+    }
 }
