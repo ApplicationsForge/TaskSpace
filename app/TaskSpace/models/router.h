@@ -35,6 +35,7 @@ private:
 signals:
 
 public slots:
+    void onTaskListWidget_TaskDropped(size_t taskUid, size_t statusUid);
 };
 
 #endif // ROUTER_H

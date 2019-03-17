@@ -22,7 +22,7 @@ public:
     void dragMoveEvent(QDragMoveEvent* e);
     //Qt::DropAction supportedDropActions();
 
-protected:
+private:
     void keyReturnPressed(QModelIndex selectedItemIndex);
     void keyUpPressed(QModelIndex selectedItemIndex);
     void keyDownPressed(QModelIndex selectedItemIndex);

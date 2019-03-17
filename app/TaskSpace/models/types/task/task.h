@@ -12,7 +12,7 @@
 class Task
 {
 public:
-    Task(size_t index,
+    Task(size_t id,
          QString title,
          Status status,
          QDate dueTo,
@@ -20,7 +20,7 @@ public:
          QStringList tags,
          Teammate teammate);
 
-    size_t index() const;
+    size_t id() const;
 
     QString title() const;
     void setTitle(const QString &title);
@@ -41,7 +41,7 @@ public:
     void setTeammate(const Teammate &teammate);
 
 private:
-    size_t m_index;
+    size_t m_id;
     QString m_title;
     Status m_status;
     QDate m_dueTo;

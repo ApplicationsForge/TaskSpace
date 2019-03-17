@@ -187,19 +187,15 @@ void MainWindow::showBacklogTab()
                 QList<Status> avaliableStatuses = router.getRepository()->statuses();
                 for(auto status : avaliableStatuses)
                 {
-                    TaskListWidget* taskListWidget = new TaskListWidget(status.name(), scrollAreaContent);
+                    TaskListWidget* taskListWidget = new TaskListWidget(status.id(), status.name(), scrollAreaContent);
                     taskListWidget->list()->setDragEnabled(true);
                     taskListWidget->list()->setDropIndicatorShown(true);
                     taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
                     taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #333; padding: 10px; }");
                     taskListWidget->list()->setAlternatingRowColors(true);
-                        QList<Task> tasksByStatus = router.getRepository()->tasksByStatus(status.id());
-                        for(auto task : tasksByStatus)
-                        {
-                            QString title = "[" + QString::number(task.index()) + "] " + task.title() + " (" + task.teammate().name() + ")";
-                            QListWidgetItem *item = new QListWidgetItem(title);
-                            taskListWidget->list()->addItem(item);
-                        }
+                    QObject::connect(taskListWidget, SIGNAL(taskDropped(size_t, size_t)), &router, SLOT(onTaskListWidget_TaskDropped(size_t, size_t)));
+                    QObject::connect(router.getRepository(), SIGNAL(tasksUpdated(size_t, QList<Task>)), taskListWidget, SLOT(setTasks(size_t, QList<Task>)));
+                        taskListWidget->setTasks(status.id(), router.getRepository()->tasksByStatus(status.id()));
                     scrollAreaContent->layout()->addWidget(taskListWidget);
                 }
             scrollArea->setWidget(scrollAreaContent);

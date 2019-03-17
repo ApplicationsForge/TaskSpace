@@ -80,7 +80,6 @@ SOURCES += \
     libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.cpp \
     gui/widgets/my_list_widget.cpp \
     gui/widgets/task_list_widget.cpp \
-    gui/widgets/my_list_widget_item.cpp \
     models/settings_manager/settings_manager.cpp \
     libs/orm-qt-master/src/activerecord.cpp \
     libs/orm-qt-master/src/query.cpp \
@@ -174,7 +173,6 @@ HEADERS += \
     libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h \
     gui/widgets/my_list_widget.h \
     gui/widgets/task_list_widget.h \
-    gui/widgets/my_list_widget_item.h \
     models/settings_manager/settings_manager.h \
     libs/orm-qt-master/src/activerecord.h \
     libs/orm-qt-master/src/orm-qt_global.h \

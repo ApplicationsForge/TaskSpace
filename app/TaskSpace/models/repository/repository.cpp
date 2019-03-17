@@ -217,6 +217,19 @@ Status Repository::findStatus(size_t id)
     throw std::invalid_argument("Status with id = " + std::to_string(id) + " does not exist");
 }
 
+Task Repository::findTask(size_t id)
+{
+    for(auto task : m_tasks)
+    {
+        if(task.id() == id)
+        {
+            return task;
+        }
+    }
+
+    throw std::invalid_argument("Task with id = " + std::to_string(id) + " does not exist");
+}
+
 bool Repository::resolveDb(QString path)
 {
     if(QFile::exists(path))
@@ -294,4 +307,22 @@ bool Repository::initDb(QString path)
     qDebug() << SQLiteAdapter::executeSQL(path, addThirdTaskRequest);
 
     return QFile::exists(path);
+}
+
+void Repository::changeTaskStatus(size_t taskId, size_t statusId)
+{
+    for(auto task : m_tasks)
+    {
+        if(task.id() == taskId)
+        {
+            size_t oldStatusId = task.status().id();
+            size_t newStatusId = statusId;
+            qDebug() << oldStatusId << newStatusId;
+            emit this->tasksUpdated(oldStatusId, this->tasksByStatus(oldStatusId));
+            Status status = Repository::findStatus(statusId);
+            task.setStatus(status);
+            emit this->tasksUpdated(newStatusId, this->tasksByStatus(newStatusId));
+        }
+    }
+
 }

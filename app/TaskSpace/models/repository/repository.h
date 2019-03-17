@@ -52,6 +52,7 @@ private:
 
     Teammate findTeammate(size_t id);
     Status findStatus(size_t id);
+    Task findTask(size_t id);
 
     static bool resolveDb(QString path);
     static bool initDb(QString path="");
@@ -60,9 +61,10 @@ private:
 
 signals:
     void dbPathChanged(QString path);
+    void tasksUpdated(size_t statusId, QList<Task> tasks);
 
 public slots:
-    //void changeTaskStatus(size_t taskId, Status);
+    void changeTaskStatus(size_t taskId, size_t statusId);
 };
 
 #endif // REPOSITORY_H

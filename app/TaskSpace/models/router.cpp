@@ -37,3 +37,8 @@ void Router::resetConnections()
 
 }
 
+void Router::onTaskListWidget_TaskDropped(size_t taskUid, size_t statusUid)
+{
+    m_repository->changeTaskStatus(taskUid, statusUid);
+}
+

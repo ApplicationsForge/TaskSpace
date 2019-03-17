@@ -1,13 +1,13 @@
 #include "task.h"
 
-Task::Task(size_t index,
+Task::Task(size_t id,
            QString title,
            Status status,
            QDate dueTo,
            QString description,
            QStringList tags,
            Teammate teammate) :
-    m_index(index),
+    m_id(id),
     m_title(title),
     m_status(status),
     m_dueTo(dueTo),
@@ -18,9 +18,9 @@ Task::Task(size_t index,
 
 }
 
-size_t Task::index() const
+size_t Task::id() const
 {
-    return m_index;
+    return m_id;
 }
 
 QString Task::title() const
