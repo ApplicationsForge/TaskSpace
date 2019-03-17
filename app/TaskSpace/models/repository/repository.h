@@ -2,6 +2,9 @@
 #define REPOSITORY_H
 
 #include <QObject>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QtDebug>
 
 #include "models/settings_manager/settings_manager.h"
 
@@ -12,6 +15,7 @@ class Repository : public QObject
     Q_OBJECT
 public:
     explicit Repository(QObject *parent = nullptr);
+    ~Repository();
 
     QString helloString() const;
     void setHelloString(const QString &helloString);
@@ -26,6 +30,9 @@ private:
     QString m_dbPath;
 
     void loadSettings();
+
+    static QSqlDatabase openDb(QString path);
+    static QSqlDatabase initDb(QString path="");
 
     friend class Router;
 

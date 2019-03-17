@@ -83,7 +83,8 @@ SOURCES += \
     gui/widgets/my_list_widget_item.cpp \
     models/settings_manager/settings_manager.cpp \
     libs/orm-qt-master/src/activerecord.cpp \
-    libs/orm-qt-master/src/query.cpp
+    libs/orm-qt-master/src/query.cpp \
+    models/types/sqlite_adapter/sqlite_adapter.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -173,7 +174,8 @@ HEADERS += \
     models/settings_manager/settings_manager.h \
     libs/orm-qt-master/src/activerecord.h \
     libs/orm-qt-master/src/orm-qt_global.h \
-    libs/orm-qt-master/src/query.h
+    libs/orm-qt-master/src/query.h \
+    models/types/sqlite_adapter/sqlite_adapter.h
 
 FORMS += \
         gui/mainwindow.ui
