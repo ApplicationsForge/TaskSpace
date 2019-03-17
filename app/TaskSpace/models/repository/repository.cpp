@@ -44,18 +44,7 @@ void Repository::loadSettings()
     }
 }
 
-QSqlDatabase Repository::openDb(QString path)
-{
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(path);
-    if(!db.open())
-    {
-       db = Repository::initDb(path);
-    }
-    return db;
-}
-
-QSqlDatabase Repository::initDb(QString path)
+bool Repository::initDb(QString path)
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(path);

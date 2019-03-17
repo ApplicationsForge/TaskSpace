@@ -31,8 +31,7 @@ private:
 
     void loadSettings();
 
-    static QSqlDatabase openDb(QString path);
-    static QSqlDatabase initDb(QString path="");
+    bool initDb(QString path="");
 
     friend class Router;
 
