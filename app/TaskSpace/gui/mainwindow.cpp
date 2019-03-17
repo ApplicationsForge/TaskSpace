@@ -34,6 +34,7 @@ void MainWindow::setupWidgets()
     this->setupStatusBar();
     this->setupDashboardTab();
     this->setupBacklogTab();
+    this->setupSettingsTab();
 
     this->showBacklogTab();
 }
@@ -227,16 +228,49 @@ void MainWindow::setupBacklogTab()
     container->hide();
 }
 
+void MainWindow::setupSettingsTab()
+{
+    Router &router = Router::getInstance();
+    QString dbPath = router.getRepository()->dbPath();
+
+    QWidget* container = new QWidget(ui->mainWidget);
+    container->setObjectName("settingsContainerWidget");
+    m_widgets.insert(container->objectName(), container);
+    QVBoxLayout *containerLayout = new QVBoxLayout(container);
+        QWidget *dbPathWidget = new QWidget(container);
+        dbPathWidget->setLayout(new QHBoxLayout(dbPathWidget));
+            QLabel *dbPathTitleLabel = new QLabel("Database Path:", dbPathWidget);
+            dbPathWidget->layout()->addWidget(dbPathTitleLabel);
+
+            QLabel *dbPathValueLabel = new QLabel(dbPath, dbPathWidget);
+            QObject::connect(router.getRepository(), SIGNAL(dbPathChanged(QString)), dbPathValueLabel, SLOT(setText(QString)));
+            dbPathWidget->layout()->addWidget(dbPathValueLabel);
+
+            QToolButton* selectDbToolButton = new QToolButton(dbPathWidget);
+            selectDbToolButton->setText("...");
+            QObject::connect(selectDbToolButton, SIGNAL(clicked()), this, SLOT(onSelectDbToolButton_clicked()));
+            dbPathWidget->layout()->addWidget(selectDbToolButton);
+
+            dbPathWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+        containerLayout->addWidget(dbPathWidget);
+        containerLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+    container->setLayout(containerLayout);
+    ui->mainWidget->layout()->addWidget(container);
+    container->hide();
+}
+
 void MainWindow::showDashboardTab()
 {
     m_widgets["dashboardContainerWidget"]->show();
     m_widgets["backlogContainerWidget"]->hide();
+    m_widgets["settingsContainerWidget"]->hide();
 }
 
 void MainWindow::showBacklogTab()
 {
     m_widgets["dashboardContainerWidget"]->hide();
     m_widgets["backlogContainerWidget"]->show();
+    m_widgets["settingsContainerWidget"]->hide();
 }
 
 void MainWindow::showCalendarTab()
@@ -257,29 +291,9 @@ void MainWindow::showNotesTab()
 
 void MainWindow::showSettingsTab()
 {
-    /*qDeleteAll(ui->mainFrame->children());
-
-    Router& router = Router::getInstance();
-    QString dbPath = router.getRepository()->dbPath();
-
-    ui->mainFrame->setLayout(new QVBoxLayout(ui->mainFrame));
-        QWidget *dbPathWidget = new QWidget(ui->mainFrame);
-        dbPathWidget->setLayout(new QHBoxLayout(dbPathWidget));
-            QLabel *dbPathTitleLabel = new QLabel("Database Path:", dbPathWidget);
-            dbPathWidget->layout()->addWidget(dbPathTitleLabel);
-
-            QLabel *dbPathValueLabel = new QLabel(dbPath, dbPathWidget);
-            QObject::connect(router.getRepository(), SIGNAL(dbPathChanged(QString)), dbPathValueLabel, SLOT(setText(QString)));
-            dbPathWidget->layout()->addWidget(dbPathValueLabel);
-
-            QToolButton* selectDbToolButton = new QToolButton(dbPathWidget);
-            selectDbToolButton->setText("...");
-            QObject::connect(selectDbToolButton, SIGNAL(clicked()), this, SLOT(onSelectDbToolButton_clicked()));
-            dbPathWidget->layout()->addWidget(selectDbToolButton);
-
-            dbPathWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-        ui->mainFrame->layout()->addWidget(dbPathWidget);
-        ui->mainFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));*/
+    m_widgets["dashboardContainerWidget"]->hide();
+    m_widgets["backlogContainerWidget"]->hide();
+    m_widgets["settingsContainerWidget"]->show();
 }
 
 void MainWindow::showGauge()

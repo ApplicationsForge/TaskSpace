@@ -52,6 +52,7 @@ private:
     void setupStatusBar();
     void setupDashboardTab();
     void setupBacklogTab();
+    void setupSettingsTab();
 
 private slots:
 
