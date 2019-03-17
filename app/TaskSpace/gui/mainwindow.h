@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QDialog>
 #include <QScrollArea>
+#include <QToolButton>
 
 #include "models/router.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"
@@ -18,6 +19,7 @@
 #include "libs/qt-material-widgets-master/components/qtmaterialdrawer.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialdialog.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialfab.h"
+#include "libs/qt-material-widgets-master/components/qtmaterialtextfield.h"
 
 #include "libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h"
 
@@ -54,9 +56,13 @@ private slots:
 
     void showNotesTab();
 
+    void showSettingsTab();
+
     void showGauge();
 
     void showFocusTimerDialog();
+
+    void onSelectDbToolButton_clicked();
 };
 
 #endif // MAINWINDOW_H

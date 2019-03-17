@@ -11,6 +11,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setupWidgets();
 
+    // cоздаем модель
+    Router::getInstance();
+
     window()->showMaximized();
 }
 
@@ -70,12 +73,12 @@ void MainWindow::setupWidgets()
 
     QtMaterialFlatButton* statisticsButton = new QtMaterialFlatButton("Statistics", m_drawer);
     statisticsButton->setForegroundColor(QColor("#333"));
-    //QObject::connect(statisticsButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
+    //QObject::connect(statisticsButton, SIGNAL(clicked()), this, SLOT(showStatisticsTab()));
     drawerLayout->addWidget(statisticsButton);
 
     QtMaterialFlatButton* settingsButton = new QtMaterialFlatButton("Settings", m_drawer);
     settingsButton->setForegroundColor(QColor("#333"));
-    //QObject::connect(settingsButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
+    QObject::connect(settingsButton, SIGNAL(clicked()), this, SLOT(showSettingsTab()));
     drawerLayout->addWidget(settingsButton);
 
 
@@ -223,6 +226,33 @@ void MainWindow::showNotesTab()
     this->showGauge();
 }
 
+void MainWindow::showSettingsTab()
+{
+    qDeleteAll(ui->mainFrame->children());
+
+    Router& router = Router::getInstance();
+    QString dbPath = router.getRepository()->dbPath();
+
+    ui->mainFrame->setLayout(new QVBoxLayout(ui->mainFrame));
+        QWidget *dbPathWidget = new QWidget(ui->mainFrame);
+        dbPathWidget->setLayout(new QHBoxLayout(dbPathWidget));
+            QLabel *dbPathTitleLabel = new QLabel("Database Path:", dbPathWidget);
+            dbPathWidget->layout()->addWidget(dbPathTitleLabel);
+
+            QLabel *dbPathValueLabel = new QLabel(dbPath, dbPathWidget);
+            QObject::connect(router.getRepository(), SIGNAL(dbPathChanged(QString)), dbPathValueLabel, SLOT(setText(QString)));
+            dbPathWidget->layout()->addWidget(dbPathValueLabel);
+
+            QToolButton* selectDbToolButton = new QToolButton(dbPathWidget);
+            selectDbToolButton->setText("...");
+            QObject::connect(selectDbToolButton, SIGNAL(clicked()), this, SLOT(onSelectDbToolButton_clicked()));
+            dbPathWidget->layout()->addWidget(selectDbToolButton);
+
+            dbPathWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+        ui->mainFrame->layout()->addWidget(dbPathWidget);
+        ui->mainFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+}
+
 void MainWindow::showGauge()
 {
     QcGaugeWidget* speedGauge = new QcGaugeWidget(this);
@@ -250,4 +280,9 @@ void MainWindow::showFocusTimerDialog()
     focusTimerDialog->setWindowTitle("Focus Timer Dialog");
     focusTimerDialog->setMinimumSize(400, 300);
     focusTimerDialog->show();
+}
+
+void MainWindow::onSelectDbToolButton_clicked()
+{
+    qDebug() << "selectDBClicked";
 }

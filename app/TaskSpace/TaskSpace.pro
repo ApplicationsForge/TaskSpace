@@ -79,7 +79,8 @@ SOURCES += \
     libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.cpp \
     gui/widgets/my_list_widget.cpp \
     gui/widgets/task_list_widget.cpp \
-    gui/widgets/my_list_widget_item.cpp
+    gui/widgets/my_list_widget_item.cpp \
+    models/settings_manager/settings_manager.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -165,7 +166,8 @@ HEADERS += \
     libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h \
     gui/widgets/my_list_widget.h \
     gui/widgets/task_list_widget.h \
-    gui/widgets/my_list_widget_item.h
+    gui/widgets/my_list_widget_item.h \
+    models/settings_manager/settings_manager.h
 
 FORMS += \
         gui/mainwindow.ui
