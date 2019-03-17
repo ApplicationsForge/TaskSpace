@@ -198,7 +198,7 @@ void MainWindow::showBacklogTab()
                     taskListWidget->list()->setAlternatingRowColors(true);
                         for(int i = 0; i < 1000; i++)
                         {
-                            QString title = status + QStringLiteral(" ") + QString::number(i);
+                            QString title = "[" + QString::number(i) + "] " + status;
                             QListWidgetItem *item = new QListWidgetItem(title);
                             //item->setFont(QFont("Roboto", 14, QFont::Normal));
                             taskListWidget->list()->addItem(item);
