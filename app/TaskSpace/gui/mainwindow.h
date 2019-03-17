@@ -41,10 +41,17 @@ public:
 private:
     Ui::MainWindow *ui;
 
+    QMap<QString, QWidget*> m_widgets;
+
     QtMaterialAppBar *const m_appBar;
     QtMaterialDrawer *const m_drawer;
 
-    void setupWidgets();
+    void initWidgets();
+    void initAppBar();
+    void initDrawer();
+    void initStatusBar();
+    void initDashboard();
+    void initBacklog();
 
 private slots:
 
