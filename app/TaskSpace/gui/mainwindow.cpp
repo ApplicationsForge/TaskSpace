@@ -10,16 +10,18 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->setupWidgets();
-
     // cоздаем модель
     Router::getInstance();
+
+    this->setupWidgets();
+    this->setupConnections();
 
     window()->showMaximized();
 }
 
 MainWindow::~MainWindow()
 {
+    this->resetConnections();
     delete ui;
 }
 
@@ -188,14 +190,16 @@ void MainWindow::setupBacklogTab()
         backlogTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
         containerLayout->addWidget(backlogTitleLabel);
 
-        QFrame *actionsFrame = new QFrame(container);
-        actionsFrame->setLayout(new QHBoxLayout(actionsFrame));
-        actionsFrame->setContentsMargins(0, 0, 0, 0);
-            actionsFrame->layout()->addWidget(new QtMaterialRaisedButton("Add New Task", actionsFrame));
-            actionsFrame->layout()->addWidget(new QtMaterialRaisedButton("Remove Task", actionsFrame));
-            actionsFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-            actionsFrame->layout()->addWidget(new QtMaterialRaisedButton("Sync Tasks With Trello", actionsFrame));
-        containerLayout->addWidget(actionsFrame);
+        QWidget *actionsContainer = new QWidget(container);
+        actionsContainer->setLayout(new QHBoxLayout(actionsContainer));
+        actionsContainer->setContentsMargins(0, 0, 0, 0);
+            QtMaterialRaisedButton *addNewTaskButton = new QtMaterialRaisedButton("Add New Task", actionsContainer);
+            QObject::connect(addNewTaskButton, SIGNAL(clicked()), this, SLOT(onAddNewTaskButton_Clicked()));
+            actionsContainer->layout()->addWidget(addNewTaskButton);
+            actionsContainer->layout()->addWidget(new QtMaterialRaisedButton("Remove Task", actionsContainer));
+            actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+            actionsContainer->layout()->addWidget(new QtMaterialRaisedButton("Sync Tasks With Trello", actionsContainer));
+        containerLayout->addWidget(actionsContainer);
 
         QScrollArea *scrollArea = new QScrollArea(container);
         scrollArea->setWidgetResizable(true);
@@ -254,6 +258,35 @@ void MainWindow::setupSettingsTab()
     container->setLayout(containerLayout);
     ui->mainWidget->layout()->addWidget(container);
     container->hide();
+}
+
+void MainWindow::setupConnections()
+{
+    Router &router = Router::getInstance();
+    QObject::connect(&router, SIGNAL(tasksUpdated()), this, SLOT(onRouter_TasksUpdated()));
+}
+
+void MainWindow::resetConnections()
+{
+    Router &router = Router::getInstance();
+    QObject::disconnect(&router, SIGNAL(tasksUpdated()), this, SLOT(onRouter_TasksUpdated()));
+}
+
+void MainWindow::clearAllTaskLists()
+{
+    Router &router = Router::getInstance();
+    QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
+    for(auto status : avaliableStatuses)
+    {
+        QString taskListName = status + "TaskListWidget";
+        if(!m_widgets.contains(taskListName))
+        {
+            continue;
+        }
+
+        TaskListWidget* taskListWidget = qobject_cast<TaskListWidget*>(m_widgets[taskListName]);
+        taskListWidget->list()->clear();
+    }
 }
 
 void MainWindow::showDashboardTab()
@@ -335,8 +368,9 @@ void MainWindow::onSelectDbToolButton_clicked()
 void MainWindow::onRouter_TasksUpdated()
 {
     Router& router = Router::getInstance();
-    QList<Task> tasks = router.getRepository()->getMockTasks();
+    QList<Task> tasks = router.getRepository()->getTasks();
 
+    this->clearAllTaskLists();
     for(auto task : tasks)
     {
         QString taskListWidgetName = task.status() + "TaskListWidget";
@@ -344,8 +378,14 @@ void MainWindow::onRouter_TasksUpdated()
             continue;
         }
 
-        TaskListWidget* list = qobject_cast<TaskListWidget*>(m_widgets[taskListWidgetName]);
+        TaskListWidget* taskListWidget = qobject_cast<TaskListWidget*>(m_widgets[taskListWidgetName]);
         QListWidgetItem *item = new QListWidgetItem(task.decoratedBaseInformation());
-        list->list()->addItem(item);
+        taskListWidget->list()->addItem(item);
     }
+}
+
+void MainWindow::onAddNewTaskButton_Clicked()
+{
+    Router& router = Router::getInstance();
+    router.addExampleTask();
 }

@@ -3,9 +3,12 @@
 Repository::Repository(QObject *parent) :
     QObject(parent),
     m_settingsManager(new SettingsManager()),
-    m_dbPath("")
+    m_dbPath(""),
+    m_tasks(QList< QSharedPointer<Task> >())
 {
     this->loadSettings();
+
+    this->loadMockData();
 }
 
 Repository::~Repository()
@@ -35,15 +38,26 @@ QStringList Repository::getAvaliableStatuses()
     return avaliableStatuses;
 }
 
-QList<Task> Repository::getMockTasks()
+QList<Task> Repository::getTasks() const
 {
-    QStringList avaliableStatuses = this->getAvaliableStatuses();
-    QList<Task> tasks = QList<Task>();
-    for(int i = 0; i < 1000; i++)
+    QList<Task> tasks;
+    for(auto task : m_tasks)
     {
-        tasks.append(Task(size_t(i), "example task", avaliableStatuses.first()));
+        tasks.append(*task);
     }
     return tasks;
+}
+
+void Repository::setTasks(const QList< QSharedPointer<Task> > &tasks)
+{
+    m_tasks = tasks;
+    emit this->tasksUpdated();
+}
+
+void Repository::addTask(Task task)
+{
+    m_tasks.append(QSharedPointer<Task>(new Task(task.index(), task.title(), task.status())));
+    emit this->tasksUpdated();
 }
 
 void Repository::loadSettings()
@@ -54,6 +68,16 @@ void Repository::loadSettings()
     catch(std::invalid_argument e) {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
         this->setDbPath("");
+    }
+}
+
+void Repository::loadMockData()
+{
+    QStringList avaliableStatuses = this->getAvaliableStatuses();
+    QList<Task> tasks = QList<Task>();
+    for(int i = 0; i < 1000; i++)
+    {
+        m_tasks.append(QSharedPointer<Task>(new Task(size_t(i), "example task", avaliableStatuses.first())));
     }
 }
 

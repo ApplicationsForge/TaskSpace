@@ -22,14 +22,19 @@ public:
     void setDbPath(const QString &dbPath);
 
     QStringList getAvaliableStatuses();
-    QList<Task> getMockTasks();
+
+    QList<Task> getTasks() const;
+    void setTasks(const QList< QSharedPointer<Task> > &tasks);
+    void addTask(Task task);
 
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
 
     QString m_dbPath;
+    QList< QSharedPointer<Task> > m_tasks;
 
     void loadSettings();
+    void loadMockData();
 
     bool initDb(QString path="");
 
@@ -37,6 +42,7 @@ private:
 
 signals:
     void dbPathChanged(QString path);
+    void tasksUpdated();
 
 public slots:
 };

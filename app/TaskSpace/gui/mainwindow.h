@@ -54,6 +54,11 @@ private:
     void setupBacklogTab();
     void setupSettingsTab();
 
+    void setupConnections();
+    void resetConnections();
+
+    void clearAllTaskLists();
+
 private slots:
 
     void showDashboardTab();
@@ -72,6 +77,7 @@ private slots:
 
     void onSelectDbToolButton_clicked();
     void onRouter_TasksUpdated();
+    void onAddNewTaskButton_Clicked();
 };
 
 #endif // MAINWINDOW_H
