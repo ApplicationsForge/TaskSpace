@@ -156,6 +156,9 @@ void MainWindow::showDashboardTab()
 void MainWindow::showBacklogTab()
 {
     qDeleteAll(ui->mainFrame->children());
+
+    Router& router = Router::getInstance();
+
     QVBoxLayout *layout = new QVBoxLayout(ui->mainFrame);
     layout->setSpacing(0);
         QLabel *backlogTitleLabel = new QLabel("Backlog", ui->mainFrame);
@@ -181,26 +184,20 @@ void MainWindow::showBacklogTab()
             scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
             scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             scrollAreaContent->setContentsMargins(0, 0, 0, 10);
-                QStringList avaliableStatuses = {
-                    "Product Backlog",
-                    "Sprint Backlog",
-                    "In Progress",
-                    "Testing",
-                    "Done"
-                };
+                QList<Status> avaliableStatuses = router.getRepository()->statuses();
                 for(auto status : avaliableStatuses)
                 {
-                    TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
+                    TaskListWidget* taskListWidget = new TaskListWidget(status.name(), scrollAreaContent);
                     taskListWidget->list()->setDragEnabled(true);
                     taskListWidget->list()->setDropIndicatorShown(true);
                     taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
                     taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #333; padding: 10px; }");
                     taskListWidget->list()->setAlternatingRowColors(true);
-                        for(int i = 0; i < 1000; i++)
+                        QList<Task> tasksByStatus = router.getRepository()->tasksByStatus(status.id());
+                        for(auto task : tasksByStatus)
                         {
-                            QString title = status + QStringLiteral(" ") + QString::number(i);
+                            QString title = "[" + QString::number(task.index()) + "] " + task.title() + " (" + task.teammate().name() + ")";
                             QListWidgetItem *item = new QListWidgetItem(title);
-                            //item->setFont(QFont("Roboto", 14, QFont::Normal));
                             taskListWidget->list()->addItem(item);
                         }
                     scrollAreaContent->layout()->addWidget(taskListWidget);

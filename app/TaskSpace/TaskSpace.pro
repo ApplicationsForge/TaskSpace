@@ -86,9 +86,9 @@ SOURCES += \
     libs/orm-qt-master/src/query.cpp \
     models/types/sqlite_adapter/sqlite_adapter.cpp \
     models/types/task/task.cpp \
-    models/types/teammate/teammate.cpp \
-    models/types/status/status.cpp \
-    models/types/tag/tag.cpp
+    models/types/task/teammate.cpp \
+    models/types/task/status.cpp \
+    models/types/task/tag.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -181,9 +181,9 @@ HEADERS += \
     libs/orm-qt-master/src/query.h \
     models/types/sqlite_adapter/sqlite_adapter.h \
     models/types/task/task.h \
-    models/types/teammate/teammate.h \
-    models/types/status/status.h \
-    models/types/tag/tag.h
+    models/types/task/teammate.h \
+    models/types/task/status.h \
+    models/types/task/tag.h
 
 FORMS += \
         gui/mainwindow.ui

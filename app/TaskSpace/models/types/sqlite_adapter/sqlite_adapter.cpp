@@ -18,7 +18,7 @@ QList<QSqlRecord> SQLiteAdapter::executeSQL(QString dbPath, QString request)
        throw std::runtime_error("database is not connected");
     }
 
-    qDebug() << "Request" << request;
+    //qDebug() << "Request" << request;
     QList<QSqlRecord> response;
 
     QSqlQuery query;
@@ -56,7 +56,7 @@ QList<QSqlRecord> SQLiteAdapter::executeSQL(QString dbPath, QString request)
     QSqlDatabase::removeDatabase(qs);*/
 
     QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
-    qDebug() << "AfterDelete" << QSqlDatabase::database().connectionNames();
+    //qDebug() << "AfterDelete" << QSqlDatabase::database().connectionNames();
 
     return response;
 }
