@@ -1,11 +1,11 @@
 #ifndef BURNDOWN_CHART_WIDGET_H
 #define BURNDOWN_CHART_WIDGET_H
 
-/*#include <QWidget>
+#include <QWidget>
 #include <QChartView>
 #include <QLineSeries>
 #include <QAreaSeries>
-#include <QLayout>
+#include <QVBoxLayout>
 
 class BurndownChartWidget : public QWidget
 {
@@ -16,6 +16,6 @@ public:
 signals:
 
 public slots:
-};*/
+};
 
 #endif // BURNDOWN_CHART_WIDGET_H

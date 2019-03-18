@@ -154,13 +154,19 @@ void MainWindow::setupDashboardTab()
             todotasksLabel->setFont(QFont("Roboto", 16, QFont::Normal));
             chartsContainerWidget->layout()->addWidget(todotasksLabel);
 
-            /*BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(this);
+            BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
             burndownChartWidget->setObjectName("burndownChartWidget");
             m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
-            chartsContainerWidget->layout()->addWidget(burndownChartWidget);*/
+            chartsContainerWidget->layout()->addWidget(burndownChartWidget);
 
+            QWidget *actionsContainerWidget = new QWidget(chartsContainerWidget);
+                QHBoxLayout *actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
+                    actionsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Export", actionsContainerWidget));
+                    actionsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("History", actionsContainerWidget));
+                    actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+                actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
+            chartsContainerWidget->layout()->addWidget(actionsContainerWidget);
 
-            chartsContainerWidget->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", chartsContainerWidget));
             chartsContainerWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
         containerLayout->addWidget(chartsContainerWidget);
         containerLayout->setStretch(0, 4);

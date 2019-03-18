@@ -1,6 +1,6 @@
 #include "burndown_chart_widget.h"
 
-/*BurndownChartWidget::BurndownChartWidget(QWidget *parent) : QWidget(parent)
+BurndownChartWidget::BurndownChartWidget(QWidget *parent) : QWidget(parent)
 {
     QtCharts::QLineSeries *series0 = new QtCharts::QLineSeries();
     series0->setName("FirstLine");
@@ -40,4 +40,3 @@
         mainLayout->addWidget(chartView);
     this->setLayout(mainLayout);
 }
-*/
