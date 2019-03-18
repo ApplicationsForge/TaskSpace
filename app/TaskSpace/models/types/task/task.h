@@ -2,6 +2,7 @@
 #define TASK_H
 
 #include <QString>
+#include <QDateTime>
 
 class Task
 {
@@ -18,10 +19,16 @@ public:
 
     QString decoratedBaseInformation();
 
+    QDateTime updatedAt() const;
+    void setUpdatedAt(const QDateTime &updatedAt = QDateTime::currentDateTime());
+
+    bool operator< (const Task &task) const;
+
 private:
     size_t m_index;
     QString m_title;
     QString m_status;
+    QDateTime m_updatedAt;
 };
 
 #endif // TASK_H
