@@ -1,4 +1,4 @@
-#include "burndown_chart_widget.h"
+/*#include "burndown_chart_widget.h"
 
 BurndownChartWidget::BurndownChartWidget(QWidget *parent) : QWidget(parent)
 {
@@ -40,3 +40,4 @@ BurndownChartWidget::BurndownChartWidget(QWidget *parent) : QWidget(parent)
         mainLayout->addWidget(chartView);
     this->setLayout(mainLayout);
 }
+*/

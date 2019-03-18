@@ -39,7 +39,23 @@ void MainWindow::setupWidgets()
     this->setupSettingsTab();
 
     this->showBacklogTab();
-    this->onRouter_TasksUpdated();
+    //this->onRouter_TasksUpdated();
+
+    Router& router = Router::getInstance();
+    QList<Task> tasks = router.getRepository()->getTasks();
+
+    this->clearAllTaskLists();
+    for(auto task : tasks)
+    {
+        QString taskListWidgetName = task.status() + "TaskListWidget";
+        if(!m_widgets.contains(taskListWidgetName)) {
+            continue;
+        }
+
+        TaskListWidget* taskListWidget = qobject_cast<TaskListWidget*>(m_widgets[taskListWidgetName]);
+        QListWidgetItem *item = new QListWidgetItem(task.decoratedBaseInformation());
+        taskListWidget->list()->addItem(item);
+    }
 }
 
 void MainWindow::setupAppBar()
@@ -154,10 +170,10 @@ void MainWindow::setupDashboardTab()
             todotasksLabel->setFont(QFont("Roboto", 16, QFont::Normal));
             chartsContainerWidget->layout()->addWidget(todotasksLabel);
 
-            BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
+            /*BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
             burndownChartWidget->setObjectName("burndownChartWidget");
             m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
-            chartsContainerWidget->layout()->addWidget(burndownChartWidget);
+            chartsContainerWidget->layout()->addWidget(burndownChartWidget);*/
 
             QWidget *actionsContainerWidget = new QWidget(chartsContainerWidget);
                 QHBoxLayout *actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
@@ -230,6 +246,7 @@ void MainWindow::setupBacklogTab()
                 {
                     TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
                     taskListWidget->setObjectName(status + "TaskListWidget");
+                    QObject::connect(taskListWidget, SIGNAL(taskDropped(size_t, QString)), &router, SLOT(onTaskListWidget_TaskDropped(size_t, QString)));
                     m_widgets.insert(taskListWidget->objectName(), taskListWidget);
                     scrollAreaContent->layout()->addWidget(taskListWidget);
                 }

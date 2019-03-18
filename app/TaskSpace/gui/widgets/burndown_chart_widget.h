@@ -1,7 +1,7 @@
 #ifndef BURNDOWN_CHART_WIDGET_H
 #define BURNDOWN_CHART_WIDGET_H
 
-#include <QWidget>
+/*#include <QWidget>
 #include <QChartView>
 #include <QLineSeries>
 #include <QAreaSeries>
@@ -16,6 +16,6 @@ public:
 signals:
 
 public slots:
-};
+};*/
 
 #endif // BURNDOWN_CHART_WIDGET_H

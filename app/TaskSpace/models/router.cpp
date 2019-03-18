@@ -37,16 +37,21 @@ void Router::addExampleTask()
 
 void Router::setupConnections()
 {
-    QObject::connect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TaskUpdated()));
+    QObject::connect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
 }
 
 void Router::resetConnections()
 {
-    QObject::disconnect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TaskUpdated()));
+    QObject::disconnect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
 }
 
-void Router::onRepository_TaskUpdated()
+void Router::onRepository_TasksUpdated()
 {
     emit this->tasksUpdated();
+}
+
+void Router::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
+{
+    m_repository->changeTaskStatus(taskIndex, status);
 }
 

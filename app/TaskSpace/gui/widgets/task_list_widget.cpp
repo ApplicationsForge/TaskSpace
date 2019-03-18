@@ -1,8 +1,9 @@
 #include "task_list_widget.h"
 
-TaskListWidget::TaskListWidget(QString label, QWidget *parent) :
+TaskListWidget::TaskListWidget(QString status, QWidget *parent) :
     QWidget(parent),
-    m_label(new QLabel(label, this)),
+    m_status(status),
+    m_label(new QLabel(m_status, this)),
     m_list(new MyListWidget(this)),
     m_width(300)
 {
@@ -19,6 +20,7 @@ TaskListWidget::TaskListWidget(QString label, QWidget *parent) :
     m_list->setDragDropMode(QAbstractItemView::DragDrop);
     m_list->setStyleSheet("QListWidget {} QListWidget::item { color: #333; padding: 10px; }");
     m_list->setAlternatingRowColors(true);
+    QObject::connect(m_list, SIGNAL(dropAction(QString)), this, SLOT(onMyListWidget_DropAction(QString)));
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -30,4 +32,24 @@ TaskListWidget::TaskListWidget(QString label, QWidget *parent) :
 MyListWidget *TaskListWidget::list()
 {
     return m_list;
+}
+
+void TaskListWidget::onMyListWidget_DropAction(QString data)
+{
+    QRegExp taskIndexRegExp("\\[(\\s)*[0-9]*\\]");
+
+    if(taskIndexRegExp.indexIn(data) != -1)
+    {
+        QString matched = taskIndexRegExp.capturedTexts().first();
+        matched = matched.remove(QRegExp("\\[|\\]"));
+
+        bool ok = false;
+        size_t index = matched.toUInt(&ok);
+        //qDebug() << matched << index << m_status;
+        if(ok)
+        {
+            //qDebug() << "test";
+            emit this->taskDropped(index, m_status);
+        }
+    }
 }

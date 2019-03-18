@@ -17,7 +17,6 @@ public:
      Repository* getRepository();
 
      void addExampleTask();
-
 private:
     explicit Router(QObject *parent = nullptr);
 
@@ -38,7 +37,8 @@ signals:
     void tasksUpdated();
 
 public slots:
-    void onRepository_TaskUpdated();
+    void onRepository_TasksUpdated();
+    void onTaskListWidget_TaskDropped(size_t taskIndex, QString status);
 };
 
 #endif // ROUTER_H

@@ -29,9 +29,9 @@ void Repository::setDbPath(const QString &dbPath)
 QStringList Repository::getAvaliableStatuses()
 {
     QStringList avaliableStatuses = {
-        "Product Backlog",
-        "Sprint Backlog",
-        "In Progress",
+        "ProductBacklog",
+        "SprintBacklog",
+        "InProgress",
         "Testing",
         "Done"
     };
@@ -60,6 +60,15 @@ void Repository::addTask(Task task)
     emit this->tasksUpdated();
 }
 
+void Repository::changeTaskStatus(size_t taskIndex, QString status)
+{
+    if(int(taskIndex) < m_tasks.size())
+    {
+        m_tasks.at(int(taskIndex))->setStatus(status);
+        emit this->tasksUpdated();
+    }
+}
+
 void Repository::loadSettings()
 {
     try {
@@ -75,7 +84,7 @@ void Repository::loadMockData()
 {
     QStringList avaliableStatuses = this->getAvaliableStatuses();
     QList<Task> tasks = QList<Task>();
-    for(int i = 0; i < 1000; i++)
+    for(int i = 0; i < 10; i++)
     {
         m_tasks.append(QSharedPointer<Task>(new Task(size_t(i), "example task", avaliableStatuses.first())));
     }
