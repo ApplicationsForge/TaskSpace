@@ -215,11 +215,6 @@ void MainWindow::setupBacklogTab()
                     TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
                     taskListWidget->setObjectName(status + "TaskListWidget");
                     m_widgets.insert(taskListWidget->objectName(), taskListWidget);
-                    taskListWidget->list()->setDragEnabled(true);
-                    taskListWidget->list()->setDropIndicatorShown(true);
-                    taskListWidget->list()->setDragDropMode(QAbstractItemView::DragDrop);
-                    taskListWidget->list()->setStyleSheet("QListWidget {} QListWidget::item { color: #333; padding: 10px; }");
-                    taskListWidget->list()->setAlternatingRowColors(true);
                     scrollAreaContent->layout()->addWidget(taskListWidget);
                 }
             scrollArea->setWidget(scrollAreaContent);
