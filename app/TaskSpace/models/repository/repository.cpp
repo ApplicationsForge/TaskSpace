@@ -45,6 +45,8 @@ QList<Task> Repository::getTasks() const
     {
         tasks.append(*task);
     }
+    std::sort(tasks.begin(), tasks.end());
+    std::reverse(tasks.begin(), tasks.end());
     return tasks;
 }
 
@@ -59,6 +61,7 @@ QList<Task> Repository::getTasks(QString status) const
         }
     }
     std::sort(tasks.begin(), tasks.end());
+    std::reverse(tasks.begin(), tasks.end());
     return tasks;
 }
 
