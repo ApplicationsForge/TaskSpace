@@ -35,17 +35,36 @@ void MyListWidget::keyPressEvent(QKeyEvent *keyEvent)
 
 void MyListWidget::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-item")) {
+    const QMimeData *mimeData = event->mimeData();
+    qDebug() << mimeData << mimeData->text() << mimeData->data("application/x-item");
+
+    if (mimeData->hasFormat("application/x-item"))
+    {
+        QString text = mimeData->data("application/x-item");
+        if (!text.isEmpty())
+        {
+            QListWidgetItem* item = new QListWidgetItem(text,this);
+            this->addItem(item);
+        }
+        event->acceptProposedAction();
+        //emit this->dropAction(text);
+    }
+    QListWidget::dropEvent(event);
+    /*if (event->mimeData()->hasFormat("application/x-item"))
+    {
         event->accept();
         event->setDropAction(Qt::MoveAction);
-        QListWidgetItem *item = new QListWidgetItem;
+        QListWidgetItem *item = new QListWidgetItem(this);
         QString name = event->mimeData()->data("application/x-item");
         item->setText(name);
         //item->setIcon(QIcon(":/images/iString")); //set path to image
-        addItem(item);
+        this->addItem(item);
         emit dropAction(name);
-    } else
+    }
+    else
+    {
         event->ignore();
+    }*/
 }
 
 void MyListWidget::startDrag(Qt::DropActions supportedActions)

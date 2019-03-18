@@ -78,7 +78,7 @@ void Repository::changeTaskStatus(size_t taskIndex, QString status)
     if(int(taskIndex) < m_tasks.size())
     {
         m_tasks.at(int(taskIndex))->setStatus(status);
-        //emit this->tasksUpdated();
+        emit this->tasksUpdated();
     }
 }
 

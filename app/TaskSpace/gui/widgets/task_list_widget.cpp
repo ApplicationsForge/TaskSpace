@@ -22,6 +22,7 @@ TaskListWidget::TaskListWidget(QString status, QWidget *parent) :
     m_list->setDropIndicatorShown(true);
     m_list->setStyleSheet("QListWidget {} QListWidget::item { color: #333; padding: 10px; }");
     m_list->setAlternatingRowColors(true);
+
     QObject::connect(m_list, SIGNAL(dropAction(QString)), this, SLOT(onMyListWidget_DropAction(QString)));
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
