@@ -153,8 +153,13 @@ void MainWindow::setupDashboardTab()
             todotasksLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
             todotasksLabel->setFont(QFont("Roboto", 16, QFont::Normal));
             chartsContainerWidget->layout()->addWidget(todotasksLabel);
-            chartsContainerWidget->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", chartsContainerWidget));
-            chartsContainerWidget->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", chartsContainerWidget));
+
+            /*BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(this);
+            burndownChartWidget->setObjectName("burndownChartWidget");
+            m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
+            chartsContainerWidget->layout()->addWidget(burndownChartWidget);*/
+
+
             chartsContainerWidget->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", chartsContainerWidget));
             chartsContainerWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
         containerLayout->addWidget(chartsContainerWidget);

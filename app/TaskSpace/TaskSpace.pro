@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT += sql
+#QT += charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -84,7 +85,8 @@ SOURCES += \
     libs/orm-qt-master/src/activerecord.cpp \
     libs/orm-qt-master/src/query.cpp \
     models/types/sqlite_adapter/sqlite_adapter.cpp \
-    models/types/task/task.cpp
+    models/types/task/task.cpp \
+    gui/widgets/burndown_chart_widget.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -175,7 +177,8 @@ HEADERS += \
     libs/orm-qt-master/src/orm-qt_global.h \
     libs/orm-qt-master/src/query.h \
     models/types/sqlite_adapter/sqlite_adapter.h \
-    models/types/task/task.h
+    models/types/task/task.h \
+    gui/widgets/burndown_chart_widget.h
 
 FORMS += \
         gui/mainwindow.ui

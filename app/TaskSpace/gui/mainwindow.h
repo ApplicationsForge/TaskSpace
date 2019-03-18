@@ -25,6 +25,7 @@
 #include "libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h"
 
 #include "gui/widgets/task_list_widget.h"
+#include "gui/widgets/burndown_chart_widget.h"
 
 namespace Ui {
 class MainWindow;
