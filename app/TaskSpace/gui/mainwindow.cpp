@@ -149,49 +149,59 @@ void MainWindow::setupStatusBar()
 
 void MainWindow::setupDashboardTab()
 {
-    QWidget* container = new QWidget(ui->mainWidget);
+    QWidget *container = new QWidget(ui->mainWidget);
     container->setObjectName("dashboardContainerWidget");
     m_widgets.insert(container->objectName(), container);
-    QHBoxLayout *containerLayout = new QHBoxLayout(container);
-        QWidget *chartsContainerWidget = new QWidget(container);
-        chartsContainerWidget->setLayout(new QVBoxLayout(chartsContainerWidget));
-            QLabel *todotasksLabel = new QLabel("Burndown Chart", chartsContainerWidget);
-            todotasksLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
-            todotasksLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-            chartsContainerWidget->layout()->addWidget(todotasksLabel);
+    QVBoxLayout *containerLayout = new QVBoxLayout(container);
+        QLabel *dashboardTitleLabel = new QLabel("Dashboard", container);
+        dashboardTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+        dashboardTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
+        dashboardTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
+        containerLayout->addWidget(dashboardTitleLabel);
 
-            BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
-            burndownChartWidget->setObjectName("burndownChartWidget");
-            m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
-            chartsContainerWidget->layout()->addWidget(burndownChartWidget);
+        QWidget *subContainer = new QWidget(container);
+            QHBoxLayout *subContainerLayout = new QHBoxLayout(subContainer);
+                QWidget *chartsContainerWidget = new QWidget(subContainer);
+                chartsContainerWidget->setLayout(new QVBoxLayout(chartsContainerWidget));
+                    QLabel *burndownChartLabel = new QLabel("Burndown Chart", chartsContainerWidget);
+                    burndownChartLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+                    burndownChartLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+                    chartsContainerWidget->layout()->addWidget(burndownChartLabel);
 
-            QWidget *actionsContainerWidget = new QWidget(chartsContainerWidget);
-                QHBoxLayout *actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
-                    actionsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Export", actionsContainerWidget));
-                    actionsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("History", actionsContainerWidget));
-                    actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-                actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
-            chartsContainerWidget->layout()->addWidget(actionsContainerWidget);
+                    BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
+                    burndownChartWidget->setObjectName("burndownChartWidget");
+                    m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
+                    chartsContainerWidget->layout()->addWidget(burndownChartWidget);
 
-            chartsContainerWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
-        containerLayout->addWidget(chartsContainerWidget);
-        containerLayout->setStretch(0, 4);
+                    QWidget *actionsContainerWidget = new QWidget(chartsContainerWidget);
+                        QHBoxLayout *actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
+                            actionsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Export", actionsContainerWidget));
+                            actionsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("History", actionsContainerWidget));
+                            actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+                        actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
+                    chartsContainerWidget->layout()->addWidget(actionsContainerWidget);
 
-        QWidget *toolsContainerWidget = new QWidget(container);
-        QVBoxLayout *toolsFrameLayout = new QVBoxLayout(toolsContainerWidget);
-        toolsContainerWidget->setLayout(toolsFrameLayout);
-            QLabel *toolsTitleLabel = new QLabel("Tools", toolsContainerWidget);
-            toolsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
-            toolsTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-            toolsContainerWidget->layout()->addWidget(toolsTitleLabel);
+                    //chartsContainerWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+                subContainerLayout->addWidget(chartsContainerWidget);
+                subContainerLayout->setStretch(0, 4);
 
-            QtMaterialRaisedButton *focusTimerButton = new QtMaterialRaisedButton("Focus Timer", toolsContainerWidget);
-            QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
-            toolsFrameLayout->addWidget(focusTimerButton);
+                QWidget *toolsContainerWidget = new QWidget(subContainer);
+                QVBoxLayout *toolsFrameLayout = new QVBoxLayout(toolsContainerWidget);
+                toolsContainerWidget->setLayout(toolsFrameLayout);
+                    QLabel *toolsTitleLabel = new QLabel("Tools", toolsContainerWidget);
+                    toolsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+                    toolsTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+                    toolsContainerWidget->layout()->addWidget(toolsTitleLabel);
 
-            toolsFrameLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
-        containerLayout->addWidget(toolsContainerWidget);
-        containerLayout->setStretch(1, 1);
+                    QtMaterialRaisedButton *focusTimerButton = new QtMaterialRaisedButton("Focus Timer", toolsContainerWidget);
+                    QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
+                    toolsFrameLayout->addWidget(focusTimerButton);
+
+                    toolsFrameLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+                subContainerLayout->addWidget(toolsContainerWidget);
+                subContainerLayout->setStretch(1, 1);
+            subContainer->setLayout(subContainerLayout);
+         containerLayout->addWidget(subContainer);
     container->setLayout(containerLayout);
     ui->mainWidget->layout()->addWidget(container);
     container->hide();
