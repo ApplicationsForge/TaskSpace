@@ -86,7 +86,8 @@ SOURCES += \
     libs/orm-qt-master/src/query.cpp \
     models/types/sqlite_adapter/sqlite_adapter.cpp \
     models/types/task/task.cpp \
-    gui/widgets/burndown_chart_widget.cpp
+    gui/widgets/burndown_chart_widget.cpp \
+    gui/widgets/mylistwidgetitem.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -178,7 +179,8 @@ HEADERS += \
     libs/orm-qt-master/src/query.h \
     models/types/sqlite_adapter/sqlite_adapter.h \
     models/types/task/task.h \
-    gui/widgets/burndown_chart_widget.h
+    gui/widgets/burndown_chart_widget.h \
+    gui/widgets/mylistwidgetitem.h
 
 FORMS += \
         gui/mainwindow.ui

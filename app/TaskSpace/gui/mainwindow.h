@@ -26,6 +26,7 @@
 
 #include "gui/widgets/task_list_widget.h"
 #include "gui/widgets/burndown_chart_widget.h"
+#include "gui/widgets/mylistwidgetitem.h"
 
 namespace Ui {
 class MainWindow;

@@ -47,7 +47,7 @@ void MyListWidget::dropEvent(QDropEvent *event)
             this->addItem(item);
         }
         event->acceptProposedAction();
-        //emit this->dropAction(text);
+        emit this->dropAction(text);
     }
     QListWidget::dropEvent(event);
     /*if (event->mimeData()->hasFormat("application/x-item"))
