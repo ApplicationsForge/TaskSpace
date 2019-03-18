@@ -180,8 +180,6 @@ void MainWindow::setupDashboardTab()
                             actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
                         actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
                     chartsContainerWidget->layout()->addWidget(actionsContainerWidget);
-
-                    //chartsContainerWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
                 subContainerLayout->addWidget(chartsContainerWidget);
                 subContainerLayout->setStretch(0, 4);
 
@@ -267,6 +265,12 @@ void MainWindow::setupSettingsTab()
     container->setObjectName("settingsContainerWidget");
     m_widgets.insert(container->objectName(), container);
     QVBoxLayout *containerLayout = new QVBoxLayout(container);
+        QLabel *settingsTitleLabel = new QLabel("Settings", container);
+        settingsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+        settingsTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
+        settingsTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
+        containerLayout->addWidget(settingsTitleLabel);
+
         QWidget *dbPathWidget = new QWidget(container);
         dbPathWidget->setLayout(new QHBoxLayout(dbPathWidget));
             QLabel *dbPathTitleLabel = new QLabel("Database Path:", dbPathWidget);
