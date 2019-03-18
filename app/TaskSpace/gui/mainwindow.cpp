@@ -147,28 +147,33 @@ void MainWindow::setupDashboardTab()
     container->setObjectName("dashboardContainerWidget");
     m_widgets.insert(container->objectName(), container);
     QHBoxLayout *containerLayout = new QHBoxLayout(container);
-        QFrame *todotasksFrame = new QFrame(container);
-        todotasksFrame->setLayout(new QVBoxLayout(todotasksFrame));
-            QLabel *todotasksLabel = new QLabel("ToDo Tasks", todotasksFrame);
+        QWidget *chartsContainerWidget = new QWidget(container);
+        chartsContainerWidget->setLayout(new QVBoxLayout(chartsContainerWidget));
+            QLabel *todotasksLabel = new QLabel("Burndown Chart", chartsContainerWidget);
             todotasksLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
             todotasksLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-            todotasksFrame->layout()->addWidget(todotasksLabel);
-            todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
-            todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
-            todotasksFrame->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", todotasksFrame));
-            todotasksFrame->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
-        containerLayout->addWidget(todotasksFrame);
+            chartsContainerWidget->layout()->addWidget(todotasksLabel);
+            chartsContainerWidget->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", chartsContainerWidget));
+            chartsContainerWidget->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", chartsContainerWidget));
+            chartsContainerWidget->layout()->addWidget(new QtMaterialRaisedButton("Dashboard", chartsContainerWidget));
+            chartsContainerWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        containerLayout->addWidget(chartsContainerWidget);
         containerLayout->setStretch(0, 4);
 
-        QFrame *toolsFrame = new QFrame(container);
-        QVBoxLayout *toolsFrameLayout = new QVBoxLayout(toolsFrame);
-        toolsFrame->setLayout(toolsFrameLayout);
-            QtMaterialRaisedButton *focusTimerButton = new QtMaterialRaisedButton("Focus Timer", toolsFrame);
+        QWidget *toolsContainerWidget = new QWidget(container);
+        QVBoxLayout *toolsFrameLayout = new QVBoxLayout(toolsContainerWidget);
+        toolsContainerWidget->setLayout(toolsFrameLayout);
+            QLabel *toolsTitleLabel = new QLabel("Tools", toolsContainerWidget);
+            toolsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+            toolsTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+            toolsContainerWidget->layout()->addWidget(toolsTitleLabel);
+
+            QtMaterialRaisedButton *focusTimerButton = new QtMaterialRaisedButton("Focus Timer", toolsContainerWidget);
             QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
             toolsFrameLayout->addWidget(focusTimerButton);
 
             toolsFrameLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
-        containerLayout->addWidget(toolsFrame);
+        containerLayout->addWidget(toolsContainerWidget);
         containerLayout->setStretch(1, 1);
     container->setLayout(containerLayout);
     ui->mainWidget->layout()->addWidget(container);
