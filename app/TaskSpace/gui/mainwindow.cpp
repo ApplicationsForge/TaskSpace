@@ -377,7 +377,7 @@ void MainWindow::onSelectDbToolButton_clicked()
 
 void MainWindow::onRouter_TasksUpdated()
 {
-    qDebug() << "MainWindow::onRouter_TasksUpdated";
+    //qDebug() << "MainWindow::onRouter_TasksUpdated";
     Router& router = Router::getInstance();
     for(auto taskListWidget : m_taskListWidgets)
     {
@@ -388,13 +388,6 @@ void MainWindow::onRouter_TasksUpdated()
             QListWidgetItem *item = new QListWidgetItem();
             item->setText(task.decoratedBaseInformation());
             taskListWidget->list()->addItem(item);
-
-            /*MyListWidgetItem* taskBoard =
-                    new MyListWidgetItem(QString::number(task.index()),
-                                         "test",
-                                         taskListWidget);
-            item->setSizeHint(taskBoard->minimumSizeHint());
-            taskListWidget->list()->setItemWidget(item, taskBoard);*/
         }
     }
 }

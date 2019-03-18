@@ -36,13 +36,7 @@ void MyListWidget::keyPressEvent(QKeyEvent *keyEvent)
 void MyListWidget::dropEvent(QDropEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
-    /*qDebug() << mimeData << mimeData->text() << mimeData->data("application/x-item");
-    qDebug() << mimeData->isWidgetType() << mimeData->formats()
-             << mimeData->data("application/x-qabstractitemmodeldatalist")
-             << mimeData->data("application/x-qt-mime-type-name")
-             << mimeData->hasUrls() << mimeData->hasColor()
-             << mimeData->hasFormat("application/x-qt-mime-type-name")
-             << mimeData->hasFormat("application/x-qabstractitemmodeldatalist");*/
+    //qDebug() << mimeData << mimeData->formats();
 
     QByteArray encoded = mimeData->data("application/x-qabstractitemmodeldatalist");
     QDataStream stream(&encoded, QIODevice::ReadOnly);
@@ -53,81 +47,11 @@ void MyListWidget::dropEvent(QDropEvent *event)
         QMap<int,  QVariant> roleDataMap;
         stream >> row >> col >> roleDataMap;
 
-        /* do something with the data */
         QString text = roleDataMap.first().toString();
-        qDebug() << roleDataMap << text;
-
         emit this->dropAction(text);
     }
-
-    /*if (mimeData->hasFormat("application/x-item"))
-    {
-        QString text = mimeData->data("application/x-item");
-        if (!text.isEmpty())
-        {
-            //emit this->dropAction(text);
-            //QListWidgetItem* item = new QListWidgetItem(text);
-            //this->insertItem(0, item);
-            //this->addItem(item);
-        }
-        emit this->dropAction(text);
-        event->acceptProposedAction();
-    }
-    QListWidget::dropEvent(event);*/
-
-    /*if (event->mimeData()->hasFormat("application/x-item"))
-    {
-        event->accept();
-        event->setDropAction(Qt::MoveAction);
-        QListWidgetItem *item = new QListWidgetItem(this);
-        QString name = event->mimeData()->data("application/x-item");
-        item->setText(name);
-        //item->setIcon(QIcon(":/images/iString")); //set path to image
-        this->addItem(item);
-        emit dropAction(name);
-    }
-    else
-    {
-        event->ignore();
-    }*/
+    event->acceptProposedAction();
 }
-
-/*void MyListWidget::startDrag(Qt::DropActions supportedActions)
-{
-    QListWidgetItem* item = currentItem();
-    QMimeData* mimeData = new QMimeData;
-    QByteArray ba;
-    ba = item->text().toUtf8();
-    mimeData->setData("application/x-item", ba);
-    QDrag* drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    if (drag->exec(Qt::MoveAction) == Qt::MoveAction) {
-        delete takeItem(row(item));
-        //emit itemDroped();
-    }
-}
-
-void MyListWidget::dragEnterEvent(QDragEnterEvent *event)
-{
-    if (event->mimeData()->hasFormat("application/x-item"))
-        event->accept();
-    else
-        event->ignore();
-}
-
-void MyListWidget::dragMoveEvent(QDragMoveEvent *e)
-{
-    if (e->mimeData()->hasFormat("application/x-item") && e->source() != this) {
-        e->setDropAction(Qt::MoveAction);
-        e->accept();
-    } else
-        e->ignore();
-}*/
-
-/*Qt::DropAction MyListWidget::supportedDropActions()
-{
-    return Qt::MoveAction;
-}*/
 
 void MyListWidget::keyReturnPressed(QModelIndex selectedItemIndex)
 {

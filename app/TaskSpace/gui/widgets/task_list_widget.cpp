@@ -43,7 +43,7 @@ QString TaskListWidget::status() const
 
 void TaskListWidget::onMyListWidget_DropAction(QString data)
 {
-    qDebug() << "TaskListWidget::onMyListWidget_DropAction" << data;
+    //qDebug() << "TaskListWidget::onMyListWidget_DropAction" << data;
     QRegExp taskIndexRegExp("\\[(\\s)*[0-9]*\\]");
 
     if(taskIndexRegExp.indexIn(data) != -1)
@@ -56,7 +56,6 @@ void TaskListWidget::onMyListWidget_DropAction(QString data)
         //qDebug() << matched << index << m_status;
         if(ok)
         {
-            //qDebug() << "test";
             emit this->taskDropped(index, m_status);
         }
     }

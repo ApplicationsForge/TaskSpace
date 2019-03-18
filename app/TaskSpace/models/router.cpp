@@ -47,13 +47,13 @@ void Router::resetConnections()
 
 void Router::onRepository_TasksUpdated()
 {
-    qDebug() << "Router::onRepository_TasksUpdated";
+    //qDebug() << "Router::onRepository_TasksUpdated";
     emit this->tasksUpdated();
 }
 
 void Router::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
 {
-    qDebug() << "Router::onTaskListWidget_TaskDropped" << taskIndex << status;
+    //qDebug() << "Router::onTaskListWidget_TaskDropped" << taskIndex << status;
     m_repository->changeTaskStatus(taskIndex, status);
 }
 
