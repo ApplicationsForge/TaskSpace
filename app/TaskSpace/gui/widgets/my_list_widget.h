@@ -17,9 +17,9 @@ public:
 
     void keyPressEvent(QKeyEvent *keyEvent);
     void dropEvent(QDropEvent *event);
-    void startDrag(Qt::DropActions supportedActions);
-    void dragEnterEvent(QDragEnterEvent* event);
-    void dragMoveEvent(QDragMoveEvent* e);
+    //void startDrag(Qt::DropActions supportedActions);
+    //void dragEnterEvent(QDragEnterEvent* event);
+    //void dragMoveEvent(QDragMoveEvent* e);
     //Qt::DropAction supportedDropActions();
 
 protected:

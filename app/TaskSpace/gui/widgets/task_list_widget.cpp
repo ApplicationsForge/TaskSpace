@@ -22,7 +22,6 @@ TaskListWidget::TaskListWidget(QString status, QWidget *parent) :
     m_list->setDropIndicatorShown(true);
     m_list->setStyleSheet("QListWidget {} QListWidget::item { color: #333; padding: 10px; }");
     m_list->setAlternatingRowColors(true);
-
     QObject::connect(m_list, SIGNAL(dropAction(QString)), this, SLOT(onMyListWidget_DropAction(QString)));
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -44,6 +43,7 @@ QString TaskListWidget::status() const
 
 void TaskListWidget::onMyListWidget_DropAction(QString data)
 {
+    qDebug() << "TaskListWidget::onMyListWidget_DropAction" << data;
     QRegExp taskIndexRegExp("\\[(\\s)*[0-9]*\\]");
 
     if(taskIndexRegExp.indexIn(data) != -1)

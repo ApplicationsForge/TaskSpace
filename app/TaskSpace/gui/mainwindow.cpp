@@ -377,6 +377,7 @@ void MainWindow::onSelectDbToolButton_clicked()
 
 void MainWindow::onRouter_TasksUpdated()
 {
+    qDebug() << "MainWindow::onRouter_TasksUpdated";
     Router& router = Router::getInstance();
     for(auto taskListWidget : m_taskListWidgets)
     {
@@ -384,7 +385,8 @@ void MainWindow::onRouter_TasksUpdated()
         QList<Task> tasks = router.getRepository()->getTasks(taskListWidget->status());
         for(auto task : tasks)
         {
-            QListWidgetItem *item = new QListWidgetItem(task.decoratedBaseInformation());
+            QListWidgetItem *item = new QListWidgetItem();
+            item->setText(task.decoratedBaseInformation());
             taskListWidget->list()->addItem(item);
 
             /*MyListWidgetItem* taskBoard =

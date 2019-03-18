@@ -36,20 +36,45 @@ void MyListWidget::keyPressEvent(QKeyEvent *keyEvent)
 void MyListWidget::dropEvent(QDropEvent *event)
 {
     const QMimeData *mimeData = event->mimeData();
-    qDebug() << mimeData << mimeData->text() << mimeData->data("application/x-item");
+    /*qDebug() << mimeData << mimeData->text() << mimeData->data("application/x-item");
+    qDebug() << mimeData->isWidgetType() << mimeData->formats()
+             << mimeData->data("application/x-qabstractitemmodeldatalist")
+             << mimeData->data("application/x-qt-mime-type-name")
+             << mimeData->hasUrls() << mimeData->hasColor()
+             << mimeData->hasFormat("application/x-qt-mime-type-name")
+             << mimeData->hasFormat("application/x-qabstractitemmodeldatalist");*/
 
-    if (mimeData->hasFormat("application/x-item"))
+    QByteArray encoded = mimeData->data("application/x-qabstractitemmodeldatalist");
+    QDataStream stream(&encoded, QIODevice::ReadOnly);
+
+    while (!stream.atEnd())
+    {
+        int row, col;
+        QMap<int,  QVariant> roleDataMap;
+        stream >> row >> col >> roleDataMap;
+
+        /* do something with the data */
+        QString text = roleDataMap.first().toString();
+        qDebug() << roleDataMap << text;
+
+        emit this->dropAction(text);
+    }
+
+    /*if (mimeData->hasFormat("application/x-item"))
     {
         QString text = mimeData->data("application/x-item");
         if (!text.isEmpty())
         {
-            QListWidgetItem* item = new QListWidgetItem(text,this);
-            this->addItem(item);
+            //emit this->dropAction(text);
+            //QListWidgetItem* item = new QListWidgetItem(text);
+            //this->insertItem(0, item);
+            //this->addItem(item);
         }
-        event->acceptProposedAction();
         emit this->dropAction(text);
+        event->acceptProposedAction();
     }
-    QListWidget::dropEvent(event);
+    QListWidget::dropEvent(event);*/
+
     /*if (event->mimeData()->hasFormat("application/x-item"))
     {
         event->accept();
@@ -67,7 +92,7 @@ void MyListWidget::dropEvent(QDropEvent *event)
     }*/
 }
 
-void MyListWidget::startDrag(Qt::DropActions supportedActions)
+/*void MyListWidget::startDrag(Qt::DropActions supportedActions)
 {
     QListWidgetItem* item = currentItem();
     QMimeData* mimeData = new QMimeData;
@@ -97,7 +122,7 @@ void MyListWidget::dragMoveEvent(QDragMoveEvent *e)
         e->accept();
     } else
         e->ignore();
-}
+}*/
 
 /*Qt::DropAction MyListWidget::supportedDropActions()
 {
