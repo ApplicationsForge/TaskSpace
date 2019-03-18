@@ -160,10 +160,10 @@ void MainWindow::setupDashboardTab()
             todotasksLabel->setFont(QFont("Roboto", 16, QFont::Normal));
             chartsContainerWidget->layout()->addWidget(todotasksLabel);
 
-            /*BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
+            BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
             burndownChartWidget->setObjectName("burndownChartWidget");
             m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
-            chartsContainerWidget->layout()->addWidget(burndownChartWidget);*/
+            chartsContainerWidget->layout()->addWidget(burndownChartWidget);
 
             QWidget *actionsContainerWidget = new QWidget(chartsContainerWidget);
                 QHBoxLayout *actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
