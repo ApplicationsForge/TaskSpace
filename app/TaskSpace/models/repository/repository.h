@@ -24,6 +24,7 @@ public:
     QStringList getAvaliableStatuses();
 
     QList<Task> getTasks() const;
+    QList<Task> getTasks(QString status) const;
     void setTasks(const QList< QSharedPointer<Task> > &tasks);
     void addTask(Task task);
     void changeTaskStatus(size_t taskIndex, QString status);

@@ -6,7 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_widgets(QMap<QString, QWidget*>()),
     m_appBar(new QtMaterialAppBar(this)),
-    m_drawer(new QtMaterialDrawer(this))
+    m_drawer(new QtMaterialDrawer(this)),
+    m_taskListWidgets(QList<TaskListWidget*>())
 {
     ui->setupUi(this);
 
@@ -22,6 +23,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     this->resetConnections();
+    for(auto list : m_taskListWidgets)
+    {
+        delete list;
+    }
+
     delete ui;
 }
 
@@ -39,23 +45,7 @@ void MainWindow::setupWidgets()
     this->setupSettingsTab();
 
     this->showBacklogTab();
-    //this->onRouter_TasksUpdated();
-
-    Router& router = Router::getInstance();
-    QList<Task> tasks = router.getRepository()->getTasks();
-
-    this->clearAllTaskLists();
-    for(auto task : tasks)
-    {
-        QString taskListWidgetName = task.status() + "TaskListWidget";
-        if(!m_widgets.contains(taskListWidgetName)) {
-            continue;
-        }
-
-        TaskListWidget* taskListWidget = qobject_cast<TaskListWidget*>(m_widgets[taskListWidgetName]);
-        QListWidgetItem *item = new QListWidgetItem(task.decoratedBaseInformation());
-        taskListWidget->list()->addItem(item);
-    }
+    this->onRouter_TasksUpdated();
 }
 
 void MainWindow::setupAppBar()
@@ -247,7 +237,8 @@ void MainWindow::setupBacklogTab()
                     TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
                     taskListWidget->setObjectName(status + "TaskListWidget");
                     QObject::connect(taskListWidget, SIGNAL(taskDropped(size_t, QString)), &router, SLOT(onTaskListWidget_TaskDropped(size_t, QString)));
-                    m_widgets.insert(taskListWidget->objectName(), taskListWidget);
+                    //m_widgets.insert(taskListWidget->objectName(), taskListWidget);
+                    m_taskListWidgets.append(taskListWidget);
                     scrollAreaContent->layout()->addWidget(taskListWidget);
                 }
             scrollArea->setWidget(scrollAreaContent);
@@ -302,17 +293,8 @@ void MainWindow::resetConnections()
 
 void MainWindow::clearAllTaskLists()
 {
-    Router &router = Router::getInstance();
-    QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
-    for(auto status : avaliableStatuses)
+    for(auto taskListWidget : m_taskListWidgets)
     {
-        QString taskListName = status + "TaskListWidget";
-        if(!m_widgets.contains(taskListName))
-        {
-            continue;
-        }
-
-        TaskListWidget* taskListWidget = qobject_cast<TaskListWidget*>(m_widgets[taskListName]);
         taskListWidget->list()->clear();
     }
 }
@@ -396,19 +378,15 @@ void MainWindow::onSelectDbToolButton_clicked()
 void MainWindow::onRouter_TasksUpdated()
 {
     Router& router = Router::getInstance();
-    QList<Task> tasks = router.getRepository()->getTasks();
-
-    this->clearAllTaskLists();
-    for(auto task : tasks)
+    for(auto taskListWidget : m_taskListWidgets)
     {
-        QString taskListWidgetName = task.status() + "TaskListWidget";
-        if(!m_widgets.contains(taskListWidgetName)) {
-            continue;
+        taskListWidget->list()->clear();
+        QList<Task> tasks = router.getRepository()->getTasks(taskListWidget->status());
+        for(auto task : tasks)
+        {
+            QListWidgetItem *item = new QListWidgetItem(task.decoratedBaseInformation());
+            taskListWidget->list()->addItem(item);
         }
-
-        TaskListWidget* taskListWidget = qobject_cast<TaskListWidget*>(m_widgets[taskListWidgetName]);
-        QListWidgetItem *item = new QListWidgetItem(task.decoratedBaseInformation());
-        taskListWidget->list()->addItem(item);
     }
 }
 

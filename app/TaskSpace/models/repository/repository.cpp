@@ -48,6 +48,19 @@ QList<Task> Repository::getTasks() const
     return tasks;
 }
 
+QList<Task> Repository::getTasks(QString status) const
+{
+    QList<Task> tasks;
+    for(auto task : m_tasks)
+    {
+        if(task->status() == status)
+        {
+            tasks.append(*task);
+        }
+    }
+    return tasks;
+}
+
 void Repository::setTasks(const QList< QSharedPointer<Task> > &tasks)
 {
     m_tasks = tasks;
@@ -65,7 +78,7 @@ void Repository::changeTaskStatus(size_t taskIndex, QString status)
     if(int(taskIndex) < m_tasks.size())
     {
         m_tasks.at(int(taskIndex))->setStatus(status);
-        emit this->tasksUpdated();
+        //emit this->tasksUpdated();
     }
 }
 

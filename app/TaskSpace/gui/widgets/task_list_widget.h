@@ -15,6 +15,8 @@ public:
 
     MyListWidget* list();
 
+    QString status() const;
+
 private:
     QString m_status;
     QLabel* m_label;

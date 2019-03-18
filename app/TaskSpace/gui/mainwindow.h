@@ -47,6 +47,8 @@ private:
     QtMaterialAppBar *const m_appBar;
     QtMaterialDrawer *const m_drawer;
 
+    QList<TaskListWidget*> m_taskListWidgets;
+
     void setupWidgets();
     void setupAppBar();
     void setupDrawer();

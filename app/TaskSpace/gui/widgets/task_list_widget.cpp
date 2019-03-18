@@ -34,6 +34,11 @@ MyListWidget *TaskListWidget::list()
     return m_list;
 }
 
+QString TaskListWidget::status() const
+{
+    return m_status;
+}
+
 void TaskListWidget::onMyListWidget_DropAction(QString data)
 {
     QRegExp taskIndexRegExp("\\[(\\s)*[0-9]*\\]");
