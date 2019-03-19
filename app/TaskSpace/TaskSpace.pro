@@ -87,7 +87,8 @@ SOURCES += \
     models/types/sqlite_adapter/sqlite_adapter.cpp \
     models/types/task/task.cpp \
     gui/widgets/burndown_chart_widget.cpp \
-    gui/widgets/mylistwidgetitem.cpp
+    gui/widgets/mylistwidgetitem.cpp \
+    gui/widgets/task_status_chart_widget.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -180,7 +181,8 @@ HEADERS += \
     models/types/sqlite_adapter/sqlite_adapter.h \
     models/types/task/task.h \
     gui/widgets/burndown_chart_widget.h \
-    gui/widgets/mylistwidgetitem.h
+    gui/widgets/mylistwidgetitem.h \
+    gui/widgets/task_status_chart_widget.h
 
 FORMS += \
         gui/mainwindow.ui

@@ -163,7 +163,7 @@ void MainWindow::setupDashboardTab()
             QHBoxLayout *subContainerLayout = new QHBoxLayout(subContainer);
                 QWidget *chartsContainerWidget = new QWidget(subContainer);
                 chartsContainerWidget->setLayout(new QVBoxLayout(chartsContainerWidget));
-                    QLabel *burndownChartLabel = new QLabel("Burndown Chart", chartsContainerWidget);
+                    /*QLabel *burndownChartLabel = new QLabel("Burndown Chart", chartsContainerWidget);
                     burndownChartLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
                     burndownChartLabel->setFont(QFont("Roboto", 16, QFont::Normal));
                     chartsContainerWidget->layout()->addWidget(burndownChartLabel);
@@ -171,7 +171,18 @@ void MainWindow::setupDashboardTab()
                     BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
                     burndownChartWidget->setObjectName("burndownChartWidget");
                     m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
-                    chartsContainerWidget->layout()->addWidget(burndownChartWidget);
+                    chartsContainerWidget->layout()->addWidget(burndownChartWidget);*/
+
+                    QLabel *statusChartLabel = new QLabel("Burndown Chart", chartsContainerWidget);
+                    statusChartLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+                    statusChartLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+                    chartsContainerWidget->layout()->addWidget(statusChartLabel);
+
+                    TaskStatusChartWidget* taskStatusChartWidget = new TaskStatusChartWidget(chartsContainerWidget);
+                    taskStatusChartWidget->setObjectName("burndownChartWidget");
+                    m_widgets.insert(taskStatusChartWidget->objectName(), taskStatusChartWidget);
+                    chartsContainerWidget->layout()->addWidget(taskStatusChartWidget);
+
 
                     QWidget *actionsContainerWidget = new QWidget(chartsContainerWidget);
                         QHBoxLayout *actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
