@@ -120,11 +120,6 @@ void MainWindow::setupDrawer()
     QObject::connect(notesButton, SIGNAL(clicked()), this, SLOT(showNotesTab()));
     drawerLayout->addWidget(notesButton);
 
-    QtMaterialFlatButton* statisticsButton = new QtMaterialFlatButton("Statistics", m_drawer);
-    statisticsButton->setForegroundColor(QColor("#333"));
-    //QObject::connect(statisticsButton, SIGNAL(clicked()), this, SLOT(showStatisticsTab()));
-    drawerLayout->addWidget(statisticsButton);
-
     QtMaterialFlatButton* settingsButton = new QtMaterialFlatButton("Settings", m_drawer);
     settingsButton->setForegroundColor(QColor("#333"));
     QObject::connect(settingsButton, SIGNAL(clicked()), this, SLOT(showSettingsTab()));
