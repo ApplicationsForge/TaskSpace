@@ -125,7 +125,6 @@ void MainWindow::setupDrawer()
     QObject::connect(settingsButton, SIGNAL(clicked()), this, SLOT(showSettingsTab()));
     drawerLayout->addWidget(settingsButton);
 
-
     drawerLayout->addStretch(3);
 
     QtMaterialFlatButton* closeDrawerButton = new QtMaterialFlatButton("Close", m_drawer);
