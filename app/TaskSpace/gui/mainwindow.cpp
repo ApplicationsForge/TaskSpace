@@ -398,6 +398,8 @@ void MainWindow::onSelectDbToolButton_clicked()
 void MainWindow::onRouter_TasksUpdated()
 {
     //qDebug() << "MainWindow::onRouter_TasksUpdated";
+
+    // update backlog lists
     Router& router = Router::getInstance();
     for(auto taskListWidget : m_taskListWidgets)
     {
@@ -411,6 +413,7 @@ void MainWindow::onRouter_TasksUpdated()
         }
     }
 
+    // update dashboard charts
     QWidget* rawTaskStatusBarWidget = m_widgets["taskStatusChartWidget"];
     TaskStatusChartWidget* taskStatusChartWidget = qobject_cast<TaskStatusChartWidget*>(rawTaskStatusBarWidget);
     if(taskStatusChartWidget != nullptr)
