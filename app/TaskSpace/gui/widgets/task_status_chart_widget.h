@@ -16,13 +16,19 @@ class TaskStatusChartWidget : public QWidget
 public:
     explicit TaskStatusChartWidget(QWidget *parent = nullptr);
 
-    void updateChartWidget(QList<int> taskCountList, QStringList statuses);
+    void updateChartWidget(QList<int> taskCountList, QStringList avaliableStatusesList);
 
 private:
     QString m_setLabel = "Task statuses";
     QString m_chartLabel = "Task status chart";
 
-    QtCharts::QChartView* buildChart(QString chartLabel, QString setLabel, QList<int> taskCountList, QStringList statuses);
+    static QtCharts::QChartView* buildChart(QString chartLabel,
+                                            QString setLabel,
+                                            QList<int> taskCountList,
+                                            QStringList avaliableStatusesList,
+                                            QWidget* parent = nullptr);
+
+    static int maxListItem(QList<int> set);
 
 signals:
 
