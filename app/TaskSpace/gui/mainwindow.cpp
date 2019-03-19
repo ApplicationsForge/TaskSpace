@@ -162,36 +162,23 @@ void MainWindow::setupDashboardTab()
         QWidget *subContainer = new QWidget(container);
             QHBoxLayout *subContainerLayout = new QHBoxLayout(subContainer);
                 QWidget *chartsContainerWidget = new QWidget(subContainer);
-                chartsContainerWidget->setLayout(new QVBoxLayout(chartsContainerWidget));
-                    /*QLabel *burndownChartLabel = new QLabel("Burndown Chart", chartsContainerWidget);
-                    burndownChartLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
-                    burndownChartLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-                    chartsContainerWidget->layout()->addWidget(burndownChartLabel);
-
+                chartsContainerWidget->setLayout(new QHBoxLayout(chartsContainerWidget));
                     BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
                     burndownChartWidget->setObjectName("burndownChartWidget");
                     m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
-                    chartsContainerWidget->layout()->addWidget(burndownChartWidget);*/
+                    chartsContainerWidget->layout()->addWidget(burndownChartWidget);
 
                     TaskStatusChartWidget* taskStatusChartWidget = new TaskStatusChartWidget(chartsContainerWidget);
                     taskStatusChartWidget->setObjectName("taskStatusChartWidget");
                     m_widgets.insert(taskStatusChartWidget->objectName(), taskStatusChartWidget);
                     chartsContainerWidget->layout()->addWidget(taskStatusChartWidget);
 
-
-                    QWidget *actionsContainerWidget = new QWidget(chartsContainerWidget);
-                        QHBoxLayout *actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
-                            actionsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Export", actionsContainerWidget));
-                            actionsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("History", actionsContainerWidget));
-                            actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-                        actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
-                    chartsContainerWidget->layout()->addWidget(actionsContainerWidget);
                 subContainerLayout->addWidget(chartsContainerWidget);
                 subContainerLayout->setStretch(0, 4);
 
                 QWidget *toolsContainerWidget = new QWidget(subContainer);
-                QVBoxLayout *toolsFrameLayout = new QVBoxLayout(toolsContainerWidget);
-                toolsContainerWidget->setLayout(toolsFrameLayout);
+                QVBoxLayout *toolsContainerWidgetLayout = new QVBoxLayout(toolsContainerWidget);
+                toolsContainerWidget->setLayout(toolsContainerWidgetLayout);
                     QLabel *toolsTitleLabel = new QLabel("Tools", toolsContainerWidget);
                     toolsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
                     toolsTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
@@ -199,9 +186,13 @@ void MainWindow::setupDashboardTab()
 
                     QtMaterialRaisedButton *focusTimerButton = new QtMaterialRaisedButton("Focus Timer", toolsContainerWidget);
                     QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
-                    toolsFrameLayout->addWidget(focusTimerButton);
+                    toolsContainerWidgetLayout->addWidget(focusTimerButton);
 
-                    toolsFrameLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+
+                    toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Export", toolsContainerWidget));
+                    toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("History", toolsContainerWidget));
+
+                    toolsContainerWidgetLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
                 subContainerLayout->addWidget(toolsContainerWidget);
                 subContainerLayout->setStretch(1, 1);
             subContainer->setLayout(subContainerLayout);

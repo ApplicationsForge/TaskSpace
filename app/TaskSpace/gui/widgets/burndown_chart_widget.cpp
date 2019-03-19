@@ -30,7 +30,7 @@ BurndownChartWidget::BurndownChartWidget(QWidget *parent) : QWidget(parent)
     chart->addSeries(series1);
     chart->addSeries(series2);
     chart->createDefaultAxes();
-    chart->setTitle("Simple line chart example");
+    chart->setTitle("Burndown chart");
 
     QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
