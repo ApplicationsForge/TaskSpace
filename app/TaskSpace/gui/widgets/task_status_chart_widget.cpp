@@ -6,30 +6,22 @@ TaskStatusChartWidget::TaskStatusChartWidget(QWidget *parent) :
     m_setTitle("TasksCount"),
     m_categories(QStringList()),
     m_set(new QtCharts::QBarSet(m_setTitle)),
+    m_series(new QtCharts::QBarSeries()),
     m_chart(new QtCharts::QChart()),
-    m_chartView(new QtCharts::QChartView())
+    m_chartView(new QtCharts::QChartView()),
+    m_axisX(new QtCharts::QBarCategoryAxis()),
+    m_axisY(new QtCharts::QValueAxis())
 {
-    this->showChart();
-}
+    m_series->append(m_set);
 
-void TaskStatusChartWidget::showChart()
-{
-    QtCharts::QBarSeries *series = new QtCharts::QBarSeries();
-    series->append(m_set);
-
-    m_chart->addSeries(series);
-    m_chart->setTitle(m_chartTitle);
+    m_chart->addSeries(m_series);;
     m_chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
 
-    QtCharts::QBarCategoryAxis *axisX = new QtCharts::QBarCategoryAxis();
-    axisX->append(m_categories);
-    m_chart->addAxis(axisX, Qt::AlignBottom);
-    series->attachAxis(axisX);
+    m_chart->addAxis(m_axisX, Qt::AlignBottom);
+    m_series->attachAxis(m_axisX);
 
-    QtCharts::QValueAxis *axisY = new QtCharts::QValueAxis();
-    axisY->setRange(0, m_set->count());
-    m_chart->addAxis(axisY, Qt::AlignLeft);
-    series->attachAxis(axisY);
+    m_chart->addAxis(m_axisY, Qt::AlignLeft);
+    m_series->attachAxis(m_axisY);
 
     m_chart->legend()->setVisible(true);
     m_chart->legend()->setAlignment(Qt::AlignBottom);
@@ -41,6 +33,20 @@ void TaskStatusChartWidget::showChart()
     mainLayout->setContentsMargins(0, 0, 0, 0);
         mainLayout->addWidget(m_chartView);
     this->setLayout(mainLayout);
+
+    this->updateChart();
+}
+
+void TaskStatusChartWidget::updateChart()
+{
+    //m_series->append(m_set);
+    m_chart->setTitle(m_chartTitle);
+
+    m_axisX->append(m_categories);
+    m_axisY->setRange(0, this->maxItemsCount() +  1);
+
+    m_chart->update();
+    m_chartView->update();
 }
 
 QStringList TaskStatusChartWidget::categories() const
@@ -51,6 +57,7 @@ QStringList TaskStatusChartWidget::categories() const
 void TaskStatusChartWidget::setCategories(const QStringList &categories)
 {
     m_categories = categories;
+    //this->updateChart();
 }
 
 QtCharts::QBarSet *TaskStatusChartWidget::set() const
@@ -60,8 +67,24 @@ QtCharts::QBarSet *TaskStatusChartWidget::set() const
 
 void TaskStatusChartWidget::setSet(QList<int> taskCountSet)
 {
+    /*for(int i = 0; i < m_set->count(); i++)
+    {
+        m_set->remove(i);
+    }*/
+
     for(auto taskCount : taskCountSet)
     {
         *m_set << taskCount;
     }
+    //this->updateChart();
+}
+
+double TaskStatusChartWidget::maxItemsCount()
+{
+    double result = 0;
+    for(int i = 0; i < m_set->count(); i++)
+    {
+        result = std::max(m_set->at(i), result);
+    }
+    return result;
 }

@@ -86,6 +86,11 @@ void Repository::changeTaskStatus(size_t taskIndex, QString status)
     }
 }
 
+int Repository::getTaskCountByStatus(QString status)
+{
+    return this->getTasks(status).length();
+}
+
 void Repository::loadSettings()
 {
     try {

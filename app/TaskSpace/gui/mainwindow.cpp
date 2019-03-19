@@ -179,7 +179,7 @@ void MainWindow::setupDashboardTab()
                     chartsContainerWidget->layout()->addWidget(statusChartLabel);
 
                     TaskStatusChartWidget* taskStatusChartWidget = new TaskStatusChartWidget(chartsContainerWidget);
-                    taskStatusChartWidget->setObjectName("burndownChartWidget");
+                    taskStatusChartWidget->setObjectName("taskStatusChartWidget");
                     m_widgets.insert(taskStatusChartWidget->objectName(), taskStatusChartWidget);
                     chartsContainerWidget->layout()->addWidget(taskStatusChartWidget);
 
@@ -414,6 +414,21 @@ void MainWindow::onRouter_TasksUpdated()
             item->setText(task.decoratedBaseInformation());
             taskListWidget->list()->addItem(item);
         }
+    }
+
+    QWidget* rawTaskStatusBarWidget = m_widgets["taskStatusChartWidget"];
+    TaskStatusChartWidget* taskStatusChartWidget = qobject_cast<TaskStatusChartWidget*>(rawTaskStatusBarWidget);
+    if(taskStatusChartWidget != nullptr)
+    {
+        QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
+        QList<int> taskCountByStatus;
+        for(auto status : avaliableStatuses)
+        {
+            taskCountByStatus << router.getRepository()->getTaskCountByStatus(status);
+        }
+        taskStatusChartWidget->setCategories(avaliableStatuses);
+        taskStatusChartWidget->setSet(taskCountByStatus);
+        taskStatusChartWidget->updateChart();
     }
 }
 

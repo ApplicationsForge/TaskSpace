@@ -28,6 +28,7 @@ public:
     void setTasks(const QList< QSharedPointer<Task> > &tasks);
     void addTask(Task task);
     void changeTaskStatus(size_t taskIndex, QString status);
+    int getTaskCountByStatus(QString status);
 
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
