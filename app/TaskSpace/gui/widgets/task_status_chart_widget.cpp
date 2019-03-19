@@ -1,52 +1,67 @@
 #include "task_status_chart_widget.h"
 
-TaskStatusChartWidget::TaskStatusChartWidget(QWidget *parent) : QWidget(parent)
+TaskStatusChartWidget::TaskStatusChartWidget(QWidget *parent) :
+    QWidget(parent),
+    m_chartTitle("Tasks Status Bar Chart"),
+    m_setTitle("TasksCount"),
+    m_categories(QStringList()),
+    m_set(new QtCharts::QBarSet(m_setTitle)),
+    m_chart(new QtCharts::QChart()),
+    m_chartView(new QtCharts::QChartView())
 {
-    QtCharts::QBarSet *set0 = new QtCharts::QBarSet("First");
-    QtCharts::QBarSet *set1 = new QtCharts::QBarSet("Second");
-    QtCharts::QBarSet *set2 = new QtCharts::QBarSet("Third");
-    QtCharts::QBarSet *set3 = new QtCharts::QBarSet("Fourth");
-    QtCharts::QBarSet *set4 = new QtCharts::QBarSet("Fifth");
+    this->showChart();
+}
 
-    *set0 << 1 << 2 << 3 << 4 << 5 << 6;
-    *set1 << 5 << 0 << 0 << 4 << 0 << 7;
-    *set2 << 3 << 5 << 8 << 13 << 8 << 5;
-    *set3 << 5 << 6 << 7 << 3 << 4 << 5;
-    *set4 << 9 << 7 << 5 << 3 << 1 << 2;
-
+void TaskStatusChartWidget::showChart()
+{
     QtCharts::QBarSeries *series = new QtCharts::QBarSeries();
-    series->append(set0);
-    series->append(set1);
-    series->append(set2);
-    series->append(set3);
-    series->append(set4);
+    series->append(m_set);
 
+    m_chart->addSeries(series);
+    m_chart->setTitle(m_chartTitle);
+    m_chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
 
-    QtCharts::QChart *chart = new QtCharts::QChart();
-    chart->addSeries(series);
-    chart->setTitle("Simple barchart example");
-    chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
-
-    QStringList categories;
-    categories << "Jan" << "Feb" << "Mar" << "Apr" << "May" << "Jun";
     QtCharts::QBarCategoryAxis *axisX = new QtCharts::QBarCategoryAxis();
-    axisX->append(categories);
-    chart->addAxis(axisX, Qt::AlignBottom);
+    axisX->append(m_categories);
+    m_chart->addAxis(axisX, Qt::AlignBottom);
     series->attachAxis(axisX);
 
     QtCharts::QValueAxis *axisY = new QtCharts::QValueAxis();
-    axisY->setRange(0,15);
-    chart->addAxis(axisY, Qt::AlignLeft);
+    axisY->setRange(0, m_set->count());
+    m_chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
 
-    chart->legend()->setVisible(true);
-    chart->legend()->setAlignment(Qt::AlignBottom);
+    m_chart->legend()->setVisible(true);
+    m_chart->legend()->setAlignment(Qt::AlignBottom);
 
-    QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
+    m_chartView->setChart(m_chart);
+    m_chartView->setRenderHint(QPainter::Antialiasing);
 
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
-        mainLayout->addWidget(chartView);
+        mainLayout->addWidget(m_chartView);
     this->setLayout(mainLayout);
+}
+
+QStringList TaskStatusChartWidget::categories() const
+{
+    return m_categories;
+}
+
+void TaskStatusChartWidget::setCategories(const QStringList &categories)
+{
+    m_categories = categories;
+}
+
+QtCharts::QBarSet *TaskStatusChartWidget::set() const
+{
+    return m_set;
+}
+
+void TaskStatusChartWidget::setSet(QList<int> taskCountSet)
+{
+    for(auto taskCount : taskCountSet)
+    {
+        *m_set << taskCount;
+    }
 }
