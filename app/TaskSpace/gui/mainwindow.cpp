@@ -173,11 +173,6 @@ void MainWindow::setupDashboardTab()
                     m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
                     chartsContainerWidget->layout()->addWidget(burndownChartWidget);*/
 
-                    QLabel *statusChartLabel = new QLabel("Burndown Chart", chartsContainerWidget);
-                    statusChartLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
-                    statusChartLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-                    chartsContainerWidget->layout()->addWidget(statusChartLabel);
-
                     TaskStatusChartWidget* taskStatusChartWidget = new TaskStatusChartWidget(chartsContainerWidget);
                     taskStatusChartWidget->setObjectName("taskStatusChartWidget");
                     m_widgets.insert(taskStatusChartWidget->objectName(), taskStatusChartWidget);
