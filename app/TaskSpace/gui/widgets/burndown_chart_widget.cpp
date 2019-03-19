@@ -31,6 +31,8 @@ BurndownChartWidget::BurndownChartWidget(QWidget *parent) : QWidget(parent)
     chart->addSeries(series2);
     chart->createDefaultAxes();
     chart->setTitle("Burndown chart");
+    chart->legend()->setVisible(true);
+    chart->legend()->setAlignment(Qt::AlignBottom);
 
     QtCharts::QChartView *chartView = new QtCharts::QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
