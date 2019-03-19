@@ -426,9 +426,7 @@ void MainWindow::onRouter_TasksUpdated()
         {
             taskCountByStatus << router.getRepository()->getTaskCountByStatus(status);
         }
-        taskStatusChartWidget->setCategories(avaliableStatuses);
-        taskStatusChartWidget->setSet(taskCountByStatus);
-        taskStatusChartWidget->updateChart();
+        taskStatusChartWidget->updateChartWidget(taskCountByStatus, avaliableStatuses);
     }
 }
 

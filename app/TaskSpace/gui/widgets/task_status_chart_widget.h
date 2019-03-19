@@ -9,7 +9,6 @@
 #include <QBarSeries>
 #include <QBarCategoryAxis>
 #include <QValueAxis>
-#include <QDebug>
 
 class TaskStatusChartWidget : public QWidget
 {
@@ -17,26 +16,13 @@ class TaskStatusChartWidget : public QWidget
 public:
     explicit TaskStatusChartWidget(QWidget *parent = nullptr);
 
-    void updateChart();
-
-    QStringList categories() const;
-    void setCategories(const QStringList &categories);
-
-    QtCharts::QBarSet *set() const;
-    void setSet(QList<int> taskCountSet);
+    void updateChartWidget(QList<int> taskCountList, QStringList statuses);
 
 private:
-    QString m_chartTitle;
-    QString m_setTitle;
-    QStringList m_categories;
-    QtCharts::QBarSet *m_set;
-    QtCharts::QBarSeries *m_series;
-    QtCharts::QChart *m_chart;
-    QtCharts::QChartView *m_chartView;
-    QtCharts::QBarCategoryAxis *m_axisX;
-    QtCharts::QValueAxis *m_axisY;
+    QString m_setLabel = "Task statuses";
+    QString m_chartLabel = "Task status chart";
 
-    double maxItemsCount();
+    QtCharts::QChartView* buildChart(QString chartLabel, QString setLabel, QList<int> taskCountList, QStringList statuses);
 
 signals:
 
