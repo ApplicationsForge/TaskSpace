@@ -19,7 +19,7 @@ public:
     void updateChartWidget(QList<int> taskCountList, QStringList avaliableStatusesList);
 
 private:
-    QString m_setLabel = "Task statuses";
+    QString m_setLabel = "Tasks Count";
     QString m_chartLabel = "Task status chart";
 
     static QtCharts::QChartView* buildChart(QString chartLabel,
