@@ -11,6 +11,7 @@
 #include <QScrollArea>
 #include <QToolButton>
 #include <QFileDialog>
+#include <QDialogButtonBox>
 
 #include "models/router.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"
@@ -24,10 +25,13 @@
 
 #include "libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h"
 
+#include "libs/qmarkdowntextedit/qmarkdowntextedit.h"
+
 #include "gui/widgets/task_list_widget.h"
 #include "gui/widgets/burndown_chart_widget.h"
 #include "gui/widgets/task_status_chart_widget.h"
 #include "gui/widgets/mylistwidgetitem.h"
+
 
 namespace Ui {
 class MainWindow;

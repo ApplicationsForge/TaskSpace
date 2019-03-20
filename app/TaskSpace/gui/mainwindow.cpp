@@ -376,6 +376,15 @@ void MainWindow::showTaskDialog(QString title)
     QDialog *taskDialog = new QDialog(this);
     taskDialog->setWindowTitle(title);
     taskDialog->setMinimumSize(400, 300);
+    QVBoxLayout* dialogLayout = new QVBoxLayout(taskDialog);
+        QWidget* containerWidget = new QWidget(taskDialog);
+            QVBoxLayout* containerLayout = new QVBoxLayout(containerWidget);
+            containerLayout->addWidget(new QLabel("test", containerWidget));
+            containerLayout->addWidget(new QMarkdownTextEdit(containerWidget));
+            //containerLayout->addWidget(new QDialogButtonBox(containerWidget));
+        containerWidget->setLayout(containerLayout);
+    dialogLayout->addWidget(containerWidget);
+    taskDialog->setLayout(dialogLayout);
     taskDialog->exec();
 }
 
