@@ -27,12 +27,11 @@
 
 #include "libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h"
 
-#include "libs/qmarkdowntextedit/qmarkdowntextedit.h"
-
 #include "gui/widgets/task_list_widget.h"
 #include "gui/widgets/burndown_chart_widget.h"
 #include "gui/widgets/task_status_chart_widget.h"
 #include "gui/widgets/mylistwidgetitem.h"
+#include "gui/widgets/task_viewer_widget.h"
 
 
 namespace Ui {
@@ -85,7 +84,7 @@ private slots:
     void showGauge();
 
     void showFocusTimerDialog();
-    void showTaskDialog(Task task);
+    void showTaskDialog(Task task, bool newTask = false);
 
     void onSelectDbToolButton_clicked();
     void onRouter_TasksUpdated();

@@ -89,7 +89,8 @@ SOURCES += \
     models/types/task/task.cpp \
     gui/widgets/burndown_chart_widget.cpp \
     gui/widgets/mylistwidgetitem.cpp \
-    gui/widgets/task_status_chart_widget.cpp
+    gui/widgets/task_status_chart_widget.cpp \
+    gui/widgets/task_viewer_widget.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -183,7 +184,8 @@ HEADERS += \
     models/types/task/task.h \
     gui/widgets/burndown_chart_widget.h \
     gui/widgets/mylistwidgetitem.h \
-    gui/widgets/task_status_chart_widget.h
+    gui/widgets/task_status_chart_widget.h \
+    gui/widgets/task_viewer_widget.h
 
 FORMS += \
         gui/mainwindow.ui

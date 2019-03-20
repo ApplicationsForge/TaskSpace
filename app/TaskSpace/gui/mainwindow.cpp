@@ -371,7 +371,7 @@ void MainWindow::showFocusTimerDialog()
     focusTimerDialog->show();
 }
 
-void MainWindow::showTaskDialog(Task task)
+void MainWindow::showTaskDialog(Task task, bool newTask)
 {
     QDialog *taskDialog = new QDialog(this);
     taskDialog->setWindowTitle(task.decoratedBaseInformation());
@@ -379,50 +379,31 @@ void MainWindow::showTaskDialog(Task task)
     taskDialog->setBaseSize(800, 600);
     //taskDialog->setStyleSheet("QDialog {background-color: #fff;}");
     QVBoxLayout* dialogLayout = new QVBoxLayout(taskDialog);
-        QWidget* containerWidget = new QWidget(taskDialog);
-            QVBoxLayout* containerLayout = new QVBoxLayout(containerWidget);
-                QLabel* taskTitleLabel = new QLabel("Title:", containerWidget);
-                taskTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-                containerLayout->addWidget(taskTitleLabel);
+       QWidget* containerWidget = new QWidget(taskDialog);
+           QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
+                TaskViewerWidget* taskViewerWidget = new TaskViewerWidget(containerWidget);
+                taskViewerWidget->setInputLocked(!newTask);
+                taskViewerWidget->setTaskTitle(task.title());
+                containerWidgetLayout->addWidget(taskViewerWidget);
 
-                QtMaterialTextField* taskTitleTextField = new QtMaterialTextField(containerWidget);
-                taskTitleTextField->setText(task.title());
-                //taskTitleTextField->setLabel("Title");
-                taskTitleTextField->setLabelFontSize(16);
-                taskTitleTextField->setLabelColor(QColor("#333"));
-                taskTitleTextField->setInkColor(QColor("#333"));
-                taskTitleTextField->setTextColor(QColor("#333"));
-                //taskTitleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
-                taskTitleTextField->setPlaceholderText("Please, type a title for your task.");
-                taskTitleTextField->setFont(QFont("Roboto", 16, QFont::Normal));
-                taskTitleTextField->setShowInputLine(false);
-                containerLayout->addWidget(taskTitleTextField);
+                QWidget* actionsContainerWidget = new QWidget(containerWidget);
+                   QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
+                       actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-                /*QWidget* taskFormWidget = new QWidget(containerWidget);
-                    QFormLayout* taskFormWidgetLayout = new QFormLayout(taskFormWidget);
-                        QLineEdit* taskTitleLineEdit = new QLineEdit(taskFormWidget);
-                        taskTitleLineEdit->setText(task.title());
-                        taskTitleLineEdit->setEnabled(false);
-                        taskFormWidgetLayout->addRow("Title", taskTitleLineEdit);
-                    taskFormWidget->setLayout(taskFormWidgetLayout);
-                containerLayout->addWidget(taskFormWidget);*/
+                       QtMaterialRaisedButton *editOrLockButton = new QtMaterialRaisedButton(actionsContainerWidget);
+                       editOrLockButton->setText("Edit/Lock");
+                       QObject::connect(editOrLockButton, SIGNAL(clicked()), taskViewerWidget, SLOT(changeLockStatus()));
+                       actionsContainerWidgetLayout->addWidget(editOrLockButton);
 
-                QLabel* taskDescriptionLabel = new QLabel("Description:", containerWidget);
-                taskDescriptionLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-                containerLayout->addWidget(taskDescriptionLabel);
+                       actionsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Save", actionsContainerWidget));
 
-                QMarkdownTextEdit* descriptionTextEdit = new QMarkdownTextEdit(containerWidget);
-                //descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid #dfdfdf; background-color: #efefef; }");
-                descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid transparent; }");
-                //descriptionTextEdit->setEnabled(false);
-                descriptionTextEdit->setPlaceholderText("Please, type a shord description for your task (markdown supported).");
-                containerLayout->addWidget(descriptionTextEdit);
-
-
-                //containerLayout->addWidget(new QDialogButtonBox(containerWidget));
-        containerWidget->setLayout(containerLayout);
-        containerWidget->setContentsMargins(0, 0, 0, 0);
-    dialogLayout->addWidget(containerWidget);
+                       QtMaterialRaisedButton *closeButton = new QtMaterialRaisedButton("Close", actionsContainerWidget);
+                       QObject::connect(closeButton, SIGNAL(clicked()), taskDialog, SLOT(close()));
+                       actionsContainerWidgetLayout->addWidget(closeButton);
+                   actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
+                containerWidgetLayout->addWidget(actionsContainerWidget);
+            containerWidget->setLayout(containerWidgetLayout);
+        dialogLayout->addWidget(containerWidget);
     taskDialog->setLayout(dialogLayout);
     taskDialog->setContentsMargins(0, 0, 0, 0);
     taskDialog->exec();
@@ -502,5 +483,5 @@ void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskLi
     }
 
     Task task = router.getRepository()->getTaskByIndex(taskIndex);
-    this->showTaskDialog(task);
+    this->showTaskDialog(task, false);
 }
