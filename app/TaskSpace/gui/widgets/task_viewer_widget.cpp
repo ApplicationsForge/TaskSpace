@@ -15,9 +15,7 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
         m_titleTextField->setText("");
         m_titleTextField->setLabel("Title:");
         m_titleTextField->setLabelFontSize(16);
-        m_titleTextField->setLabelColor(QColor("#333"));
         m_titleTextField->setInkColor(QColor("#333"));
-        m_titleTextField->setTextColor(QColor("#333"));
         m_titleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
         m_titleTextField->setPlaceholderText("Enter the task title, plaese.");
         m_titleTextField->setFont(QFont("Roboto", 16, QFont::Normal));
