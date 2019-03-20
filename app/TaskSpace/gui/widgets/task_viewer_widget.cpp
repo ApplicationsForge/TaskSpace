@@ -2,6 +2,7 @@
 
 TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
     QWidget(parent),
+    m_taskIndex(-1),
     m_titleTextField(new QtMaterialTextField(this)),
     m_descriptionTextEdit(new QMarkdownTextEdit(this)),
     m_inputLocked(true)
@@ -57,6 +58,16 @@ void TaskViewerWidget::setInputLocked(bool inputLocked)
     m_descriptionTextEdit->setEnabled(!m_inputLocked);
 }
 
+long TaskViewerWidget::taskIndex() const
+{
+    return m_taskIndex;
+}
+
+void TaskViewerWidget::setTaskIndex(long taskIndex)
+{
+    m_taskIndex = taskIndex;
+}
+
 void TaskViewerWidget::changeLockStatus()
 {
     this->setInputLocked(!m_inputLocked);
@@ -66,5 +77,20 @@ void TaskViewerWidget::saveTaskData()
 {
     QString title = m_titleTextField->text();
     QString description = m_descriptionTextEdit->toPlainText();
-    emit this->taskCreated(title, description);
+
+    if(title.length() <= 0)
+    {
+        QMessageBox(QMessageBox::Warning, "Empty title", "Please type a title for your task").exec();
+        this->setInputLocked(false);
+        return;
+    }
+
+    if(m_taskIndex >= 0)
+    {
+        emit this->taskUpdated(size_t(m_taskIndex), title, description);
+    }
+    else
+    {
+        emit this->taskCreated(title, description);
+    }
 }

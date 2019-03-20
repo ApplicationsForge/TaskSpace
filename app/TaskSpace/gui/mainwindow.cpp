@@ -383,8 +383,10 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
            QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
                 TaskViewerWidget* taskViewerWidget = new TaskViewerWidget(containerWidget);
                 taskViewerWidget->setInputLocked(!newTask);
+                taskViewerWidget->setTaskIndex(long(task.index()));
                 taskViewerWidget->setTaskTitle(task.title());
                 QObject::connect(taskViewerWidget, SIGNAL(taskCreated(QString, QString)), this, SLOT(onTaskViewerWidget_TaskCreated(QString, QString)));
+                QObject::connect(taskViewerWidget, SIGNAL(taskUpdated(size_t, QString, QString)), this, SLOT(onTaskViewerWidget_TaskUpdated(size_t, QString, QString)));
                 containerWidgetLayout->addWidget(taskViewerWidget);
 
                 QWidget* actionsContainerWidget = new QWidget(containerWidget);
@@ -499,5 +501,11 @@ void MainWindow::onTaskViewerWidget_TaskCreated(QString title, QString descripti
 {
     Router& router = Router::getInstance();
     router.createNewTask(title, description);
+}
+
+void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QString description)
+{
+    Router& router = Router::getInstance();
+    router.updateTask(index, title, description);
 }
 

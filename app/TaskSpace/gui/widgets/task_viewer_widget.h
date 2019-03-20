@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
 
 #include "libs/qt-material-widgets-master/components/qtmaterialraisedbutton.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialflatbutton.h"
@@ -20,7 +21,11 @@ public:
     void setTaskTitle(QString title);
     void setInputLocked(bool inputLocked);
 
+    long taskIndex() const;
+    void setTaskIndex(long taskIndex);
+
 private:
+    long m_taskIndex;
     QtMaterialTextField* m_titleTextField;
     QMarkdownTextEdit* m_descriptionTextEdit;
     bool m_inputLocked;

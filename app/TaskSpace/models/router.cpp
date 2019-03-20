@@ -45,6 +45,11 @@ void Router::createNewTask(QString title, QString description)
     qDebug() << "Router::createNewTask" << title << description;
 }
 
+void Router::updateTask(size_t index, QString title, QString description)
+{
+    qDebug() << "Router::updateTask" << index << title << description;
+}
+
 void Router::setupConnections()
 {
     QObject::connect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
