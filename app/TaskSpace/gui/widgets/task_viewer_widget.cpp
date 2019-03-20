@@ -19,7 +19,7 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
         m_titleTextField->setInkColor(QColor("#333"));
         m_titleTextField->setTextColor(QColor("#333"));
         m_titleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
-        m_titleTextField->setPlaceholderText("Please, type a title for your task.");
+        m_titleTextField->setPlaceholderText("Enter the task title, plaese.");
         m_titleTextField->setFont(QFont("Roboto", 16, QFont::Normal));
         //m_titleTextField->setShowInputLine(false);
         containerLayout->addWidget(m_titleTextField);
@@ -39,7 +39,7 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
 
         //descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid #dfdfdf; background-color: #efefef; }");
         m_descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid transparent; }");
-        m_descriptionTextEdit->setPlaceholderText("Please, type a short description for your task (markdown supported).");
+        m_descriptionTextEdit->setPlaceholderText("You could enter a short description for your task (markdown supported).");
         containerLayout->addWidget(m_descriptionTextEdit);
     this->setLayout(containerLayout);
     this->setContentsMargins(0, 0, 0, 0);
