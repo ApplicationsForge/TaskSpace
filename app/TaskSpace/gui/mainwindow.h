@@ -23,6 +23,7 @@
 #include "libs/qt-material-widgets-master/components/qtmaterialdialog.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialfab.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialtextfield.h"
+#include "libs/qt-material-widgets-master/components/qtmaterialscrollbar.h"
 
 #include "libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h"
 

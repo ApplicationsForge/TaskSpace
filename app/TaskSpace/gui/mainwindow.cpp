@@ -376,20 +376,25 @@ void MainWindow::showTaskDialog(Task task)
     QDialog *taskDialog = new QDialog(this);
     taskDialog->setWindowTitle(task.decoratedBaseInformation());
     taskDialog->setMinimumSize(400, 300);
-    taskDialog->setStyleSheet("QDialog {background-color: #fff;}");
+    //taskDialog->setStyleSheet("QDialog {background-color: #fff;}");
     QVBoxLayout* dialogLayout = new QVBoxLayout(taskDialog);
         QWidget* containerWidget = new QWidget(taskDialog);
             QVBoxLayout* containerLayout = new QVBoxLayout(containerWidget);
+                QLabel* taskTitleLabel = new QLabel("Title:", containerWidget);
+                taskTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+                containerLayout->addWidget(taskTitleLabel);
+
                 QtMaterialTextField* taskTitleTextField = new QtMaterialTextField(containerWidget);
                 taskTitleTextField->setText(task.title());
-                taskTitleTextField->setLabel("Title");
+                //taskTitleTextField->setLabel("Title");
                 taskTitleTextField->setLabelFontSize(16);
                 taskTitleTextField->setLabelColor(QColor("#333"));
                 taskTitleTextField->setInkColor(QColor("#333"));
                 taskTitleTextField->setTextColor(QColor("#333"));
-                taskTitleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
-                taskTitleTextField->setPlaceholderText("Please, type a title for your task");
+                //taskTitleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+                taskTitleTextField->setPlaceholderText("Please, type a title for your task.");
                 taskTitleTextField->setFont(QFont("Roboto", 16, QFont::Normal));
+                taskTitleTextField->setShowInputLine(false);
                 containerLayout->addWidget(taskTitleTextField);
 
                 /*QWidget* taskFormWidget = new QWidget(containerWidget);
@@ -401,13 +406,18 @@ void MainWindow::showTaskDialog(Task task)
                     taskFormWidget->setLayout(taskFormWidgetLayout);
                 containerLayout->addWidget(taskFormWidget);*/
 
-                QLabel* taskDescriptionLabel = new QLabel("Description", containerWidget);
+                QLabel* taskDescriptionLabel = new QLabel("Description:", containerWidget);
                 taskDescriptionLabel->setFont(QFont("Roboto", 16, QFont::Normal));
                 containerLayout->addWidget(taskDescriptionLabel);
 
                 QMarkdownTextEdit* descriptionTextEdit = new QMarkdownTextEdit(containerWidget);
+                //descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid #dfdfdf; background-color: #efefef; }");
+                descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid transparent; }");
                 //descriptionTextEdit->setEnabled(false);
+                descriptionTextEdit->setPlaceholderText("Please, type a shord description for your task (markdown supported).");
                 containerLayout->addWidget(descriptionTextEdit);
+
+
                 //containerLayout->addWidget(new QDialogButtonBox(containerWidget));
         containerWidget->setLayout(containerLayout);
     dialogLayout->addWidget(containerWidget);
