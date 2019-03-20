@@ -57,14 +57,21 @@ private:
     QList<TaskListWidget*> m_taskListWidgets;
 
     void setupWidgets();
+
     void setupAppBar();
+
     void setupDrawer();
+
     void setupStatusBar();
+
     void setupDashboardTab();
+
     void setupBacklogTab();
+
     void setupSettingsTab();
 
     void setupConnections();
+
     void resetConnections();
 
     void clearAllTaskLists();
@@ -84,13 +91,20 @@ private slots:
     void showGauge();
 
     void showFocusTimerDialog();
+
     void showTaskDialog(Task task, bool newTask = false);
 
     void onSelectDbToolButton_clicked();
-    void onTaskListWidget_TaskDropped(size_t taskIndex, QString status);
+
     void onRouter_TasksUpdated();
+
     void onAddNewTaskButton_Clicked();
+
     void onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
+
+    void onTaskListWidget_TaskDropped(size_t taskIndex, QString status);
+
+    void onTaskViewerWidget_TaskCreated(QString title, QString description);
 };
 
 #endif // MAINWINDOW_H

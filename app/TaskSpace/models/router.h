@@ -19,6 +19,8 @@ public:
      void addExampleTask();
 
      void changeTaskStatus(size_t taskIndex, QString status);
+
+     void createNewTask(QString title, QString description);
 private:
     explicit Router(QObject *parent = nullptr);
 

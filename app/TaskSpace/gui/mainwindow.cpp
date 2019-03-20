@@ -384,6 +384,7 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
                 TaskViewerWidget* taskViewerWidget = new TaskViewerWidget(containerWidget);
                 taskViewerWidget->setInputLocked(!newTask);
                 taskViewerWidget->setTaskTitle(task.title());
+                QObject::connect(taskViewerWidget, SIGNAL(taskCreated(QString, QString)), this, SLOT(onTaskViewerWidget_TaskCreated(QString, QString)));
                 containerWidgetLayout->addWidget(taskViewerWidget);
 
                 QWidget* actionsContainerWidget = new QWidget(containerWidget);
@@ -419,12 +420,6 @@ void MainWindow::onSelectDbToolButton_clicked()
     {
         router.getRepository()->setDbPath(path);
     }
-}
-
-void MainWindow::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
-{
-    Router& router = Router::getInstance();
-    router.changeTaskStatus(taskIndex, status);
 }
 
 void MainWindow::onRouter_TasksUpdated()
@@ -493,3 +488,16 @@ void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskLi
     Task task = router.getRepository()->getTaskByIndex(taskIndex);
     this->showTaskDialog(task, false);
 }
+
+void MainWindow::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
+{
+    Router& router = Router::getInstance();
+    router.changeTaskStatus(taskIndex, status);
+}
+
+void MainWindow::onTaskViewerWidget_TaskCreated(QString title, QString description)
+{
+    Router& router = Router::getInstance();
+    router.createNewTask(title, description);
+}
+
