@@ -378,11 +378,25 @@ void MainWindow::showTaskDialog(Task task)
     taskDialog->setMinimumSize(400, 300);
     QVBoxLayout* dialogLayout = new QVBoxLayout(taskDialog);
         QWidget* containerWidget = new QWidget(taskDialog);
+        containerWidget->setStyleSheet("QWidget {background-color: #fff;}");
             QVBoxLayout* containerLayout = new QVBoxLayout(containerWidget);
+                QtMaterialTextField* taskTitleTextField = new QtMaterialTextField(containerWidget);
+                taskTitleTextField->setText(task.title());
+                taskTitleTextField->setLabel("Task Title");
+                taskTitleTextField->setLabelFontSize(16);
+                taskTitleTextField->setLabelColor(QColor("#333"));
+                taskTitleTextField->setInkColor(QColor("#333"));
+                taskTitleTextField->setTextColor(QColor("#333"));
+                taskTitleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+                taskTitleTextField->setPlaceholderText("Please, type a title for your task");
+                taskTitleTextField->setFont(QFont("Roboto", 16, QFont::Normal));
+                containerLayout->addWidget(taskTitleTextField);
+
                 QWidget* taskFormWidget = new QWidget(containerWidget);
                     QFormLayout* taskFormWidgetLayout = new QFormLayout(taskFormWidget);
                         QLineEdit* taskTitleLineEdit = new QLineEdit(taskFormWidget);
                         taskTitleLineEdit->setText(task.title());
+                        taskTitleLineEdit->setEnabled(false);
                         taskFormWidgetLayout->addRow("Title", taskTitleLineEdit);
                     taskFormWidget->setLayout(taskFormWidgetLayout);
                 containerLayout->addWidget(taskFormWidget);
