@@ -35,55 +35,23 @@ void MyListWidget::keyPressEvent(QKeyEvent *keyEvent)
 
 void MyListWidget::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-item")) {
-        event->accept();
-        event->setDropAction(Qt::MoveAction);
-        QListWidgetItem *item = new QListWidgetItem;
-        QString name = event->mimeData()->data("application/x-item");
-        item->setText(name);
-        //item->setIcon(QIcon(":/images/iString")); //set path to image
-        addItem(item);
-        emit dropAction(name);
-    } else
-        event->ignore();
-}
+    const QMimeData *mimeData = event->mimeData();
+    //qDebug() << mimeData << mimeData->formats();
 
-void MyListWidget::startDrag(Qt::DropActions supportedActions)
-{
-    QListWidgetItem* item = currentItem();
-    QMimeData* mimeData = new QMimeData;
-    QByteArray ba;
-    ba = item->text().toUtf8();
-    mimeData->setData("application/x-item", ba);
-    QDrag* drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    if (drag->exec(Qt::MoveAction) == Qt::MoveAction) {
-        delete takeItem(row(item));
-        //emit itemDroped();
+    QByteArray encoded = mimeData->data("application/x-qabstractitemmodeldatalist");
+    QDataStream stream(&encoded, QIODevice::ReadOnly);
+
+    while (!stream.atEnd())
+    {
+        int row, col;
+        QMap<int,  QVariant> roleDataMap;
+        stream >> row >> col >> roleDataMap;
+
+        QString text = roleDataMap.first().toString();
+        emit this->dropAction(text);
     }
+    event->acceptProposedAction();
 }
-
-void MyListWidget::dragEnterEvent(QDragEnterEvent *event)
-{
-    if (event->mimeData()->hasFormat("application/x-item"))
-        event->accept();
-    else
-        event->ignore();
-}
-
-void MyListWidget::dragMoveEvent(QDragMoveEvent *e)
-{
-    if (e->mimeData()->hasFormat("application/x-item") && e->source() != this) {
-        e->setDropAction(Qt::MoveAction);
-        e->accept();
-    } else
-        e->ignore();
-}
-
-/*Qt::DropAction MyListWidget::supportedDropActions()
-{
-    return Qt::MoveAction;
-}*/
 
 void MyListWidget::keyReturnPressed(QModelIndex selectedItemIndex)
 {

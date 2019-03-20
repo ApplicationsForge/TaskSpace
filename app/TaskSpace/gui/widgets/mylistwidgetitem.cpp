@@ -1,4 +1,4 @@
-#include "my_list_widget_item.h"
+#include "mylistwidgetitem.h"
 
 MyListWidgetItem::MyListWidgetItem(QString index, QString title, QWidget *parent) :
     MyListWidgetItem(index, title, "", QDate(), QStringList(), QStringList(), parent)

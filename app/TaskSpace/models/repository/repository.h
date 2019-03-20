@@ -7,6 +7,7 @@
 #include <QtDebug>
 
 #include "models/settings_manager/settings_manager.h"
+#include "models/types/task/task.h"
 
 class Router;
 
@@ -17,19 +18,26 @@ public:
     explicit Repository(QObject *parent = nullptr);
     ~Repository();
 
-    QString helloString() const;
-    void setHelloString(const QString &helloString);
-
     QString dbPath() const;
     void setDbPath(const QString &dbPath);
 
+    QStringList getAvaliableStatuses();
+
+    QList<Task> getTasks() const;
+    QList<Task> getTasks(QString status) const;
+    void setTasks(const QList< QSharedPointer<Task> > &tasks);
+    void addTask(Task task);
+    void changeTaskStatus(size_t taskIndex, QString status);
+    int getTaskCountByStatus(QString status);
+
 private:
-    QString m_helloString = "Here is your TaskSpace!";
     QScopedPointer<SettingsManager> m_settingsManager;
 
     QString m_dbPath;
+    QList< QSharedPointer<Task> > m_tasks;
 
     void loadSettings();
+    void loadMockData();
 
     bool initDb(QString path="");
 
@@ -37,6 +45,7 @@ private:
 
 signals:
     void dbPathChanged(QString path);
+    void tasksUpdated();
 
 public slots:
 };

@@ -2,21 +2,33 @@
 #define TASK_H
 
 #include <QString>
-#include <QDate>
+#include <QDateTime>
 
 class Task
 {
 public:
-    Task();
+    Task(size_t index, QString title, QString status);
+
+    size_t index() const;
+
+    QString title() const;
+    void setTitle(const QString &title);
+
+    QString status() const;
+    void setStatus(const QString &status);
+
+    QString decoratedBaseInformation();
+
+    QDateTime updatedAt() const;
+    void setUpdatedAt(const QDateTime &updatedAt = QDateTime::currentDateTime());
+
+    bool operator< (const Task &task) const;
 
 private:
     size_t m_index;
     QString m_title;
     QString m_status;
-    QDate m_dueTo;
-    QString m_description;
-    QStringList m_tags;
-    QStringList m_users;
+    QDateTime m_updatedAt;
 };
 
 #endif // TASK_H

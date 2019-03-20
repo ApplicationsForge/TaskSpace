@@ -25,7 +25,9 @@
 #include "libs/Qt-custom-gauge-widget-master/source/qcgaugewidget.h"
 
 #include "gui/widgets/task_list_widget.h"
-#include "gui/widgets/my_list_widget_item.h"
+#include "gui/widgets/burndown_chart_widget.h"
+#include "gui/widgets/task_status_chart_widget.h"
+#include "gui/widgets/mylistwidgetitem.h"
 
 namespace Ui {
 class MainWindow;
@@ -42,10 +44,25 @@ public:
 private:
     Ui::MainWindow *ui;
 
+    QMap<QString, QWidget*> m_widgets;
+
     QtMaterialAppBar *const m_appBar;
     QtMaterialDrawer *const m_drawer;
 
+    QList<TaskListWidget*> m_taskListWidgets;
+
     void setupWidgets();
+    void setupAppBar();
+    void setupDrawer();
+    void setupStatusBar();
+    void setupDashboardTab();
+    void setupBacklogTab();
+    void setupSettingsTab();
+
+    void setupConnections();
+    void resetConnections();
+
+    void clearAllTaskLists();
 
 private slots:
 
@@ -64,6 +81,8 @@ private slots:
     void showFocusTimerDialog();
 
     void onSelectDbToolButton_clicked();
+    void onRouter_TasksUpdated();
+    void onAddNewTaskButton_Clicked();
 };
 
 #endif // MAINWINDOW_H
