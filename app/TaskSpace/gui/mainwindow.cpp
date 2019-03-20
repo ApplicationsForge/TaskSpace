@@ -371,20 +371,26 @@ void MainWindow::showFocusTimerDialog()
     focusTimerDialog->show();
 }
 
-void MainWindow::showTaskDialog(QString title)
+void MainWindow::showTaskDialog(Task task)
 {
     QDialog *taskDialog = new QDialog(this);
-    taskDialog->setWindowTitle(title);
+    taskDialog->setWindowTitle(task.decoratedBaseInformation());
     taskDialog->setMinimumSize(400, 300);
     QVBoxLayout* dialogLayout = new QVBoxLayout(taskDialog);
         QWidget* containerWidget = new QWidget(taskDialog);
             QVBoxLayout* containerLayout = new QVBoxLayout(containerWidget);
-            containerLayout->addWidget(new QLabel("test", containerWidget));
+                QWidget* taskFormWidget = new QWidget(containerWidget);
+                    QFormLayout* taskFormWidgetLayout = new QFormLayout(taskFormWidget);
+                        QLineEdit* taskTitleLineEdit = new QLineEdit(taskFormWidget);
+                        taskTitleLineEdit->setText(task.title());
+                    taskFormWidgetLayout->addRow("Title", taskTitleLineEdit);
+                taskFormWidget->setLayout(taskFormWidgetLayout);
+                containerLayout->addWidget(taskFormWidget);
 
-            QMarkdownTextEdit* descriptionTextEdit = new QMarkdownTextEdit(containerWidget);
-            //descriptionTextEdit->setEnabled(false);
-            containerLayout->addWidget(descriptionTextEdit);
-            //containerLayout->addWidget(new QDialogButtonBox(containerWidget));
+                QMarkdownTextEdit* descriptionTextEdit = new QMarkdownTextEdit(containerWidget);
+                //descriptionTextEdit->setEnabled(false);
+                containerLayout->addWidget(descriptionTextEdit);
+                //containerLayout->addWidget(new QDialogButtonBox(containerWidget));
         containerWidget->setLayout(containerLayout);
     dialogLayout->addWidget(containerWidget);
     taskDialog->setLayout(dialogLayout);
@@ -442,5 +448,28 @@ void MainWindow::onAddNewTaskButton_Clicked()
 
 void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskListWidgetItem)
 {
-    this->showTaskDialog(taskListWidgetItem->text());
+    Router& router = Router::getInstance();
+    QString itemText = taskListWidgetItem->text();
+
+    QRegExp rawIndexRegExp = QRegExp("\\[(\\s)*[0-9]*(\\s)*\\]");
+    rawIndexRegExp.indexIn(itemText);
+    QStringList rawIndexRegExpResult = rawIndexRegExp.capturedTexts();
+    if(rawIndexRegExpResult.length() <= 0)
+    {
+        QMessageBox(QMessageBox::Warning, "Parse Error", "Can not find taskIndex " + itemText).exec();
+        return;
+    }
+    QString rawTaskIndex = rawIndexRegExpResult.first();
+    rawTaskIndex = rawTaskIndex.remove("[");
+    rawTaskIndex = rawTaskIndex.remove("]");
+
+    bool ok = false;
+    size_t taskIndex = rawTaskIndex.toUInt(&ok);
+    if(!ok) {
+        QMessageBox(QMessageBox::Warning, "Parse Error", "Can not parse taskIndex in " + rawTaskIndex).exec();
+        return;
+    }
+
+    Task task = router.getRepository()->getTaskByIndex(taskIndex);
+    this->showTaskDialog(task);
 }

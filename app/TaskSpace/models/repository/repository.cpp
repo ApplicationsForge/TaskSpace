@@ -91,6 +91,18 @@ int Repository::getTaskCountByStatus(QString status)
     return this->getTasks(status).length();
 }
 
+Task Repository::getTaskByIndex(size_t taskIndex) const
+{
+    QList<Task> tasks = this->getTasks();
+    for(auto task : tasks) {
+        if(task.index() == taskIndex) {
+            return task;
+        }
+    }
+
+    throw std::invalid_argument("Can not find task with index " + std::to_string(taskIndex));
+}
+
 void Repository::loadSettings()
 {
     try {

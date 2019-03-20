@@ -12,6 +12,7 @@
 #include <QToolButton>
 #include <QFileDialog>
 #include <QDialogButtonBox>
+#include <QFormLayout>
 
 #include "models/router.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"
@@ -83,7 +84,7 @@ private slots:
     void showGauge();
 
     void showFocusTimerDialog();
-    void showTaskDialog(QString title);
+    void showTaskDialog(Task task);
 
     void onSelectDbToolButton_clicked();
     void onRouter_TasksUpdated();

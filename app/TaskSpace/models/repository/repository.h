@@ -29,6 +29,7 @@ public:
     void addTask(Task task);
     void changeTaskStatus(size_t taskIndex, QString status);
     int getTaskCountByStatus(QString status);
+    Task getTaskByIndex(size_t taskIndex) const;
 
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
