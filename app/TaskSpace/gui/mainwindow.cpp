@@ -269,7 +269,7 @@ void MainWindow::setupSettingsTab()
             dbPathWidget->layout()->addWidget(dbPathTitleLabel);
 
             QLabel *dbPathValueLabel = new QLabel(dbPath, dbPathWidget);
-            QObject::connect(router.getRepository(), SIGNAL(dbPathChanged(QString)), dbPathValueLabel, SLOT(setText(QString)));
+            QObject::connect(&router, SIGNAL(dbPathChanged(QString)), dbPathValueLabel, SLOT(setText(QString)));
             dbPathWidget->layout()->addWidget(dbPathValueLabel);
 
             QToolButton* selectDbToolButton = new QToolButton(dbPathWidget);

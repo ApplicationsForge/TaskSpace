@@ -42,9 +42,11 @@ private:
 
 signals:
     void tasksUpdated();
+    void dbPathChanged(QString path);
 
 public slots:
     void onRepository_TasksUpdated();
+    void onRepository_DbPathChanged(QString path);
 };
 
 #endif // ROUTER_H

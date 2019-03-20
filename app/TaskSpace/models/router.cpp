@@ -53,15 +53,23 @@ void Router::updateTask(size_t index, QString title, QString description)
 void Router::setupConnections()
 {
     QObject::connect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
+    QObject::connect(m_repository.data(), SIGNAL(dbPathChanged(QString)), this, SLOT(onRepository_DbPathChanged(QString)));
+
 }
 
 void Router::resetConnections()
 {
     QObject::disconnect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
+    QObject::disconnect(m_repository.data(), SIGNAL(dbPathChanged(QString)), this, SLOT(onRepository_DbPathChanged(QString)));
 }
 
 void Router::onRepository_TasksUpdated()
 {
     //qDebug() << "Router::onRepository_TasksUpdated";
     emit this->tasksUpdated();
+}
+
+void Router::onRepository_DbPathChanged(QString path)
+{
+    emit this->dbPathChanged(path);
 }
