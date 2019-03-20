@@ -383,8 +383,8 @@ void MainWindow::showTaskDialog(Task task)
                     QFormLayout* taskFormWidgetLayout = new QFormLayout(taskFormWidget);
                         QLineEdit* taskTitleLineEdit = new QLineEdit(taskFormWidget);
                         taskTitleLineEdit->setText(task.title());
-                    taskFormWidgetLayout->addRow("Title", taskTitleLineEdit);
-                taskFormWidget->setLayout(taskFormWidgetLayout);
+                        taskFormWidgetLayout->addRow("Title", taskTitleLineEdit);
+                    taskFormWidget->setLayout(taskFormWidgetLayout);
                 containerLayout->addWidget(taskFormWidget);
 
                 QMarkdownTextEdit* descriptionTextEdit = new QMarkdownTextEdit(containerWidget);
