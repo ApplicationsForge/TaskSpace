@@ -61,3 +61,10 @@ void TaskViewerWidget::changeLockStatus()
 {
     this->setInputLocked(!m_inputLocked);
 }
+
+void TaskViewerWidget::saveTaskData()
+{
+    QString title = m_titleTextField->text();
+    QString description = m_descriptionTextEdit->toPlainText();
+    emit this->taskCreated(title, description);
+}

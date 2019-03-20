@@ -87,6 +87,7 @@ private slots:
     void showTaskDialog(Task task, bool newTask = false);
 
     void onSelectDbToolButton_clicked();
+    void onTaskListWidget_TaskDropped(size_t taskIndex, QString status);
     void onRouter_TasksUpdated();
     void onAddNewTaskButton_Clicked();
     void onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);

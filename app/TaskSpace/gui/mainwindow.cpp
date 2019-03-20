@@ -235,7 +235,7 @@ void MainWindow::setupBacklogTab()
                 {
                     TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
                     taskListWidget->setObjectName(status + "TaskListWidget");
-                    QObject::connect(taskListWidget, SIGNAL(taskDropped(size_t, QString)), &router, SLOT(onTaskListWidget_TaskDropped(size_t, QString)));
+                    QObject::connect(taskListWidget, SIGNAL(taskDropped(size_t, QString)), this, SLOT(onTaskListWidget_TaskDropped(size_t, QString)));
                     QObject::connect(taskListWidget->list(), SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem*)));
                     //m_widgets.insert(taskListWidget->objectName(), taskListWidget);
                     m_taskListWidgets.append(taskListWidget);
@@ -395,7 +395,9 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
                        QObject::connect(editOrLockButton, SIGNAL(clicked()), taskViewerWidget, SLOT(changeLockStatus()));
                        actionsContainerWidgetLayout->addWidget(editOrLockButton);
 
-                       actionsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Save", actionsContainerWidget));
+                       QtMaterialRaisedButton *saveTaskButton = new QtMaterialRaisedButton("Save", actionsContainerWidget);
+                       QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(saveTaskData()));
+                       actionsContainerWidgetLayout->addWidget(saveTaskButton);
 
                        QtMaterialRaisedButton *closeButton = new QtMaterialRaisedButton("Close", actionsContainerWidget);
                        QObject::connect(closeButton, SIGNAL(clicked()), taskDialog, SLOT(close()));
@@ -417,6 +419,12 @@ void MainWindow::onSelectDbToolButton_clicked()
     {
         router.getRepository()->setDbPath(path);
     }
+}
+
+void MainWindow::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
+{
+    Router& router = Router::getInstance();
+    router.changeTaskStatus(taskIndex, status);
 }
 
 void MainWindow::onRouter_TasksUpdated()

@@ -26,9 +26,12 @@ private:
     bool m_inputLocked;
 
 signals:
+    void taskCreated(QString title, QString description);
+    void taskUpdated(size_t index, QString title, QString description);
 
 public slots:
     void changeLockStatus();
+    void saveTaskData();
 };
 
 #endif // TASK_VIEWER_WIDGET_H
