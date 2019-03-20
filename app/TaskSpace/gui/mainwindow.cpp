@@ -380,7 +380,10 @@ void MainWindow::showTaskDialog(QString title)
         QWidget* containerWidget = new QWidget(taskDialog);
             QVBoxLayout* containerLayout = new QVBoxLayout(containerWidget);
             containerLayout->addWidget(new QLabel("test", containerWidget));
-            containerLayout->addWidget(new QMarkdownTextEdit(containerWidget));
+
+            QMarkdownTextEdit* descriptionTextEdit = new QMarkdownTextEdit(containerWidget);
+            //descriptionTextEdit->setEnabled(false);
+            containerLayout->addWidget(descriptionTextEdit);
             //containerLayout->addWidget(new QDialogButtonBox(containerWidget));
         containerWidget->setLayout(containerLayout);
     dialogLayout->addWidget(containerWidget);
