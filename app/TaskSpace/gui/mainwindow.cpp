@@ -376,13 +376,13 @@ void MainWindow::showTaskDialog(Task task)
     QDialog *taskDialog = new QDialog(this);
     taskDialog->setWindowTitle(task.decoratedBaseInformation());
     taskDialog->setMinimumSize(400, 300);
+    taskDialog->setStyleSheet("QDialog {background-color: #fff;}");
     QVBoxLayout* dialogLayout = new QVBoxLayout(taskDialog);
         QWidget* containerWidget = new QWidget(taskDialog);
-        containerWidget->setStyleSheet("QWidget {background-color: #fff;}");
             QVBoxLayout* containerLayout = new QVBoxLayout(containerWidget);
                 QtMaterialTextField* taskTitleTextField = new QtMaterialTextField(containerWidget);
                 taskTitleTextField->setText(task.title());
-                taskTitleTextField->setLabel("Task Title");
+                taskTitleTextField->setLabel("Title");
                 taskTitleTextField->setLabelFontSize(16);
                 taskTitleTextField->setLabelColor(QColor("#333"));
                 taskTitleTextField->setInkColor(QColor("#333"));
@@ -392,14 +392,18 @@ void MainWindow::showTaskDialog(Task task)
                 taskTitleTextField->setFont(QFont("Roboto", 16, QFont::Normal));
                 containerLayout->addWidget(taskTitleTextField);
 
-                QWidget* taskFormWidget = new QWidget(containerWidget);
+                /*QWidget* taskFormWidget = new QWidget(containerWidget);
                     QFormLayout* taskFormWidgetLayout = new QFormLayout(taskFormWidget);
                         QLineEdit* taskTitleLineEdit = new QLineEdit(taskFormWidget);
                         taskTitleLineEdit->setText(task.title());
                         taskTitleLineEdit->setEnabled(false);
                         taskFormWidgetLayout->addRow("Title", taskTitleLineEdit);
                     taskFormWidget->setLayout(taskFormWidgetLayout);
-                containerLayout->addWidget(taskFormWidget);
+                containerLayout->addWidget(taskFormWidget);*/
+
+                QLabel* taskDescriptionLabel = new QLabel("Description", containerWidget);
+                taskDescriptionLabel->setFont(QFont("Roboto", 16, QFont::Normal));
+                containerLayout->addWidget(taskDescriptionLabel);
 
                 QMarkdownTextEdit* descriptionTextEdit = new QMarkdownTextEdit(containerWidget);
                 //descriptionTextEdit->setEnabled(false);
