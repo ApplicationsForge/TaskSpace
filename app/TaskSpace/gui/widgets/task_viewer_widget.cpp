@@ -8,20 +8,20 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
     m_inputLocked(true)
 {
     QVBoxLayout* containerLayout = new QVBoxLayout(this);
-        QLabel* taskTitleLabel = new QLabel("Title:", this);
+        /*QLabel* taskTitleLabel = new QLabel("Title:", this);
         taskTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-        containerLayout->addWidget(taskTitleLabel);
+        containerLayout->addWidget(taskTitleLabel);*/
 
         m_titleTextField->setText("");
-        //taskTitleTextField->setLabel("Title");
+        m_titleTextField->setLabel("Title:");
         m_titleTextField->setLabelFontSize(16);
         m_titleTextField->setLabelColor(QColor("#333"));
         m_titleTextField->setInkColor(QColor("#333"));
         m_titleTextField->setTextColor(QColor("#333"));
-        //taskTitleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+        m_titleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
         m_titleTextField->setPlaceholderText("Please, type a title for your task.");
         m_titleTextField->setFont(QFont("Roboto", 16, QFont::Normal));
-        m_titleTextField->setShowInputLine(false);
+        //m_titleTextField->setShowInputLine(false);
         containerLayout->addWidget(m_titleTextField);
 
         /*QWidget* taskFormWidget = new QWidget(containerWidget);
@@ -33,9 +33,9 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
             taskFormWidget->setLayout(taskFormWidgetLayout);
         containerLayout->addWidget(taskFormWidget);*/
 
-        QLabel* taskDescriptionLabel = new QLabel("Description:", this);
+        /*QLabel* taskDescriptionLabel = new QLabel("Description:", this);
         taskDescriptionLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-        containerLayout->addWidget(taskDescriptionLabel);
+        containerLayout->addWidget(taskDescriptionLabel);*/
 
         //descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid #dfdfdf; background-color: #efefef; }");
         m_descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid transparent; }");
