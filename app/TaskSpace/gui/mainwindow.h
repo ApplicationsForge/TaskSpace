@@ -79,10 +79,12 @@ private slots:
     void showGauge();
 
     void showFocusTimerDialog();
+    void showTaskDialog(QString title);
 
     void onSelectDbToolButton_clicked();
     void onRouter_TasksUpdated();
     void onAddNewTaskButton_Clicked();
+    void onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
 };
 
 #endif // MAINWINDOW_H

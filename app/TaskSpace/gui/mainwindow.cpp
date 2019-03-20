@@ -236,6 +236,7 @@ void MainWindow::setupBacklogTab()
                     TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
                     taskListWidget->setObjectName(status + "TaskListWidget");
                     QObject::connect(taskListWidget, SIGNAL(taskDropped(size_t, QString)), &router, SLOT(onTaskListWidget_TaskDropped(size_t, QString)));
+                    QObject::connect(taskListWidget->list(), SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem*)));
                     //m_widgets.insert(taskListWidget->objectName(), taskListWidget);
                     m_taskListWidgets.append(taskListWidget);
                     scrollAreaContent->layout()->addWidget(taskListWidget);
@@ -370,6 +371,14 @@ void MainWindow::showFocusTimerDialog()
     focusTimerDialog->show();
 }
 
+void MainWindow::showTaskDialog(QString title)
+{
+    QDialog *taskDialog = new QDialog(this);
+    taskDialog->setWindowTitle(title);
+    taskDialog->setMinimumSize(400, 300);
+    taskDialog->exec();
+}
+
 void MainWindow::onSelectDbToolButton_clicked()
 {
     Router& router = Router::getInstance();
@@ -417,4 +426,9 @@ void MainWindow::onAddNewTaskButton_Clicked()
 {
     Router& router = Router::getInstance();
     router.addExampleTask();
+}
+
+void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskListWidgetItem)
+{
+    this->showTaskDialog(taskListWidgetItem->text());
 }
