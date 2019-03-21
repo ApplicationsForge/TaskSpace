@@ -7,6 +7,8 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
     m_descriptionWidget(new QMarkdownTextEdit(this)),
     m_datePickerWidget(new QCalendarWidget(this)),
     m_withoutDateCheckBoxWidget(new QtMaterialCheckBox(this)),
+    m_estimatedTimeWidget(new QTimeEdit(this)),
+    m_actualTimeWidget(new QTimeEdit(this)),
     m_editingEnable(true)
 {
     QVBoxLayout* containerLayout = new QVBoxLayout(this);
@@ -38,30 +40,49 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
         taskDescriptionLabel->setFont(QFont("Roboto", 16, QFont::Normal));
         containerLayout->addWidget(taskDescriptionLabel);*/
 
-        QWidget* descriptionAndDateContainerWidget = new QWidget(this);
-            QHBoxLayout* descriptionAndDateContainerWidgetLayout = new QHBoxLayout(descriptionAndDateContainerWidget);
-            descriptionAndDateContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
-                m_descriptionWidget->setParent(descriptionAndDateContainerWidget);
+        QWidget* baseInformationContainerWidget = new QWidget(this);
+            QHBoxLayout* baseInformationContainerWidgetLayout = new QHBoxLayout(baseInformationContainerWidget);
+            baseInformationContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
+                m_descriptionWidget->setParent(baseInformationContainerWidget);
                 m_descriptionWidget->setStyleSheet("QMarkdownTextEdit { border: 1px solid transparent; }");
                 m_descriptionWidget->setPlaceholderText("You could enter a short description for your task (markdown supported).");
-                descriptionAndDateContainerWidgetLayout->addWidget(m_descriptionWidget);
+                baseInformationContainerWidgetLayout->addWidget(m_descriptionWidget);
 
-                QWidget* dateContainerWidget = new QWidget(descriptionAndDateContainerWidget);
-                    QVBoxLayout* dateContainerWidgetLayout = new QVBoxLayout(dateContainerWidget);
-                    dateContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
-                        m_datePickerWidget->setParent(dateContainerWidget);
-                        dateContainerWidgetLayout->addWidget(m_datePickerWidget);
+                QWidget* timeSettingsContainerWidget = new QWidget(baseInformationContainerWidget);
+                    QVBoxLayout* timeSettingsContainerWidgetLayout = new QVBoxLayout(timeSettingsContainerWidget);
+                    timeSettingsContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
+                        QLabel* dueToDateLabel = new QLabel("DueTo date:", timeSettingsContainerWidget);
+                        dueToDateLabel->setFont(QFont("Roboto", 14, QFont::Normal));
+                        timeSettingsContainerWidgetLayout->addWidget(dueToDateLabel);
 
-                        m_withoutDateCheckBoxWidget->setParent(dateContainerWidget);
+                        m_datePickerWidget->setParent(timeSettingsContainerWidget);
+                        timeSettingsContainerWidgetLayout->addWidget(m_datePickerWidget);
+
+                        m_withoutDateCheckBoxWidget->setParent(timeSettingsContainerWidget);
                         m_withoutDateCheckBoxWidget->setText("Task without due to date");
                         m_withoutDateCheckBoxWidget->setFont(QFont("Roboto", 14, QFont::Normal));
                         m_withoutDateCheckBoxWidget->setCheckedColor(QColor("#333"));
-                        dateContainerWidgetLayout->addWidget(m_withoutDateCheckBoxWidget);
-                    dateContainerWidget->setLayout(dateContainerWidgetLayout);
-                descriptionAndDateContainerWidgetLayout->addWidget(dateContainerWidget);
+                        timeSettingsContainerWidgetLayout->addWidget(m_withoutDateCheckBoxWidget);
 
-            descriptionAndDateContainerWidget->setLayout(descriptionAndDateContainerWidgetLayout);
-        containerLayout->addWidget(descriptionAndDateContainerWidget);
+                        QLabel* estimatedTimeLabel = new QLabel("Estimated Time (hh:mm):", timeSettingsContainerWidget);
+                        estimatedTimeLabel->setFont(QFont("Roboto", 14, QFont::Normal));
+                        timeSettingsContainerWidgetLayout->addWidget(estimatedTimeLabel);
+
+                        m_estimatedTimeWidget->setParent(timeSettingsContainerWidget);
+                        timeSettingsContainerWidgetLayout->addWidget(m_estimatedTimeWidget);
+
+                        QLabel* actualTimeLabel = new QLabel("Actual Time (hh:mm):", timeSettingsContainerWidget);
+                        actualTimeLabel->setFont(QFont("Roboto", 14, QFont::Normal));
+                        timeSettingsContainerWidgetLayout->addWidget(actualTimeLabel);
+
+                        m_actualTimeWidget->setParent(timeSettingsContainerWidget);
+                        timeSettingsContainerWidgetLayout->addWidget(m_actualTimeWidget);
+
+                    timeSettingsContainerWidget->setLayout(timeSettingsContainerWidgetLayout);
+                baseInformationContainerWidgetLayout->addWidget(timeSettingsContainerWidget);
+
+            baseInformationContainerWidget->setLayout(baseInformationContainerWidgetLayout);
+        containerLayout->addWidget(baseInformationContainerWidget);
     this->setLayout(containerLayout);
 }
 
@@ -83,19 +104,21 @@ void TaskViewerWidget::setEditingEnable(bool enable)
     m_descriptionWidget->setReadOnly(!m_editingEnable);
     m_datePickerWidget->setEnabled(m_editingEnable);
     m_withoutDateCheckBoxWidget->setEnabled(m_editingEnable);
+    m_estimatedTimeWidget->setEnabled(m_editingEnable);
+    m_actualTimeWidget->setEnabled(m_editingEnable);
 }
 
-void TaskViewerWidget::setTaskTitle(QString title)
+void TaskViewerWidget::setTaskTitle(const QString &title)
 {
     m_titleWidget->setText(title);
 }
 
-void TaskViewerWidget::setTaskDescription(QString description)
+void TaskViewerWidget::setTaskDescription(const QString &description)
 {
     m_descriptionWidget->setText(description);
 }
 
-void TaskViewerWidget::setTaskDueToDate(QDate dueToDate)
+void TaskViewerWidget::setTaskDueToDate(const QDate &dueToDate)
 {
     m_datePickerWidget->setSelectedDate(dueToDate);
 }
@@ -103,6 +126,16 @@ void TaskViewerWidget::setTaskDueToDate(QDate dueToDate)
 void TaskViewerWidget::setTaskDueToDateEnabled(bool dueToDateEnabled)
 {
     m_withoutDateCheckBoxWidget->setChecked(!dueToDateEnabled);
+}
+
+void TaskViewerWidget::setTaskEstimatedTime(const QTime &estimatedTime)
+{
+    m_estimatedTimeWidget->setTime(estimatedTime);
+}
+
+void TaskViewerWidget::setTaskActualTime(const QTime &actualTime)
+{
+    m_actualTimeWidget->setTime(actualTime);
 }
 
 void TaskViewerWidget::saveTaskData()

@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QCalendarWidget>
 #include <QDebug>
+#include <QTimeEdit>
 
 #include "libs/qt-material-widgets-master/components/qtmaterialraisedbutton.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialflatbutton.h"
@@ -27,10 +28,12 @@ public:
     void setTaskIndex(long taskIndex);
     void setEditingEnable(bool enable);
 
-    void setTaskTitle(QString title);
-    void setTaskDescription(QString description);
-    void setTaskDueToDate(QDate dueToDate);
+    void setTaskTitle(const QString &title);
+    void setTaskDescription(const QString &description);
+    void setTaskDueToDate(const QDate &dueToDate);
     void setTaskDueToDateEnabled(bool dueToDateEnabled);
+    void setTaskEstimatedTime(const QTime &estimatedTime);
+    void setTaskActualTime(const QTime &actualTime);
 
 private:
     long m_taskIndex;
@@ -38,6 +41,8 @@ private:
     QMarkdownTextEdit* m_descriptionWidget;
     QCalendarWidget* m_datePickerWidget;
     QtMaterialCheckBox* m_withoutDateCheckBoxWidget;
+    QTimeEdit* m_estimatedTimeWidget;
+    QTimeEdit* m_actualTimeWidget;
     bool m_editingEnable;
 signals:
     void taskCreated(QString title, QString description);

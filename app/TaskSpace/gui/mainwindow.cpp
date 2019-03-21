@@ -388,6 +388,8 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
                 taskViewerWidget->setTaskDescription("# Test md");
                 taskViewerWidget->setTaskDueToDate(task.updatedAt().date());
                 taskViewerWidget->setTaskDueToDateEnabled(false);
+                taskViewerWidget->setTaskEstimatedTime(QTime(1, 30, 0, 0));
+                taskViewerWidget->setTaskActualTime(QTime(1, 35));
                 QObject::connect(taskViewerWidget, SIGNAL(taskCreated(QString, QString)), this, SLOT(onTaskViewerWidget_TaskCreated(QString, QString)));
                 QObject::connect(taskViewerWidget, SIGNAL(taskUpdated(size_t, QString, QString)), this, SLOT(onTaskViewerWidget_TaskUpdated(size_t, QString, QString)));
                 containerWidgetLayout->addWidget(taskViewerWidget);
