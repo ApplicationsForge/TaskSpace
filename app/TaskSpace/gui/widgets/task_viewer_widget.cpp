@@ -16,7 +16,7 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
         m_titleTextField->setLabel("Title:");
         m_titleTextField->setLabelFontSize(16);
         m_titleTextField->setInkColor(QColor("#333"));
-        m_titleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+        //m_titleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
         m_titleTextField->setPlaceholderText("Enter the task title, plaese.");
         m_titleTextField->setFont(QFont("Roboto", 16, QFont::Normal));
         //m_titleTextField->setShowInputLine(false);
@@ -53,7 +53,7 @@ void TaskViewerWidget::setInputLocked(bool inputLocked)
     m_inputLocked = inputLocked;
 
     m_titleTextField->setEnabled(!m_inputLocked);
-    m_descriptionTextEdit->setEnabled(!m_inputLocked);
+    m_descriptionTextEdit->setReadOnly(m_inputLocked);
 }
 
 long TaskViewerWidget::taskIndex() const
