@@ -142,6 +142,10 @@ void TaskViewerWidget::saveTaskData()
 {
     QString title = m_titleWidget->text();
     QString description = m_descriptionWidget->toPlainText();
+    QDate dueToDate = m_datePickerWidget->selectedDate();
+    bool dueToDateEnabled = !(m_withoutDateCheckBoxWidget->isChecked());
+    QTime estimatedTime = m_estimatedTimeWidget->time();
+    QTime actualTime = m_actualTimeWidget->time();
 
     if(title.length() <= 0)
     {
@@ -152,7 +156,13 @@ void TaskViewerWidget::saveTaskData()
 
     if(m_taskIndex >= 0)
     {
-        emit this->taskUpdated(size_t(m_taskIndex), title, description);
+        emit this->taskUpdated(size_t(m_taskIndex),
+                               title,
+                               description,
+                               dueToDate,
+                               dueToDateEnabled,
+                               estimatedTime,
+                               actualTime);
     }
     else
     {

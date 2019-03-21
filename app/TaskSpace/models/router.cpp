@@ -37,7 +37,7 @@ void Router::addExampleTask()
 
 void Router::changeTaskStatus(size_t taskIndex, QString status)
 {
-    m_repository->changeTaskStatus(taskIndex, status);
+    m_repository->updateTaskStatus(taskIndex, status);
 }
 
 void Router::createNewTask(QString title, QString description)
@@ -45,9 +45,15 @@ void Router::createNewTask(QString title, QString description)
     qDebug() << "Router::createNewTask" << title << description;
 }
 
-void Router::updateTask(size_t index, QString title, QString description)
+void Router::updateTask(size_t index,
+                        QString title,
+                        QString description,
+                        QDate dueToDate,
+                        bool dueToDateEnabled,
+                        QTime estimatedTime,
+                        QTime actualTime)
 {
-    qDebug() << "Router::updateTask" << index << title << description;
+    m_repository->updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
 }
 
 void Router::setupConnections()

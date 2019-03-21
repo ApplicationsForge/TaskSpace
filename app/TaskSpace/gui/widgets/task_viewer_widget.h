@@ -46,7 +46,13 @@ private:
     bool m_editingEnable;
 signals:
     void taskCreated(QString title, QString description);
-    void taskUpdated(size_t index, QString title, QString description);
+    void taskUpdated(size_t index,
+                     QString title,
+                     QString description,
+                     QDate dueToDate,
+                     bool withoutDueToDate,
+                     QTime estimatedTime,
+                     QTime actualTime);
 
 public slots:
     void saveTaskData();

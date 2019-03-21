@@ -106,7 +106,13 @@ private slots:
 
     void onTaskViewerWidget_TaskCreated(QString title, QString description);
 
-    void onTaskViewerWidget_TaskUpdated(size_t index, QString title, QString description);
+    void onTaskViewerWidget_TaskUpdated(size_t index,
+                                        QString title,
+                                        QString description,
+                                        QDate dueToDate,
+                                        bool dueToDateEnabled,
+                                        QTime estimatedTime,
+                                        QTime actualTime);
 };
 
 #endif // MAINWINDOW_H

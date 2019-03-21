@@ -386,13 +386,16 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
                 taskViewerWidget->setEditingEnable(newTask);
                 taskViewerWidget->setTaskIndex(long(task.index()));
                 taskViewerWidget->setTaskTitle(task.title());
-                taskViewerWidget->setTaskDescription("# Test md");
-                taskViewerWidget->setTaskDueToDate(task.updatedAt().date());
-                taskViewerWidget->setTaskDueToDateEnabled(false);
-                taskViewerWidget->setTaskEstimatedTime(QTime(1, 30, 0, 0));
-                taskViewerWidget->setTaskActualTime(QTime(1, 35));
+                taskViewerWidget->setTaskDescription(task.description());
+                taskViewerWidget->setTaskDueToDate(task.dueToDate());
+                taskViewerWidget->setTaskDueToDateEnabled(task.dueToDateEnabled());
+                taskViewerWidget->setTaskEstimatedTime(task.estimatedTime());
+                taskViewerWidget->setTaskActualTime(task.actualTime());
                 QObject::connect(taskViewerWidget, SIGNAL(taskCreated(QString, QString)), this, SLOT(onTaskViewerWidget_TaskCreated(QString, QString)));
-                QObject::connect(taskViewerWidget, SIGNAL(taskUpdated(size_t, QString, QString)), this, SLOT(onTaskViewerWidget_TaskUpdated(size_t, QString, QString)));
+                QObject::connect(taskViewerWidget,
+                                 SIGNAL(taskUpdated(size_t, QString, QString, QDate, bool, QTime, QTime)),
+                                 this,
+                                 SLOT(onTaskViewerWidget_TaskUpdated(size_t, QString, QString, QDate, bool, QTime, QTime)));
                 containerWidgetLayout->addWidget(taskViewerWidget);
 
                 QWidget* actionsContainerWidget = new QWidget(containerWidget);
@@ -509,9 +512,9 @@ void MainWindow::onTaskViewerWidget_TaskCreated(QString title, QString descripti
     router.createNewTask(title, description);
 }
 
-void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QString description)
+void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QString description, QDate dueToDate, bool dueToDateEnabled, QTime estimatedTime, QTime actualTime)
 {
     Router& router = Router::getInstance();
-    router.updateTask(index, title, description);
+    router.updateTask(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
 }
 

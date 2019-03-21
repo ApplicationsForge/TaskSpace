@@ -77,12 +77,17 @@ void Repository::addTask(Task task)
     emit this->tasksUpdated();
 }
 
-void Repository::changeTaskStatus(size_t taskIndex, QString status)
+void Repository::removeTask(size_t index)
 {
-    if(int(taskIndex) < m_tasks.size())
+    try
     {
-        m_tasks.at(int(taskIndex))->setStatus(status);
+        auto task = this->findTask(index);
+        m_tasks.removeAll(task);
         emit this->tasksUpdated();
+    }
+    catch (std::invalid_argument e)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
     }
 }
 
@@ -91,16 +96,48 @@ int Repository::getTaskCountByStatus(QString status)
     return this->getTasks(status).length();
 }
 
-Task Repository::getTaskByIndex(size_t taskIndex) const
+Task Repository::getTaskByIndex(size_t index) const
 {
-    QList<Task> tasks = this->getTasks();
-    for(auto task : tasks) {
-        if(task.index() == taskIndex) {
-            return task;
-        }
-    }
+    return *(this->findTask(index).data());
+}
 
-    throw std::invalid_argument("Can not find task with index " + std::to_string(taskIndex));
+void Repository::updateTaskStatus(size_t index, QString status)
+{
+    try
+    {
+        auto task = this->findTask(index);
+        task->setStatus(status);
+        emit this->tasksUpdated();
+    }
+    catch(std::invalid_argument e)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+    }
+}
+
+void Repository::updateTaskInfo(size_t index,
+                            QString title,
+                            QString description,
+                            QDate dueToDate,
+                            bool dueToDateEnabled,
+                            QTime estimatedTime,
+                            QTime actualTime)
+{
+    try
+    {
+        auto task = this->findTask(index);
+        task->setTitle(title);
+        task->setDescription(description);
+        task->setDueToDate(dueToDate);
+        task->setDueToDateEnabled(dueToDateEnabled);
+        task->setEstimatedTime(estimatedTime);
+        task->setActualTime(actualTime);
+        emit this->tasksUpdated();
+    }
+    catch (std::invalid_argument e)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+    }
 }
 
 void Repository::loadSettings()
@@ -127,4 +164,15 @@ void Repository::loadMockData()
 bool Repository::initDb(QString path)
 {
     return true;
+}
+
+QSharedPointer<Task> Repository::findTask(size_t index) const
+{
+    for(auto task : m_tasks) {
+        if(task->index() == index) {
+            return task;
+        }
+    }
+
+    throw std::invalid_argument("Can not find task with index " + std::to_string(index));
 }

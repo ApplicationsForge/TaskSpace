@@ -16,20 +16,38 @@ class Repository : public QObject
     Q_OBJECT
 public:
     explicit Repository(QObject *parent = nullptr);
+
     ~Repository();
 
     QString dbPath() const;
+
     void setDbPath(const QString &dbPath);
 
     QStringList getAvaliableStatuses();
 
     QList<Task> getTasks() const;
+
     QList<Task> getTasks(QString status) const;
+
     void setTasks(const QList< QSharedPointer<Task> > &tasks);
+
     void addTask(Task task);
-    void changeTaskStatus(size_t taskIndex, QString status);
+
+    void removeTask(size_t index);
+
     int getTaskCountByStatus(QString status);
-    Task getTaskByIndex(size_t taskIndex) const;
+
+    Task getTaskByIndex(size_t index) const;
+
+    void updateTaskStatus(size_t index, QString status);
+
+    void updateTaskInfo(size_t index,
+                    QString title,
+                    QString description,
+                    QDate dueToDate,
+                    bool dueToDateEnabled,
+                    QTime estimatedTime,
+                    QTime actualTime);
 
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
@@ -41,6 +59,8 @@ private:
     void loadMockData();
 
     bool initDb(QString path="");
+
+    QSharedPointer<Task> findTask(size_t index) const;
 
     friend class Router;
 

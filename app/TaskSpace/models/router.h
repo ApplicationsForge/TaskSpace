@@ -22,7 +22,13 @@ public:
 
      void createNewTask(QString title, QString description);
 
-     void updateTask(size_t index, QString title, QString description);
+     void updateTask(size_t index,
+                     QString title,
+                     QString description,
+                     QDate dueToDate = QDate(),
+                     bool dueToDateEnabled = true,
+                     QTime estimatedTime = QTime(0, 0),
+                     QTime actualTime = QTime(0, 0));
 
 private:
     explicit Router(QObject *parent = nullptr);
