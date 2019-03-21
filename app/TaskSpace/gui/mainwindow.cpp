@@ -382,9 +382,12 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
        QWidget* containerWidget = new QWidget(taskDialog);
            QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
                 TaskViewerWidget* taskViewerWidget = new TaskViewerWidget(containerWidget);
-                taskViewerWidget->setInputLocked(!newTask);
+                taskViewerWidget->setEditingEnable(newTask);
                 taskViewerWidget->setTaskIndex(long(task.index()));
                 taskViewerWidget->setTaskTitle(task.title());
+                taskViewerWidget->setTaskDescription("# Test md");
+                taskViewerWidget->setTaskDueToDate(task.updatedAt().date());
+                taskViewerWidget->setTaskDueToDateEnabled(false);
                 QObject::connect(taskViewerWidget, SIGNAL(taskCreated(QString, QString)), this, SLOT(onTaskViewerWidget_TaskCreated(QString, QString)));
                 QObject::connect(taskViewerWidget, SIGNAL(taskUpdated(size_t, QString, QString)), this, SLOT(onTaskViewerWidget_TaskUpdated(size_t, QString, QString)));
                 containerWidgetLayout->addWidget(taskViewerWidget);
@@ -395,11 +398,12 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
 
                        QtMaterialRaisedButton *editOrLockButton = new QtMaterialRaisedButton(actionsContainerWidget);
                        editOrLockButton->setText("Edit/Lock");
-                       QObject::connect(editOrLockButton, SIGNAL(clicked()), taskViewerWidget, SLOT(changeLockStatus()));
+                       QObject::connect(editOrLockButton, SIGNAL(clicked()), taskViewerWidget, SLOT(changeEditingEnableStatus()));
                        actionsContainerWidgetLayout->addWidget(editOrLockButton);
 
                        QtMaterialRaisedButton *saveTaskButton = new QtMaterialRaisedButton("Save", actionsContainerWidget);
                        QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(saveTaskData()));
+                       QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(disableEditing()));
                        actionsContainerWidgetLayout->addWidget(saveTaskButton);
 
                        QtMaterialRaisedButton *closeButton = new QtMaterialRaisedButton("Close", actionsContainerWidget);

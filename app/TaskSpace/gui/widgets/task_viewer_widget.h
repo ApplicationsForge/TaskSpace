@@ -5,10 +5,15 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
+#include <QCalendarWidget>
+#include <QDebug>
 
 #include "libs/qt-material-widgets-master/components/qtmaterialraisedbutton.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialflatbutton.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialtextfield.h"
+#include "libs/qt-material-widgets-master/components/qtmaterialcheckbox.h"
+
+#include <QCheckBox>
 
 #include "libs/qmarkdowntextedit/qmarkdowntextedit.h"
 
@@ -18,25 +23,31 @@ class TaskViewerWidget : public QWidget
 public:
     explicit TaskViewerWidget(QWidget *parent = nullptr);
 
-    void setTaskTitle(QString title);
-    void setInputLocked(bool inputLocked);
-
     long taskIndex() const;
     void setTaskIndex(long taskIndex);
+    void setEditingEnable(bool enable);
+
+    void setTaskTitle(QString title);
+    void setTaskDescription(QString description);
+    void setTaskDueToDate(QDate dueToDate);
+    void setTaskDueToDateEnabled(bool dueToDateEnabled);
 
 private:
     long m_taskIndex;
-    QtMaterialTextField* m_titleTextField;
-    QMarkdownTextEdit* m_descriptionTextEdit;
-    bool m_inputLocked;
-
+    QtMaterialTextField* m_titleWidget;
+    QMarkdownTextEdit* m_descriptionWidget;
+    QCalendarWidget* m_datePickerWidget;
+    QtMaterialCheckBox* m_withoutDateCheckBoxWidget;
+    bool m_editingEnable;
 signals:
     void taskCreated(QString title, QString description);
     void taskUpdated(size_t index, QString title, QString description);
 
 public slots:
-    void changeLockStatus();
     void saveTaskData();
+    void changeEditingEnableStatus();
+    void enableEditing();
+    void disableEditing();
 };
 
 #endif // TASK_VIEWER_WIDGET_H
