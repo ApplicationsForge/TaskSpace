@@ -377,8 +377,9 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
     taskDialog->setWindowTitle(task.decoratedBaseInformation());
     taskDialog->setMinimumSize(800, 600);
     taskDialog->setBaseSize(800, 600);
-    //taskDialog->setStyleSheet("QDialog {background-color: #fff;}");
+    taskDialog->setStyleSheet("QDialog {background-color: #fff;}");
     QVBoxLayout* dialogLayout = new QVBoxLayout(taskDialog);
+    dialogLayout->setContentsMargins(0, 0, 0, 0);
        QWidget* containerWidget = new QWidget(taskDialog);
            QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
                 TaskViewerWidget* taskViewerWidget = new TaskViewerWidget(containerWidget);
@@ -416,7 +417,6 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
             containerWidget->setLayout(containerWidgetLayout);
         dialogLayout->addWidget(containerWidget);
     taskDialog->setLayout(dialogLayout);
-    taskDialog->setContentsMargins(0, 0, 0, 0);
     taskDialog->exec();
 }
 
