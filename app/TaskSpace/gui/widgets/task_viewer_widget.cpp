@@ -8,6 +8,7 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
     m_inputLocked(true)
 {
     QVBoxLayout* containerLayout = new QVBoxLayout(this);
+    containerLayout->setContentsMargins(0, 0, 0, 0);
         /*QLabel* taskTitleLabel = new QLabel("Title:", this);
         taskTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
         containerLayout->addWidget(taskTitleLabel);*/
@@ -35,12 +36,17 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
         taskDescriptionLabel->setFont(QFont("Roboto", 16, QFont::Normal));
         containerLayout->addWidget(taskDescriptionLabel);*/
 
-        //descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid #dfdfdf; background-color: #efefef; }");
-        m_descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid transparent; }");
-        m_descriptionTextEdit->setPlaceholderText("You could enter a short description for your task (markdown supported).");
-        containerLayout->addWidget(m_descriptionTextEdit);
+        QWidget* descriptionAndDateContainerWidget = new QWidget(this);
+            QHBoxLayout* descriptionAndDateContainerWidgetLayout = new QHBoxLayout(descriptionAndDateContainerWidget);
+            descriptionAndDateContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
+                m_descriptionTextEdit->setStyleSheet("QMarkdownTextEdit { border: 1px solid transparent; }");
+                m_descriptionTextEdit->setPlaceholderText("You could enter a short description for your task (markdown supported).");
+                m_descriptionTextEdit->setParent(descriptionAndDateContainerWidget);
+                descriptionAndDateContainerWidgetLayout->addWidget(m_descriptionTextEdit);
+
+            descriptionAndDateContainerWidget->setLayout(descriptionAndDateContainerWidgetLayout);
+        containerLayout->addWidget(descriptionAndDateContainerWidget);
     this->setLayout(containerLayout);
-    this->setContentsMargins(0, 0, 0, 0);
 }
 
 void TaskViewerWidget::setTaskTitle(QString title)
