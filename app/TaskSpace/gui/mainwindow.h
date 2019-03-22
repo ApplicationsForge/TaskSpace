@@ -32,6 +32,7 @@
 #include "gui/widgets/task_status_chart_widget.h"
 #include "gui/widgets/mylistwidgetitem.h"
 #include "gui/widgets/task_viewer_widget.h"
+#include "gui/widgets/task_index_input_widget.h"
 
 
 namespace Ui {
@@ -100,6 +101,8 @@ private slots:
 
     void onAddNewTaskButton_Clicked();
 
+    void onRemoveTaskButton_Clicked();
+
     void onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
 
     void onTaskListWidget_TaskDropped(size_t taskIndex, QString status);
@@ -113,6 +116,8 @@ private slots:
                                         bool dueToDateEnabled,
                                         QTime estimatedTime,
                                         QTime actualTime);
+
+    void onRemoveTaskInputWidget_IndexSelected(size_t index);
 };
 
 #endif // MAINWINDOW_H

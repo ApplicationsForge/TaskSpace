@@ -30,6 +30,8 @@ public:
                      QTime estimatedTime = QTime(0, 0),
                      QTime actualTime = QTime(0, 0));
 
+     void removeTask(size_t index);
+
 private:
     explicit Router(QObject *parent = nullptr);
 

@@ -31,7 +31,7 @@ void Router::addExampleTask()
 {
     Task task(size_t(m_repository.data()->m_tasks.length()),
               "add example task",
-              m_repository.data()->getAvaliableStatuses().last());
+              m_repository.data()->getAvaliableStatuses().first());
     m_repository->addTask(task);
 }
 
@@ -54,6 +54,11 @@ void Router::updateTask(size_t index,
                         QTime actualTime)
 {
     m_repository->updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
+}
+
+void Router::removeTask(size_t index)
+{
+    m_repository->removeTask(index);
 }
 
 void Router::setupConnections()

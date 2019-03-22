@@ -217,7 +217,11 @@ void MainWindow::setupBacklogTab()
             QtMaterialRaisedButton *addNewTaskButton = new QtMaterialRaisedButton("Add New Task", actionsContainer);
             QObject::connect(addNewTaskButton, SIGNAL(clicked()), this, SLOT(onAddNewTaskButton_Clicked()));
             actionsContainer->layout()->addWidget(addNewTaskButton);
-            actionsContainer->layout()->addWidget(new QtMaterialRaisedButton("Remove Task", actionsContainer));
+
+            QtMaterialRaisedButton *removeTaskButton = new QtMaterialRaisedButton("Remove Task", actionsContainer);
+            QObject::connect(removeTaskButton, SIGNAL(clicked()), this, SLOT(onRemoveTaskButton_Clicked()));
+            actionsContainer->layout()->addWidget(removeTaskButton);
+
             actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
             actionsContainer->layout()->addWidget(new QtMaterialRaisedButton("Sync Tasks With Trello", actionsContainer));
         containerLayout->addWidget(actionsContainer);
@@ -472,6 +476,42 @@ void MainWindow::onAddNewTaskButton_Clicked()
     router.addExampleTask();
 }
 
+void MainWindow::onRemoveTaskButton_Clicked()
+{
+    QDialog *removeTaskDialog = new QDialog(this);
+    removeTaskDialog->setWindowTitle("Remove Task?");
+    removeTaskDialog->setMinimumSize(400, 300);
+    removeTaskDialog->setBaseSize(400, 300);
+    removeTaskDialog->setStyleSheet("QDialog {background-color: #fff;}");
+    QVBoxLayout* dialogLayout = new QVBoxLayout(removeTaskDialog);
+    dialogLayout->setContentsMargins(0, 0, 0, 0);
+       QWidget* containerWidget = new QWidget(removeTaskDialog);
+           QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
+
+                TaskIndexInputWidget* removeTaskIndexInput = new TaskIndexInputWidget(containerWidget);
+                QObject::connect(removeTaskIndexInput, SIGNAL(indexSelected(size_t)), this, SLOT(onRemoveTaskInputWidget_IndexSelected(size_t)));
+                containerWidgetLayout->addWidget(removeTaskIndexInput);
+
+                QWidget* actionsContainerWidget = new QWidget(containerWidget);
+                   QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
+                       actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+
+                       QtMaterialRaisedButton *removeButton = new QtMaterialRaisedButton("Remove", actionsContainerWidget);
+                       QObject::connect(removeButton, SIGNAL(clicked()), removeTaskIndexInput, SLOT(getResult()));
+                       //QObject::connect(removeButton, SIGNAL(clicked()), removeTaskDialog, SLOT(close()));
+                       actionsContainerWidgetLayout->addWidget(removeButton);
+
+                       QtMaterialRaisedButton *closeButton = new QtMaterialRaisedButton("Close", actionsContainerWidget);
+                       QObject::connect(closeButton, SIGNAL(clicked()), removeTaskDialog, SLOT(close()));
+                       actionsContainerWidgetLayout->addWidget(closeButton);
+                   actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
+                containerWidgetLayout->addWidget(actionsContainerWidget);
+            containerWidget->setLayout(containerWidgetLayout);
+        dialogLayout->addWidget(containerWidget);
+    removeTaskDialog->setLayout(dialogLayout);
+    removeTaskDialog->exec();
+}
+
 void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskListWidgetItem)
 {
     Router& router = Router::getInstance();
@@ -516,5 +556,11 @@ void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QSt
 {
     Router& router = Router::getInstance();
     router.updateTask(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
+}
+
+void MainWindow::onRemoveTaskInputWidget_IndexSelected(size_t index)
+{
+    Router& router = Router::getInstance();
+    router.removeTask(index);
 }
 
