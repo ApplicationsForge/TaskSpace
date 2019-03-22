@@ -13,17 +13,22 @@ void MyListWidget::keyPressEvent(QKeyEvent *keyEvent)
     switch (keyPressed) {
     case Qt::Key_Return:
     {
-        keyReturnPressed(selectedItemIndex);
+        this->keyReturnPressed(selectedItemIndex);
+        break;
+    }
+    case Qt::Key_Space:
+    {
+        this->keyReturnPressed(selectedItemIndex);
         break;
     }
     case Qt::Key_Up:
     {
-        keyUpPressed(selectedItemIndex);
+        this->keyUpPressed(selectedItemIndex);
         break;
     }
     case Qt::Key_Down:
     {
-        keyDownPressed(selectedItemIndex);
+        this->keyDownPressed(selectedItemIndex);
         break;
     }
     default:
