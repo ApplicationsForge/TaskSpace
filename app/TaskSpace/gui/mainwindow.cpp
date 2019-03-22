@@ -148,6 +148,7 @@ void MainWindow::setupDashboardTab()
     container->setObjectName("dashboardContainerWidget");
     m_widgets.insert(container->objectName(), container);
     QVBoxLayout *containerLayout = new QVBoxLayout(container);
+    containerLayout->setContentsMargins(0, 0, 10, 0);
         QLabel *dashboardTitleLabel = new QLabel("Dashboard", container);
         dashboardTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
         dashboardTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
@@ -156,8 +157,11 @@ void MainWindow::setupDashboardTab()
 
         QWidget *subContainer = new QWidget(container);
             QHBoxLayout *subContainerLayout = new QHBoxLayout(subContainer);
+            subContainerLayout->setContentsMargins(0, 0, 0, 0);
                 QWidget *chartsContainerWidget = new QWidget(subContainer);
                 chartsContainerWidget->setLayout(new QHBoxLayout(chartsContainerWidget));
+                chartsContainerWidget->layout()->setContentsMargins(0, 0, 0, 0);
+                chartsContainerWidget->layout()->setSpacing(0);
                     BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
                     burndownChartWidget->setObjectName("burndownChartWidget");
                     m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
@@ -173,6 +177,7 @@ void MainWindow::setupDashboardTab()
 
                 QWidget *toolsContainerWidget = new QWidget(subContainer);
                 QVBoxLayout *toolsContainerWidgetLayout = new QVBoxLayout(toolsContainerWidget);
+                toolsContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
                 toolsContainerWidget->setLayout(toolsContainerWidgetLayout);
                     QLabel *toolsTitleLabel = new QLabel("Tools", toolsContainerWidget);
                     toolsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
