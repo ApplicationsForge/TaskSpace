@@ -31,11 +31,14 @@ public:
 
     Task getTaskByIndex(size_t index) const;
 
+    QString getCalendarUrl() const;
+
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
 
     QString m_dbPath;
     QList< QSharedPointer<Task> > m_tasks;
+    QString m_calendarUrl;
 
     void loadSettings();
     void loadMockData();
@@ -66,11 +69,14 @@ private:
 
     void setDbPath(const QString &dbPath);
 
+    void setCalendarUrl(const QString &calendarUrl);
+
     friend class Router;
 
 signals:
     void dbPathChanged(QString path);
     void tasksUpdated();
+    void calendarUrlChanged(QString url);
 
 public slots:
 };

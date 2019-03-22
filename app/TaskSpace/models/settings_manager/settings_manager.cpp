@@ -106,6 +106,7 @@ void SettingsManager::generateDefaultSettings()
 {
     settings->beginGroup("Main");
         settings->setValue("DBPath", "/Users/xtail/Projects/MyTaskManager/TaskSpace/db/taskspace.db");
+        settings->setValue("CalendarUrl", "https://calendar.google.com/calendar/r");
     settings->endGroup();
 
     // применяем изменения

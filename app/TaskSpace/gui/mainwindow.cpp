@@ -317,15 +317,14 @@ void MainWindow::showDashboardTab()
 {
     m_widgets["dashboardContainerWidget"]->show();
     m_widgets["backlogContainerWidget"]->hide();
-    //m_widgets["calendarContainerWidget"]->hide();
     m_widgets["settingsContainerWidget"]->hide();
 }
+
 
 void MainWindow::showBacklogTab()
 {
     m_widgets["dashboardContainerWidget"]->hide();
     m_widgets["backlogContainerWidget"]->show();
-    //m_widgets["calendarContainerWidget"]->hide();
     m_widgets["settingsContainerWidget"]->hide();
 }
 
@@ -342,7 +341,6 @@ void MainWindow::showSettingsTab()
 {
     m_widgets["dashboardContainerWidget"]->hide();
     m_widgets["backlogContainerWidget"]->hide();
-    m_widgets["calendarContainerWidget"]->hide();
     m_widgets["settingsContainerWidget"]->show();
 }
 
@@ -377,6 +375,9 @@ void MainWindow::showFocusTimerDialog()
 
 void MainWindow::showCalendarDialog()
 {
+    Router& router = Router::getInstance();
+    QString calendarUrl = router.getRepository()->getCalendarUrl();
+
     QDialog *calendarDialog = new QDialog(this);
     calendarDialog->setWindowTitle("Calendar");
     calendarDialog->setMinimumSize(800, 600);
@@ -386,7 +387,7 @@ void MainWindow::showCalendarDialog()
                 QVBoxLayout *containerLayout = new QVBoxLayout(container);
                 containerLayout->setContentsMargins(0, 0, 0, 0);
                     QWebEngineView *view = new QWebEngineView(container);
-                    view->load(QUrl("https://calendar.google.com/calendar/r"));
+                    view->load(QUrl(calendarUrl));
                     view->show();
                     containerLayout->addWidget(view);
                 container->setLayout(containerLayout);

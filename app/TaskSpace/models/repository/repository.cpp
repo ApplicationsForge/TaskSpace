@@ -69,14 +69,21 @@ Task Repository::getTaskByIndex(size_t index) const
     return *(this->findTask(index).data());
 }
 
+QString Repository::getCalendarUrl() const
+{
+    return m_calendarUrl;
+}
+
 void Repository::loadSettings()
 {
     try {
         this->setDbPath(m_settingsManager->get("Main", "DBPath").toString());
+        this->setCalendarUrl(m_settingsManager->get("Main", "CalendarUrl").toString());
     }
     catch(std::invalid_argument e) {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
         this->setDbPath("");
+        this->setCalendarUrl("");
     }
 }
 
@@ -192,4 +199,11 @@ void Repository::setDbPath(const QString &dbPath)
 {
     m_dbPath = dbPath;
     emit this->dbPathChanged(m_dbPath);
+}
+
+
+void Repository::setCalendarUrl(const QString &calendarUrl)
+{
+    m_calendarUrl = calendarUrl;
+    emit this->calendarUrlChanged(m_calendarUrl);
 }
