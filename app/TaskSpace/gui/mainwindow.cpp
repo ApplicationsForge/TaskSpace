@@ -487,13 +487,14 @@ void MainWindow::onRemoveTaskButton_Clicked()
 {
     QDialog *removeTaskDialog = new QDialog(this);
     removeTaskDialog->setWindowTitle("Remove Task?");
-    removeTaskDialog->setMinimumSize(400, 300);
-    removeTaskDialog->setBaseSize(400, 300);
+    removeTaskDialog->setMinimumSize(300, 150);
+    removeTaskDialog->setBaseSize(300, 150);
     removeTaskDialog->setStyleSheet("QDialog {background-color: #fff;}");
     QVBoxLayout* dialogLayout = new QVBoxLayout(removeTaskDialog);
-    dialogLayout->setContentsMargins(0, 0, 0, 0);
+    dialogLayout->setContentsMargins(15, 15, 15, 0);
        QWidget* containerWidget = new QWidget(removeTaskDialog);
            QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
+           containerWidgetLayout->setContentsMargins(0, 0, 0, 0);
 
                 TaskIndexInputWidget* removeTaskIndexInput = new TaskIndexInputWidget(containerWidget);
                 QObject::connect(removeTaskIndexInput, SIGNAL(indexSelected(size_t)), this, SLOT(onRemoveTaskInputWidget_IndexSelected(size_t)));
@@ -501,13 +502,14 @@ void MainWindow::onRemoveTaskButton_Clicked()
 
                 QWidget* actionsContainerWidget = new QWidget(containerWidget);
                    QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
+                   actionsContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
                        actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-                       QtMaterialRaisedButton *removeButton = new QtMaterialRaisedButton("Remove", actionsContainerWidget);
+                       QtMaterialFlatButton *removeButton = new QtMaterialFlatButton("Remove", actionsContainerWidget);
                        QObject::connect(removeButton, SIGNAL(clicked()), removeTaskIndexInput, SLOT(getResult()));
                        actionsContainerWidgetLayout->addWidget(removeButton);
 
-                       QtMaterialRaisedButton *closeButton = new QtMaterialRaisedButton("Close", actionsContainerWidget);
+                       QtMaterialFlatButton *closeButton = new QtMaterialFlatButton("Close", actionsContainerWidget);
                        QObject::connect(closeButton, SIGNAL(clicked()), removeTaskDialog, SLOT(close()));
                        actionsContainerWidgetLayout->addWidget(closeButton);
                    actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
