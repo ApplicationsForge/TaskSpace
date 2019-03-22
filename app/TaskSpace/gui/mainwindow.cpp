@@ -498,7 +498,6 @@ void MainWindow::onRemoveTaskButton_Clicked()
 
                        QtMaterialRaisedButton *removeButton = new QtMaterialRaisedButton("Remove", actionsContainerWidget);
                        QObject::connect(removeButton, SIGNAL(clicked()), removeTaskIndexInput, SLOT(getResult()));
-                       //QObject::connect(removeButton, SIGNAL(clicked()), removeTaskDialog, SLOT(close()));
                        actionsContainerWidgetLayout->addWidget(removeButton);
 
                        QtMaterialRaisedButton *closeButton = new QtMaterialRaisedButton("Close", actionsContainerWidget);
