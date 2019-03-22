@@ -43,6 +43,7 @@ void MainWindow::setupWidgets()
     this->setupStatusBar();
     this->setupDashboardTab();
     this->setupBacklogTab();
+    this->setupCalendarTab();
     this->setupSettingsTab();
 
     this->showBacklogTab();
@@ -257,6 +258,22 @@ void MainWindow::setupBacklogTab()
     container->hide();
 }
 
+void MainWindow::setupCalendarTab()
+{
+    QWidget* container = new QWidget(ui->mainWidget);
+    container->setObjectName("calendarContainerWidget");
+    m_widgets.insert(container->objectName(), container);
+    QVBoxLayout *containerLayout = new QVBoxLayout(container);
+    containerLayout->setContentsMargins(0, 0, 0, 0);
+        QWebEngineView *view = new QWebEngineView(container);
+        view->load(QUrl("https://calendar.google.com/calendar/r"));
+        view->show();
+        containerLayout->addWidget(view);
+    container->setLayout(containerLayout);
+    ui->mainWidget->layout()->addWidget(container);
+    container->hide();
+}
+
 void MainWindow::setupSettingsTab()
 {
     Router &router = Router::getInstance();
@@ -318,6 +335,7 @@ void MainWindow::showDashboardTab()
 {
     m_widgets["dashboardContainerWidget"]->show();
     m_widgets["backlogContainerWidget"]->hide();
+    m_widgets["calendarContainerWidget"]->hide();
     m_widgets["settingsContainerWidget"]->hide();
 }
 
@@ -325,11 +343,16 @@ void MainWindow::showBacklogTab()
 {
     m_widgets["dashboardContainerWidget"]->hide();
     m_widgets["backlogContainerWidget"]->show();
+    m_widgets["calendarContainerWidget"]->hide();
     m_widgets["settingsContainerWidget"]->hide();
 }
 
 void MainWindow::showCalendarTab()
 {
+    m_widgets["dashboardContainerWidget"]->hide();
+    m_widgets["backlogContainerWidget"]->hide();
+    m_widgets["calendarContainerWidget"]->show();
+    m_widgets["settingsContainerWidget"]->hide();
     /*qDeleteAll(ui->mainFrame->children());
     ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
     ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Calendar", ui->mainFrame));*/
@@ -348,6 +371,7 @@ void MainWindow::showSettingsTab()
 {
     m_widgets["dashboardContainerWidget"]->hide();
     m_widgets["backlogContainerWidget"]->hide();
+    m_widgets["calendarContainerWidget"]->hide();
     m_widgets["settingsContainerWidget"]->show();
 }
 

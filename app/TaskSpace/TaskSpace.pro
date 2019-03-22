@@ -7,6 +7,7 @@
 QT       += core gui
 QT += sql
 QT += charts
+QT += webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 include (libs/qmarkdowntextedit/qmarkdowntextedit.pri)

@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QDialogButtonBox>
 #include <QFormLayout>
+#include <QWebEngineView>
 
 #include "models/router.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"
@@ -68,6 +69,8 @@ private:
     void setupDashboardTab();
 
     void setupBacklogTab();
+
+    void setupCalendarTab();
 
     void setupSettingsTab();
 
