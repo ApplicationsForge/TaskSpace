@@ -17,6 +17,19 @@ public:
      Repository* getRepository();
 
      void addExampleTask();
+
+     void changeTaskStatus(size_t taskIndex, QString status);
+
+     void createNewTask(QString title, QString description);
+
+     void updateTask(size_t index,
+                     QString title,
+                     QString description,
+                     QDate dueToDate = QDate(),
+                     bool dueToDateEnabled = true,
+                     QTime estimatedTime = QTime(0, 0),
+                     QTime actualTime = QTime(0, 0));
+
 private:
     explicit Router(QObject *parent = nullptr);
 
@@ -35,10 +48,11 @@ private:
 
 signals:
     void tasksUpdated();
+    void dbPathChanged(QString path);
 
 public slots:
     void onRepository_TasksUpdated();
-    void onTaskListWidget_TaskDropped(size_t taskIndex, QString status);
+    void onRepository_DbPathChanged(QString path);
 };
 
 #endif // ROUTER_H

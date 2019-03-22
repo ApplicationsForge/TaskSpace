@@ -235,7 +235,8 @@ void MainWindow::setupBacklogTab()
                 {
                     TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
                     taskListWidget->setObjectName(status + "TaskListWidget");
-                    QObject::connect(taskListWidget, SIGNAL(taskDropped(size_t, QString)), &router, SLOT(onTaskListWidget_TaskDropped(size_t, QString)));
+                    QObject::connect(taskListWidget, SIGNAL(taskDropped(size_t, QString)), this, SLOT(onTaskListWidget_TaskDropped(size_t, QString)));
+                    QObject::connect(taskListWidget->list(), SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem*)));
                     //m_widgets.insert(taskListWidget->objectName(), taskListWidget);
                     m_taskListWidgets.append(taskListWidget);
                     scrollAreaContent->layout()->addWidget(taskListWidget);
@@ -268,7 +269,7 @@ void MainWindow::setupSettingsTab()
             dbPathWidget->layout()->addWidget(dbPathTitleLabel);
 
             QLabel *dbPathValueLabel = new QLabel(dbPath, dbPathWidget);
-            QObject::connect(router.getRepository(), SIGNAL(dbPathChanged(QString)), dbPathValueLabel, SLOT(setText(QString)));
+            QObject::connect(&router, SIGNAL(dbPathChanged(QString)), dbPathValueLabel, SLOT(setText(QString)));
             dbPathWidget->layout()->addWidget(dbPathValueLabel);
 
             QToolButton* selectDbToolButton = new QToolButton(dbPathWidget);
@@ -370,6 +371,58 @@ void MainWindow::showFocusTimerDialog()
     focusTimerDialog->show();
 }
 
+void MainWindow::showTaskDialog(Task task, bool newTask)
+{
+    QDialog *taskDialog = new QDialog(this);
+    taskDialog->setWindowTitle(task.decoratedBaseInformation());
+    taskDialog->setMinimumSize(800, 600);
+    taskDialog->setBaseSize(800, 600);
+    taskDialog->setStyleSheet("QDialog {background-color: #fff;}");
+    QVBoxLayout* dialogLayout = new QVBoxLayout(taskDialog);
+    dialogLayout->setContentsMargins(0, 0, 0, 0);
+       QWidget* containerWidget = new QWidget(taskDialog);
+           QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
+                TaskViewerWidget* taskViewerWidget = new TaskViewerWidget(containerWidget);
+                taskViewerWidget->setEditingEnable(newTask);
+                taskViewerWidget->setTaskIndex(long(task.index()));
+                taskViewerWidget->setTaskTitle(task.title());
+                taskViewerWidget->setTaskDescription(task.description());
+                taskViewerWidget->setTaskDueToDate(task.dueToDate());
+                taskViewerWidget->setTaskDueToDateEnabled(task.dueToDateEnabled());
+                taskViewerWidget->setTaskEstimatedTime(task.estimatedTime());
+                taskViewerWidget->setTaskActualTime(task.actualTime());
+                QObject::connect(taskViewerWidget, SIGNAL(taskCreated(QString, QString)), this, SLOT(onTaskViewerWidget_TaskCreated(QString, QString)));
+                QObject::connect(taskViewerWidget,
+                                 SIGNAL(taskUpdated(size_t, QString, QString, QDate, bool, QTime, QTime)),
+                                 this,
+                                 SLOT(onTaskViewerWidget_TaskUpdated(size_t, QString, QString, QDate, bool, QTime, QTime)));
+                containerWidgetLayout->addWidget(taskViewerWidget);
+
+                QWidget* actionsContainerWidget = new QWidget(containerWidget);
+                   QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
+                       actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+
+                       QtMaterialRaisedButton *editOrLockButton = new QtMaterialRaisedButton(actionsContainerWidget);
+                       editOrLockButton->setText("Edit/Lock");
+                       QObject::connect(editOrLockButton, SIGNAL(clicked()), taskViewerWidget, SLOT(changeEditingEnableStatus()));
+                       actionsContainerWidgetLayout->addWidget(editOrLockButton);
+
+                       QtMaterialRaisedButton *saveTaskButton = new QtMaterialRaisedButton("Save", actionsContainerWidget);
+                       QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(saveTaskData()));
+                       QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(disableEditing()));
+                       actionsContainerWidgetLayout->addWidget(saveTaskButton);
+
+                       QtMaterialRaisedButton *closeButton = new QtMaterialRaisedButton("Close", actionsContainerWidget);
+                       QObject::connect(closeButton, SIGNAL(clicked()), taskDialog, SLOT(close()));
+                       actionsContainerWidgetLayout->addWidget(closeButton);
+                   actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
+                containerWidgetLayout->addWidget(actionsContainerWidget);
+            containerWidget->setLayout(containerWidgetLayout);
+        dialogLayout->addWidget(containerWidget);
+    taskDialog->setLayout(dialogLayout);
+    taskDialog->exec();
+}
+
 void MainWindow::onSelectDbToolButton_clicked()
 {
     Router& router = Router::getInstance();
@@ -418,3 +471,50 @@ void MainWindow::onAddNewTaskButton_Clicked()
     Router& router = Router::getInstance();
     router.addExampleTask();
 }
+
+void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskListWidgetItem)
+{
+    Router& router = Router::getInstance();
+    QString itemText = taskListWidgetItem->text();
+
+    QRegExp rawIndexRegExp = QRegExp("\\[(\\s)*[0-9]*(\\s)*\\]");
+    rawIndexRegExp.indexIn(itemText);
+    QStringList rawIndexRegExpResult = rawIndexRegExp.capturedTexts();
+    if(rawIndexRegExpResult.length() <= 0)
+    {
+        QMessageBox(QMessageBox::Warning, "Parse Error", "Can not find taskIndex " + itemText).exec();
+        return;
+    }
+    QString rawTaskIndex = rawIndexRegExpResult.first();
+    rawTaskIndex = rawTaskIndex.remove("[");
+    rawTaskIndex = rawTaskIndex.remove("]");
+
+    bool ok = false;
+    size_t taskIndex = rawTaskIndex.toUInt(&ok);
+    if(!ok) {
+        QMessageBox(QMessageBox::Warning, "Parse Error", "Can not parse taskIndex in " + rawTaskIndex).exec();
+        return;
+    }
+
+    Task task = router.getRepository()->getTaskByIndex(taskIndex);
+    this->showTaskDialog(task, false);
+}
+
+void MainWindow::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
+{
+    Router& router = Router::getInstance();
+    router.changeTaskStatus(taskIndex, status);
+}
+
+void MainWindow::onTaskViewerWidget_TaskCreated(QString title, QString description)
+{
+    Router& router = Router::getInstance();
+    router.createNewTask(title, description);
+}
+
+void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QString description, QDate dueToDate, bool dueToDateEnabled, QTime estimatedTime, QTime actualTime)
+{
+    Router& router = Router::getInstance();
+    router.updateTask(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
+}
+

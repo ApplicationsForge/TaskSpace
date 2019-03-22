@@ -35,14 +35,38 @@ void Router::addExampleTask()
     m_repository->addTask(task);
 }
 
+void Router::changeTaskStatus(size_t taskIndex, QString status)
+{
+    m_repository->updateTaskStatus(taskIndex, status);
+}
+
+void Router::createNewTask(QString title, QString description)
+{
+    qDebug() << "Router::createNewTask" << title << description;
+}
+
+void Router::updateTask(size_t index,
+                        QString title,
+                        QString description,
+                        QDate dueToDate,
+                        bool dueToDateEnabled,
+                        QTime estimatedTime,
+                        QTime actualTime)
+{
+    m_repository->updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
+}
+
 void Router::setupConnections()
 {
     QObject::connect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
+    QObject::connect(m_repository.data(), SIGNAL(dbPathChanged(QString)), this, SLOT(onRepository_DbPathChanged(QString)));
+
 }
 
 void Router::resetConnections()
 {
     QObject::disconnect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
+    QObject::disconnect(m_repository.data(), SIGNAL(dbPathChanged(QString)), this, SLOT(onRepository_DbPathChanged(QString)));
 }
 
 void Router::onRepository_TasksUpdated()
@@ -51,9 +75,7 @@ void Router::onRepository_TasksUpdated()
     emit this->tasksUpdated();
 }
 
-void Router::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
+void Router::onRepository_DbPathChanged(QString path)
 {
-    //qDebug() << "Router::onTaskListWidget_TaskDropped" << taskIndex << status;
-    m_repository->changeTaskStatus(taskIndex, status);
+    emit this->dbPathChanged(path);
 }
-

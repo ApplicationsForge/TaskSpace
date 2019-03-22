@@ -58,7 +58,7 @@ void MyListWidget::keyReturnPressed(QModelIndex selectedItemIndex)
     int currentItemRow = selectedItemIndex.row();
     if(currentItemRow >= 0 && currentItemRow < this->count())
     {
-        emit clicked(selectedItemIndex);
+        emit this->doubleClicked(selectedItemIndex);
     }
 }
 
