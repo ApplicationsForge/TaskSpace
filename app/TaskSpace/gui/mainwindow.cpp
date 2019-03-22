@@ -395,7 +395,6 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
                 taskViewerWidget->setTaskDueToDateEnabled(task.dueToDateEnabled());
                 taskViewerWidget->setTaskEstimatedTime(task.estimatedTime());
                 taskViewerWidget->setTaskActualTime(task.actualTime());
-                QObject::connect(taskViewerWidget, SIGNAL(taskCreated(QString, QString)), this, SLOT(onTaskViewerWidget_TaskCreated(QString, QString)));
                 QObject::connect(taskViewerWidget,
                                  SIGNAL(taskUpdated(size_t, QString, QString, QDate, bool, QTime, QTime)),
                                  this,
@@ -544,12 +543,6 @@ void MainWindow::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
 {
     Router& router = Router::getInstance();
     router.changeTaskStatus(taskIndex, status);
-}
-
-void MainWindow::onTaskViewerWidget_TaskCreated(QString title, QString description)
-{
-    Router& router = Router::getInstance();
-    router.createNewTask(title, description);
 }
 
 void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QString description, QDate dueToDate, bool dueToDateEnabled, QTime estimatedTime, QTime actualTime)

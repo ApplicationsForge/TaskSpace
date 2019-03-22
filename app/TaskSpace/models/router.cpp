@@ -37,11 +37,6 @@ void Router::changeTaskStatus(size_t taskIndex, QString status)
     m_repository->updateTaskStatus(taskIndex, status);
 }
 
-void Router::createNewTask(QString title, QString description)
-{
-    qDebug() << "Router::createNewTask" << title << description;
-}
-
 void Router::updateTask(size_t index,
                         QString title,
                         QString description,

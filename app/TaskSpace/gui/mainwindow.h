@@ -107,8 +107,6 @@ private slots:
 
     void onTaskListWidget_TaskDropped(size_t taskIndex, QString status);
 
-    void onTaskViewerWidget_TaskCreated(QString title, QString description);
-
     void onTaskViewerWidget_TaskUpdated(size_t index,
                                         QString title,
                                         QString description,

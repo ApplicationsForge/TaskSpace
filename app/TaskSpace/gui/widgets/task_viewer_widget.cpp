@@ -164,10 +164,6 @@ void TaskViewerWidget::saveTaskData()
                                estimatedTime,
                                actualTime);
     }
-    else
-    {
-        emit this->taskCreated(title, description);
-    }
 }
 
 void TaskViewerWidget::changeEditingEnableStatus()

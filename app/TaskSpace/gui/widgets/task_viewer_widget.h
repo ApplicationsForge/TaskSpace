@@ -45,7 +45,6 @@ private:
     QTimeEdit* m_actualTimeWidget;
     bool m_editingEnable;
 signals:
-    void taskCreated(QString title, QString description);
     void taskUpdated(size_t index,
                      QString title,
                      QString description,
