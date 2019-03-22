@@ -43,10 +43,10 @@ void MainWindow::setupWidgets()
     this->setupStatusBar();
     this->setupDashboardTab();
     this->setupBacklogTab();
-    this->setupCalendarTab();
     this->setupSettingsTab();
 
     this->showBacklogTab();
+    //this->showDashboardTab();
     this->onRouter_TasksUpdated();
 }
 
@@ -111,11 +111,6 @@ void MainWindow::setupDrawer()
     archiveButton->setForegroundColor(QColor("#333"));
     //QObject::connect(archiveButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
     drawerLayout->addWidget(archiveButton);
-
-    QtMaterialFlatButton* calendarButton = new QtMaterialFlatButton("Calendar", m_drawer);
-    calendarButton->setForegroundColor(QColor("#333"));
-    QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarTab()));
-    drawerLayout->addWidget(calendarButton);
 
     QtMaterialFlatButton* notesButton = new QtMaterialFlatButton("Notes", m_drawer);
     notesButton->setForegroundColor(QColor("#333"));
@@ -189,9 +184,12 @@ void MainWindow::setupDashboardTab()
                     QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
                     toolsContainerWidgetLayout->addWidget(focusTimerButton);
 
+                    QtMaterialRaisedButton *calendarButton = new QtMaterialRaisedButton("Calendar", toolsContainerWidget);
+                    QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarDialog()));
+                    toolsContainerWidgetLayout->addWidget(calendarButton);
 
-                    toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Export", toolsContainerWidget));
-                    toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("History", toolsContainerWidget));
+                    /*toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Export", toolsContainerWidget));
+                    toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("History", toolsContainerWidget));*/
 
                     toolsContainerWidgetLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
                 subContainerLayout->addWidget(toolsContainerWidget);
@@ -258,22 +256,6 @@ void MainWindow::setupBacklogTab()
     container->hide();
 }
 
-void MainWindow::setupCalendarTab()
-{
-    QWidget* container = new QWidget(ui->mainWidget);
-    container->setObjectName("calendarContainerWidget");
-    m_widgets.insert(container->objectName(), container);
-    QVBoxLayout *containerLayout = new QVBoxLayout(container);
-    containerLayout->setContentsMargins(0, 0, 0, 0);
-        QWebEngineView *view = new QWebEngineView(container);
-        view->load(QUrl("https://calendar.google.com/calendar/r"));
-        view->show();
-        containerLayout->addWidget(view);
-    container->setLayout(containerLayout);
-    ui->mainWidget->layout()->addWidget(container);
-    container->hide();
-}
-
 void MainWindow::setupSettingsTab()
 {
     Router &router = Router::getInstance();
@@ -335,7 +317,7 @@ void MainWindow::showDashboardTab()
 {
     m_widgets["dashboardContainerWidget"]->show();
     m_widgets["backlogContainerWidget"]->hide();
-    m_widgets["calendarContainerWidget"]->hide();
+    //m_widgets["calendarContainerWidget"]->hide();
     m_widgets["settingsContainerWidget"]->hide();
 }
 
@@ -343,19 +325,8 @@ void MainWindow::showBacklogTab()
 {
     m_widgets["dashboardContainerWidget"]->hide();
     m_widgets["backlogContainerWidget"]->show();
-    m_widgets["calendarContainerWidget"]->hide();
+    //m_widgets["calendarContainerWidget"]->hide();
     m_widgets["settingsContainerWidget"]->hide();
-}
-
-void MainWindow::showCalendarTab()
-{
-    m_widgets["dashboardContainerWidget"]->hide();
-    m_widgets["backlogContainerWidget"]->hide();
-    m_widgets["calendarContainerWidget"]->show();
-    m_widgets["settingsContainerWidget"]->hide();
-    /*qDeleteAll(ui->mainFrame->children());
-    ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
-    ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Calendar", ui->mainFrame));*/
 }
 
 void MainWindow::showNotesTab()
@@ -402,6 +373,26 @@ void MainWindow::showFocusTimerDialog()
     focusTimerDialog->setWindowTitle("Focus Timer Dialog");
     focusTimerDialog->setMinimumSize(400, 300);
     focusTimerDialog->show();
+}
+
+void MainWindow::showCalendarDialog()
+{
+    QDialog *calendarDialog = new QDialog(this);
+    calendarDialog->setWindowTitle("Calendar");
+    calendarDialog->setMinimumSize(800, 600);
+        QVBoxLayout* calendarDialogLayout = new QVBoxLayout(calendarDialog);
+        calendarDialogLayout->setContentsMargins(0, 0, 0, 0);
+            QWidget* container = new QWidget(ui->mainWidget);
+                QVBoxLayout *containerLayout = new QVBoxLayout(container);
+                containerLayout->setContentsMargins(0, 0, 0, 0);
+                    QWebEngineView *view = new QWebEngineView(container);
+                    view->load(QUrl("https://calendar.google.com/calendar/r"));
+                    view->show();
+                    containerLayout->addWidget(view);
+                container->setLayout(containerLayout);
+            calendarDialogLayout->addWidget(container);
+        calendarDialog->setLayout(calendarDialogLayout);
+    calendarDialog->showMaximized();
 }
 
 void MainWindow::showTaskDialog(Task task, bool newTask)

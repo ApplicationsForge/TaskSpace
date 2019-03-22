@@ -70,8 +70,6 @@ private:
 
     void setupBacklogTab();
 
-    void setupCalendarTab();
-
     void setupSettingsTab();
 
     void setupConnections();
@@ -86,8 +84,6 @@ private slots:
 
     void showBacklogTab();
 
-    void showCalendarTab();
-
     void showNotesTab();
 
     void showSettingsTab();
@@ -95,6 +91,8 @@ private slots:
     void showGauge();
 
     void showFocusTimerDialog();
+
+    void showCalendarDialog();
 
     void showTaskDialog(Task task, bool newTask = false);
 
