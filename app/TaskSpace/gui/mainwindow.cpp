@@ -433,7 +433,7 @@ void MainWindow::onSelectDbToolButton_clicked()
     QString path = QFileDialog::getOpenFileName(this, "Select Database", "", "*.db");
     if(path.length() > 0)
     {
-        router.getRepository()->setDbPath(path);
+        router.setDbPath(path);
     }
 }
 
@@ -473,7 +473,8 @@ void MainWindow::onRouter_TasksUpdated()
 void MainWindow::onAddNewTaskButton_Clicked()
 {
     Router& router = Router::getInstance();
-    router.addExampleTask();
+    Task task = router.addNewBaseTask();
+    this->showTaskDialog(task, true);
 }
 
 void MainWindow::onRemoveTaskButton_Clicked()

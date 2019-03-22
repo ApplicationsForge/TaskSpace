@@ -18,6 +18,8 @@ public:
 
      void addExampleTask();
 
+     Task addNewBaseTask();
+
      void changeTaskStatus(size_t taskIndex, QString status);
 
      void createNewTask(QString title, QString description);
@@ -31,6 +33,8 @@ public:
                      QTime actualTime = QTime(0, 0));
 
      void removeTask(size_t index);
+
+     void setDbPath(QString path);
 
 private:
     explicit Router(QObject *parent = nullptr);

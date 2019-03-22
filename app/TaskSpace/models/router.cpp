@@ -35,6 +35,11 @@ void Router::addExampleTask()
     m_repository->addTask(task);
 }
 
+Task Router::addNewBaseTask()
+{
+    return m_repository->addNewBaseTask();
+}
+
 void Router::changeTaskStatus(size_t taskIndex, QString status)
 {
     m_repository->updateTaskStatus(taskIndex, status);
@@ -59,6 +64,11 @@ void Router::updateTask(size_t index,
 void Router::removeTask(size_t index)
 {
     m_repository->removeTask(index);
+}
+
+void Router::setDbPath(QString path)
+{
+    m_repository->setDbPath(path);
 }
 
 void Router::setupConnections()

@@ -20,12 +20,6 @@ QString Repository::dbPath() const
     return m_dbPath;
 }
 
-void Repository::setDbPath(const QString &dbPath)
-{
-    m_dbPath = dbPath;
-    emit this->dbPathChanged(m_dbPath);
-}
-
 QStringList Repository::getAvaliableStatuses()
 {
     QStringList avaliableStatuses = {
@@ -65,10 +59,74 @@ QList<Task> Repository::getTasks(QString status) const
     return tasks;
 }
 
+int Repository::getTaskCountByStatus(QString status)
+{
+    return this->getTasks(status).length();
+}
+
+Task Repository::getTaskByIndex(size_t index) const
+{
+    return *(this->findTask(index).data());
+}
+
+void Repository::loadSettings()
+{
+    try {
+        this->setDbPath(m_settingsManager->get("Main", "DBPath").toString());
+    }
+    catch(std::invalid_argument e) {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+        this->setDbPath("");
+    }
+}
+
+void Repository::loadMockData()
+{
+    QStringList avaliableStatuses = this->getAvaliableStatuses();
+    QList<Task> tasks = QList<Task>();
+    for(int i = 0; i < 10; i++)
+    {
+        m_tasks.append(QSharedPointer<Task>(new Task(size_t(i), "example task", avaliableStatuses.first())));
+    }
+}
+
+bool Repository::initDb(QString path)
+{
+    return true;
+}
+
+QSharedPointer<Task> Repository::findTask(size_t index) const
+{
+    for(auto task : m_tasks) {
+        if(task->index() == index) {
+            return task;
+        }
+    }
+
+    throw std::invalid_argument("Can not find task with index " + std::to_string(index));
+}
+
+size_t Repository::getNewTaskIndex()
+{
+    size_t maxIndex = 0;
+    for(auto task : m_tasks)
+    {
+        maxIndex = std::max(maxIndex, task->index());
+    }
+    return maxIndex + 1;
+}
+
 void Repository::setTasks(const QList< QSharedPointer<Task> > &tasks)
 {
     m_tasks = tasks;
     emit this->tasksUpdated();
+}
+
+Task Repository::addNewBaseTask()
+{
+    Task newTask = Task(this->getNewTaskIndex(), "", this->getAvaliableStatuses().first());
+    this->addTask(newTask);
+    return this->getTaskByIndex(newTask.index());
 }
 
 void Repository::addTask(Task task)
@@ -89,16 +147,6 @@ void Repository::removeTask(size_t index)
     {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
     }
-}
-
-int Repository::getTaskCountByStatus(QString status)
-{
-    return this->getTasks(status).length();
-}
-
-Task Repository::getTaskByIndex(size_t index) const
-{
-    return *(this->findTask(index).data());
 }
 
 void Repository::updateTaskStatus(size_t index, QString status)
@@ -140,39 +188,8 @@ void Repository::updateTaskInfo(size_t index,
     }
 }
 
-void Repository::loadSettings()
+void Repository::setDbPath(const QString &dbPath)
 {
-    try {
-        this->setDbPath(m_settingsManager->get("Main", "DBPath").toString());
-    }
-    catch(std::invalid_argument e) {
-        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
-        this->setDbPath("");
-    }
-}
-
-void Repository::loadMockData()
-{
-    QStringList avaliableStatuses = this->getAvaliableStatuses();
-    QList<Task> tasks = QList<Task>();
-    for(int i = 0; i < 10; i++)
-    {
-        m_tasks.append(QSharedPointer<Task>(new Task(size_t(i), "example task", avaliableStatuses.first())));
-    }
-}
-
-bool Repository::initDb(QString path)
-{
-    return true;
-}
-
-QSharedPointer<Task> Repository::findTask(size_t index) const
-{
-    for(auto task : m_tasks) {
-        if(task->index() == index) {
-            return task;
-        }
-    }
-
-    throw std::invalid_argument("Can not find task with index " + std::to_string(index));
+    m_dbPath = dbPath;
+    emit this->dbPathChanged(m_dbPath);
 }
