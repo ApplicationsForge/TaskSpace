@@ -58,6 +58,9 @@ private:
 
     QList<TaskListWidget*> m_taskListWidgets;
 
+    QtMaterialTextField* m_databasePathInput;
+    QtMaterialTextField* m_calendarUrlInput;
+
     void setupWidgets();
 
     void setupAppBar();
@@ -96,7 +99,7 @@ private slots:
 
     void showTaskDialog(Task task, bool newTask = false);
 
-    void onSelectDbToolButton_clicked();
+    void onSelectDbButton_clicked();
 
     void onRouter_TasksUpdated();
 
@@ -117,6 +120,8 @@ private slots:
                                         QTime actualTime);
 
     void onRemoveTaskInputWidget_IndexSelected(size_t index);
+
+    void onApplySettingsButton_Clicked();
 };
 
 #endif // MAINWINDOW_H

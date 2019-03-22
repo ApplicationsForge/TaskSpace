@@ -7,7 +7,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_widgets(QMap<QString, QWidget*>()),
     m_appBar(new QtMaterialAppBar(this)),
     m_drawer(new QtMaterialDrawer(this)),
-    m_taskListWidgets(QList<TaskListWidget*>())
+    m_taskListWidgets(QList<TaskListWidget*>()),
+    m_databasePathInput(new QtMaterialTextField(this)),
+    m_calendarUrlInput(new QtMaterialTextField(this))
 {
     ui->setupUi(this);
     // cоздаем модель
@@ -266,6 +268,7 @@ void MainWindow::setupSettingsTab()
     container->setObjectName("settingsContainerWidget");
     m_widgets.insert(container->objectName(), container);
     QVBoxLayout *containerLayout = new QVBoxLayout(container);
+    containerLayout->setContentsMargins(5, 5, 5, 5);
         QLabel *settingsTitleLabel = new QLabel("Settings", container);
         settingsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
         settingsTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
@@ -274,38 +277,48 @@ void MainWindow::setupSettingsTab()
 
         QWidget *dbPathWidgetContainer = new QWidget(container);
         dbPathWidgetContainer->setLayout(new QHBoxLayout(dbPathWidgetContainer));
-            QLabel *dbPathTitleLabel = new QLabel("Database Path:", dbPathWidgetContainer);
-            dbPathWidgetContainer->layout()->addWidget(dbPathTitleLabel);
+        dbPathWidgetContainer->layout()->setContentsMargins(0, 0, 0, 0);
+            m_databasePathInput->setParent(dbPathWidgetContainer);
+            m_databasePathInput->setLabel("Database Path");
+            m_databasePathInput->setText(dbPath);
+            m_databasePathInput->setReadOnly(true);
+            m_databasePathInput->setLabelFontSize(16);
+            m_databasePathInput->setInkColor(QColor("#333"));
+            m_databasePathInput->setPlaceholderText("Please, enter full path to database with task.");
+            m_databasePathInput->setFont(QFont("Roboto", 16, QFont::Normal));
+            m_databasePathInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+            QObject::connect(&router, SIGNAL(dbPathChanged(QString)), m_databasePathInput, SLOT(setText(QString)));
+            dbPathWidgetContainer->layout()->addWidget(m_databasePathInput);
 
-            QLabel *dbPathValueLabel = new QLabel(dbPath, dbPathWidgetContainer);
-            QObject::connect(&router, SIGNAL(dbPathChanged(QString)), dbPathValueLabel, SLOT(setText(QString)));
-            dbPathWidgetContainer->layout()->addWidget(dbPathValueLabel);
+            QtMaterialFlatButton *selectDbButton = new QtMaterialFlatButton("Change", dbPathWidgetContainer);
+            QObject::connect(selectDbButton, SIGNAL(clicked()), this, SLOT(onSelectDbButton_clicked()));
+            dbPathWidgetContainer->layout()->addWidget(selectDbButton);
 
-            QToolButton* selectDbToolButton = new QToolButton(dbPathWidgetContainer);
-            selectDbToolButton->setText("...");
-            QObject::connect(selectDbToolButton, SIGNAL(clicked()), this, SLOT(onSelectDbToolButton_clicked()));
-            dbPathWidgetContainer->layout()->addWidget(selectDbToolButton);
-
-            dbPathWidgetContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+            //dbPathWidgetContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
         containerLayout->addWidget(dbPathWidgetContainer);
 
         QWidget *calendarUrlConatiner = new QWidget(container);
             QHBoxLayout *calendarUrlConatinerLayout = new QHBoxLayout(calendarUrlConatiner);
-                QtMaterialTextField *calendarUrlInput = new QtMaterialTextField(calendarUrlConatiner);
-                calendarUrlInput->setLabel("Calendar Url");
-                calendarUrlInput->setText(calendarUrl);
-                calendarUrlInput->setEnabled(true);
-                calendarUrlInput->setLabelFontSize(16);
-                calendarUrlInput->setInkColor(QColor("#333"));
-                calendarUrlInput->setPlaceholderText("Enter url to your calendar.");
-                calendarUrlInput->setFont(QFont("Roboto", 16, QFont::Normal));
-                calendarUrlConatinerLayout->addWidget(calendarUrlInput);
+            calendarUrlConatinerLayout->setContentsMargins(0, 10, 0, 0);
+                m_calendarUrlInput->setParent(calendarUrlConatiner);
+                m_calendarUrlInput->setLabel("Calendar Url");
+                m_calendarUrlInput->setText(calendarUrl);
+                m_calendarUrlInput->setReadOnly(false);
+                m_calendarUrlInput->setLabelFontSize(16);
+                m_calendarUrlInput->setInkColor(QColor("#333"));
+                m_calendarUrlInput->setPlaceholderText("Enter url to your calendar.");
+                m_calendarUrlInput->setFont(QFont("Roboto", 16, QFont::Normal));
+                m_calendarUrlInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+                calendarUrlConatinerLayout->addWidget(m_calendarUrlInput);
 
-                QtMaterialRaisedButton *changeUrlButton = new QtMaterialRaisedButton("Change", calendarUrlConatiner);
-                calendarUrlConatinerLayout->addWidget(changeUrlButton);
+                //calendarUrlConatinerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
             calendarUrlConatiner->setLayout(calendarUrlConatinerLayout);
         containerLayout->addWidget(calendarUrlConatiner);
-        containerLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        containerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+
+        QtMaterialFlatButton *applySettingsButton = new QtMaterialFlatButton("Apply Settings", container);
+        QObject::connect(applySettingsButton, SIGNAL(clicked()), this, SLOT(onApplySettingsButton_Clicked()));
+        containerLayout->addWidget(applySettingsButton);
     container->setLayout(containerLayout);
     ui->mainWidget->layout()->addWidget(container);
     container->hide();
@@ -337,7 +350,6 @@ void MainWindow::showDashboardTab()
     m_widgets["backlogContainerWidget"]->hide();
     m_widgets["settingsContainerWidget"]->hide();
 }
-
 
 void MainWindow::showBacklogTab()
 {
@@ -466,13 +478,12 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
     taskDialog->exec();
 }
 
-void MainWindow::onSelectDbToolButton_clicked()
+void MainWindow::onSelectDbButton_clicked()
 {
-    Router& router = Router::getInstance();
     QString path = QFileDialog::getOpenFileName(this, "Select Database", "", "*.db");
     if(path.length() > 0)
     {
-        router.setDbPath(path);
+        m_databasePathInput->setText(path);
     }
 }
 
@@ -597,5 +608,10 @@ void MainWindow::onRemoveTaskInputWidget_IndexSelected(size_t index)
 {
     Router& router = Router::getInstance();
     router.removeTask(index);
+}
+
+void MainWindow::onApplySettingsButton_Clicked()
+{
+    qDebug() << "Apply Settings";
 }
 
