@@ -205,7 +205,7 @@ void MainWindow::setupBacklogTab()
     container->setObjectName("backlogContainerWidget");
     m_widgets.insert(container->objectName(), container);
     QVBoxLayout *containerLayout = new QVBoxLayout(container);
-    containerLayout->setSpacing(0);
+    containerLayout->setContentsMargins(5, 5, 5, 5);
         QLabel *backlogTitleLabel = new QLabel("Backlog", container);
         backlogTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
         backlogTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
@@ -214,7 +214,7 @@ void MainWindow::setupBacklogTab()
 
         QWidget *actionsContainer = new QWidget(container);
         actionsContainer->setLayout(new QHBoxLayout(actionsContainer));
-        actionsContainer->setContentsMargins(0, 0, 0, 0);
+        actionsContainer->layout()->setContentsMargins(0, 0, 0, 10);
             QtMaterialRaisedButton *addNewTaskButton = new QtMaterialRaisedButton("Add New Task", actionsContainer);
             QObject::connect(addNewTaskButton, SIGNAL(clicked()), this, SLOT(onAddNewTaskButton_Clicked()));
             actionsContainer->layout()->addWidget(addNewTaskButton);
@@ -230,11 +230,10 @@ void MainWindow::setupBacklogTab()
         QScrollArea *scrollArea = new QScrollArea(container);
         scrollArea->setWidgetResizable(true);
         scrollArea->setStyleSheet("QScrollArea { border: 0px; }");
-        scrollArea->setContentsMargins(0, 0, 0, 0);
             QWidget *scrollAreaContent = new QWidget(scrollArea);
             scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
             scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            scrollAreaContent->setContentsMargins(0, 0, 0, 10);
+            scrollAreaContent->layout()->setContentsMargins(0, 0, 0, 15);
                 QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
                 for(auto status : avaliableStatuses)
                 {
