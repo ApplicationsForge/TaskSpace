@@ -58,7 +58,7 @@ QString Task::decoratedBaseInformation()
 
     if(m_dueToDateEnabled)
     {
-        taskInformation += " (" + m_dueToDate.toString() + ")";
+        taskInformation += " (" + m_dueToDate.toString("dd.MM.yyyy") + ")";
         //taskInformation += " " + m_estimatedTime.toString();
         //taskInformation += "/" + m_actualTime.toString() + ")";
     }
