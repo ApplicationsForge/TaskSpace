@@ -34,12 +34,12 @@ private:
 
 signals:
     void tasksUpdated();
-    void dbPathChanged(QString path);
+    void databasePathChanged(QString path);
     void calendarUrlChanged(QString url);
 
 public slots:
     void onRepository_TasksUpdated();
-    void onRepository_DbPathChanged(QString path);
+    void onRepository_DatabasePathChanged(QString path);
     void onRepository_CalendarUrlChanged(QString url);
 };
 

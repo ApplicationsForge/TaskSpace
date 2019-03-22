@@ -3,7 +3,7 @@
 Repository::Repository(QObject *parent) :
     QObject(parent),
     m_settingsManager(new SettingsManager()),
-    m_dbPath(""),
+    m_databasePath(""),
     m_tasks(QList< QSharedPointer<Task> >())
 {
     this->loadSettings();
@@ -67,12 +67,12 @@ Task Repository::getTaskByIndex(size_t index) const
 void Repository::loadSettings()
 {
     try {
-        this->setDbPath(m_settingsManager->get("Main", "DBPath").toString());
+        this->setDatabasePath(m_settingsManager->get("Main", "DBPath").toString());
         this->setCalendarUrl(m_settingsManager->get("Main", "CalendarUrl").toString());
     }
     catch(std::invalid_argument e) {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
-        this->setDbPath("");
+        this->setDatabasePath("");
         this->setCalendarUrl("");
     }
 }
@@ -185,15 +185,15 @@ void Repository::updateTaskInfo(size_t index,
     }
 }
 
-QString Repository::dbPath() const
+QString Repository::databasePath() const
 {
-    return m_dbPath;
+    return m_databasePath;
 }
 
-void Repository::setDbPath(const QString &dbPath)
+void Repository::setDatabasePath(const QString &databasePath)
 {
-    m_dbPath = dbPath;
-    emit this->dbPathChanged(m_dbPath);
+    m_databasePath = databasePath;
+    emit this->databasePathChanged(m_databasePath);
 }
 
 QString Repository::getCalendarUrl() const

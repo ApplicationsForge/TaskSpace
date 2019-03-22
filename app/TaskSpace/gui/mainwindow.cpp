@@ -261,7 +261,7 @@ void MainWindow::setupBacklogTab()
 void MainWindow::setupSettingsTab()
 {
     Router &router = Router::getInstance();
-    QString dbPath = router.getRepository()->dbPath();
+    QString dbPath = router.getRepository()->databasePath();
     QString calendarUrl = router.getRepository()->getCalendarUrl();
 
     QWidget* container = new QWidget(ui->mainWidget);
@@ -287,7 +287,7 @@ void MainWindow::setupSettingsTab()
             m_databasePathInput->setPlaceholderText("Please, enter full path to database with task.");
             m_databasePathInput->setFont(QFont("Roboto", 16, QFont::Normal));
             m_databasePathInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
-            QObject::connect(&router, SIGNAL(dbPathChanged(QString)), m_databasePathInput, SLOT(setText(QString)));
+            QObject::connect(&router, SIGNAL(databasePathChanged(QString)), m_databasePathInput, SLOT(setText(QString)));
             dbPathWidgetContainer->layout()->addWidget(m_databasePathInput);
 
             QtMaterialFlatButton *selectDbButton = new QtMaterialFlatButton("Change", dbPathWidgetContainer);
@@ -618,7 +618,7 @@ void MainWindow::onApplySettingsButton_Clicked()
     QString databasePath = m_databasePathInput->text();
     if(!databasePath.isEmpty())
     {
-        router.getRepository()->setDbPath(databasePath);
+        router.getRepository()->setDatabasePath(databasePath);
     }
 
     QString calendarUrl = m_calendarUrlInput->text();

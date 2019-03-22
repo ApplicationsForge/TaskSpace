@@ -37,8 +37,8 @@ public:
                     QTime estimatedTime,
                     QTime actualTime);
 
-    QString dbPath() const;
-    void setDbPath(const QString &dbPath);
+    QString databasePath() const;
+    void setDatabasePath(const QString &databasePath);
 
     QString getCalendarUrl() const;
     void setCalendarUrl(const QString &calendarUrl);
@@ -46,7 +46,7 @@ public:
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
 
-    QString m_dbPath;
+    QString m_databasePath;
     QList< QSharedPointer<Task> > m_tasks;
     QString m_calendarUrl;
 
@@ -64,7 +64,7 @@ private:
     friend class Router;
 
 signals:
-    void dbPathChanged(QString path);
+    void databasePathChanged(QString path);
     void tasksUpdated();
     void calendarUrlChanged(QString url);
 
