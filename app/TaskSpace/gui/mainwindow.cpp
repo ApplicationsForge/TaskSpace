@@ -408,19 +408,21 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
 
                 QWidget* actionsContainerWidget = new QWidget(containerWidget);
                    QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
-                       actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-                       QtMaterialRaisedButton *editOrLockButton = new QtMaterialRaisedButton(actionsContainerWidget);
+
+                       QtMaterialFlatButton *editOrLockButton = new QtMaterialFlatButton(actionsContainerWidget);
                        editOrLockButton->setText("Edit/Lock");
                        QObject::connect(editOrLockButton, SIGNAL(clicked()), taskViewerWidget, SLOT(changeEditingEnableStatus()));
                        actionsContainerWidgetLayout->addWidget(editOrLockButton);
 
-                       QtMaterialRaisedButton *saveTaskButton = new QtMaterialRaisedButton("Save", actionsContainerWidget);
+                       actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+
+                       QtMaterialFlatButton *saveTaskButton = new QtMaterialFlatButton("Save", actionsContainerWidget);
                        QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(saveTaskData()));
                        QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(disableEditing()));
                        actionsContainerWidgetLayout->addWidget(saveTaskButton);
 
-                       QtMaterialRaisedButton *closeButton = new QtMaterialRaisedButton("Close", actionsContainerWidget);
+                       QtMaterialFlatButton *closeButton = new QtMaterialFlatButton("Close", actionsContainerWidget);
                        QObject::connect(closeButton, SIGNAL(clicked()), taskDialog, SLOT(close()));
                        actionsContainerWidgetLayout->addWidget(closeButton);
                    actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
