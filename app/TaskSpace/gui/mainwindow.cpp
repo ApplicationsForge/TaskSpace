@@ -10,7 +10,6 @@ MainWindow::MainWindow(QWidget *parent) :
     m_taskListWidgets(QList<TaskListWidget*>())
 {
     ui->setupUi(this);
-
     // cоздаем модель
     Router::getInstance();
 
@@ -37,6 +36,8 @@ void MainWindow::setupWidgets()
     //this->setStyleSheet("background-color: #555;");
 
     ui->mainWidget->setLayout(new QVBoxLayout(ui->mainWidget));
+    ui->mainWidget->layout()->setContentsMargins(0, 0, 0, 0);
+
     this->setupAppBar();
     this->setupDrawer();
     this->setupStatusBar();
