@@ -15,11 +15,6 @@ Repository::~Repository()
 {
 }
 
-QString Repository::dbPath() const
-{
-    return m_dbPath;
-}
-
 QStringList Repository::getAvaliableStatuses()
 {
     QStringList avaliableStatuses = {
@@ -67,11 +62,6 @@ int Repository::getTaskCountByStatus(QString status)
 Task Repository::getTaskByIndex(size_t index) const
 {
     return *(this->findTask(index).data());
-}
-
-QString Repository::getCalendarUrl() const
-{
-    return m_calendarUrl;
 }
 
 void Repository::loadSettings()
@@ -195,12 +185,21 @@ void Repository::updateTaskInfo(size_t index,
     }
 }
 
+QString Repository::dbPath() const
+{
+    return m_dbPath;
+}
+
 void Repository::setDbPath(const QString &dbPath)
 {
     m_dbPath = dbPath;
     emit this->dbPathChanged(m_dbPath);
 }
 
+QString Repository::getCalendarUrl() const
+{
+    return m_calendarUrl;
+}
 
 void Repository::setCalendarUrl(const QString &calendarUrl)
 {

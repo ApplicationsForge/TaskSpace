@@ -27,42 +27,6 @@ Repository *Router::getRepository()
     return m_repository.data();
 }
 
-Task Router::createNewBaseTask()
-{
-    return m_repository->createNewBaseTask();
-}
-
-void Router::changeTaskStatus(size_t taskIndex, QString status)
-{
-    m_repository->updateTaskStatus(taskIndex, status);
-}
-
-void Router::updateTask(size_t index,
-                        QString title,
-                        QString description,
-                        QDate dueToDate,
-                        bool dueToDateEnabled,
-                        QTime estimatedTime,
-                        QTime actualTime)
-{
-    m_repository->updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
-}
-
-void Router::removeTask(size_t index)
-{
-    m_repository->removeTask(index);
-}
-
-void Router::setDbPath(QString path)
-{
-    m_repository->setDbPath(path);
-}
-
-void Router::setCalendarUrl(QString url)
-{
-    m_repository->setCalendarUrl(url);
-}
-
 void Router::setupConnections()
 {
     QObject::connect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));

@@ -523,7 +523,7 @@ void MainWindow::onRouter_TasksUpdated()
 void MainWindow::onAddNewTaskButton_Clicked()
 {
     Router& router = Router::getInstance();
-    Task task = router.createNewBaseTask();
+    Task task = router.getRepository()->createNewBaseTask();
     this->showTaskDialog(task, true);
 }
 
@@ -595,19 +595,19 @@ void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskLi
 void MainWindow::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
 {
     Router& router = Router::getInstance();
-    router.changeTaskStatus(taskIndex, status);
+    router.getRepository()->updateTaskStatus(taskIndex, status);
 }
 
 void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QString description, QDate dueToDate, bool dueToDateEnabled, QTime estimatedTime, QTime actualTime)
 {
     Router& router = Router::getInstance();
-    router.updateTask(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
+    router.getRepository()->updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
 }
 
 void MainWindow::onRemoveTaskInputWidget_IndexSelected(size_t index)
 {
     Router& router = Router::getInstance();
-    router.removeTask(index);
+    router.getRepository()->removeTask(index);
 }
 
 void MainWindow::onApplySettingsButton_Clicked()
@@ -617,13 +617,13 @@ void MainWindow::onApplySettingsButton_Clicked()
     QString databasePath = m_databasePathInput->text();
     if(!databasePath.isEmpty())
     {
-        router.setDbPath(databasePath);
+        router.getRepository()->setDbPath(databasePath);
     }
 
     QString calendarUrl = m_calendarUrlInput->text();
     if(!calendarUrl.isEmpty())
     {
-        router.setCalendarUrl(calendarUrl);
+        router.getRepository()->setCalendarUrl(calendarUrl);
     }
 }
 

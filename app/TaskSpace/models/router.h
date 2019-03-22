@@ -16,24 +16,6 @@ public:
 
      Repository* getRepository();
 
-     Task createNewBaseTask();
-
-     void changeTaskStatus(size_t taskIndex, QString status);
-
-     void updateTask(size_t index,
-                     QString title,
-                     QString description,
-                     QDate dueToDate = QDate(),
-                     bool dueToDateEnabled = true,
-                     QTime estimatedTime = QTime(0, 0),
-                     QTime actualTime = QTime(0, 0));
-
-     void removeTask(size_t index);
-
-     void setDbPath(QString path);
-
-     void setCalendarUrl(QString url);
-
 private:
     explicit Router(QObject *parent = nullptr);
 
