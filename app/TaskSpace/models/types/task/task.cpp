@@ -7,7 +7,7 @@ Task::Task(size_t index, QString title, QString status, QString descripion) :
     m_updatedAt(QDateTime::currentDateTime()),
     m_description(descripion),
     m_dueToDate(QDate()),
-    m_dueToDateEnabled(true),
+    m_dueToDateEnabled(false),
     m_estimatedTime(QTime(0, 0)),
     m_actualTime(QTime(0, 0)),
     m_archived(false)
@@ -53,7 +53,17 @@ void Task::setStatus(const QString &status)
 
 QString Task::decoratedBaseInformation()
 {
-    return "[" + QString::number(m_index) + "] " + m_title + " (Undefined)";
+    QString taskInformation = "[" + QString::number(m_index) + "] "
+            + m_title;
+
+    if(m_dueToDateEnabled)
+    {
+        taskInformation += " (" + m_dueToDate.toString() + ")";
+        //taskInformation += " " + m_estimatedTime.toString();
+        //taskInformation += "/" + m_actualTime.toString() + ")";
+    }
+
+    return  taskInformation;
 }
 
 QDateTime Task::updatedAt() const

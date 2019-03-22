@@ -124,7 +124,7 @@ void Repository::setTasks(const QList< QSharedPointer<Task> > &tasks)
 
 Task Repository::createNewBaseTask()
 {
-    Task newTask = Task(this->getNewTaskIndex(), "", this->getAvaliableStatuses().first());
+    Task newTask = Task(this->getNewTaskIndex(), "NewBaseTask", this->getAvaliableStatuses().first());
     this->addTask(newTask);
     return this->getTaskByIndex(newTask.index());
 }
