@@ -260,6 +260,7 @@ void MainWindow::setupSettingsTab()
 {
     Router &router = Router::getInstance();
     QString dbPath = router.getRepository()->dbPath();
+    QString calendarUrl = router.getRepository()->getCalendarUrl();
 
     QWidget* container = new QWidget(ui->mainWidget);
     container->setObjectName("settingsContainerWidget");
@@ -271,22 +272,39 @@ void MainWindow::setupSettingsTab()
         settingsTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
         containerLayout->addWidget(settingsTitleLabel);
 
-        QWidget *dbPathWidget = new QWidget(container);
-        dbPathWidget->setLayout(new QHBoxLayout(dbPathWidget));
-            QLabel *dbPathTitleLabel = new QLabel("Database Path:", dbPathWidget);
-            dbPathWidget->layout()->addWidget(dbPathTitleLabel);
+        QWidget *dbPathWidgetContainer = new QWidget(container);
+        dbPathWidgetContainer->setLayout(new QHBoxLayout(dbPathWidgetContainer));
+            QLabel *dbPathTitleLabel = new QLabel("Database Path:", dbPathWidgetContainer);
+            dbPathWidgetContainer->layout()->addWidget(dbPathTitleLabel);
 
-            QLabel *dbPathValueLabel = new QLabel(dbPath, dbPathWidget);
+            QLabel *dbPathValueLabel = new QLabel(dbPath, dbPathWidgetContainer);
             QObject::connect(&router, SIGNAL(dbPathChanged(QString)), dbPathValueLabel, SLOT(setText(QString)));
-            dbPathWidget->layout()->addWidget(dbPathValueLabel);
+            dbPathWidgetContainer->layout()->addWidget(dbPathValueLabel);
 
-            QToolButton* selectDbToolButton = new QToolButton(dbPathWidget);
+            QToolButton* selectDbToolButton = new QToolButton(dbPathWidgetContainer);
             selectDbToolButton->setText("...");
             QObject::connect(selectDbToolButton, SIGNAL(clicked()), this, SLOT(onSelectDbToolButton_clicked()));
-            dbPathWidget->layout()->addWidget(selectDbToolButton);
+            dbPathWidgetContainer->layout()->addWidget(selectDbToolButton);
 
-            dbPathWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-        containerLayout->addWidget(dbPathWidget);
+            dbPathWidgetContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+        containerLayout->addWidget(dbPathWidgetContainer);
+
+        QWidget *calendarUrlConatiner = new QWidget(container);
+            QHBoxLayout *calendarUrlConatinerLayout = new QHBoxLayout(calendarUrlConatiner);
+                QtMaterialTextField *calendarUrlInput = new QtMaterialTextField(calendarUrlConatiner);
+                calendarUrlInput->setLabel("Calendar Url");
+                calendarUrlInput->setText(calendarUrl);
+                calendarUrlInput->setEnabled(true);
+                calendarUrlInput->setLabelFontSize(16);
+                calendarUrlInput->setInkColor(QColor("#333"));
+                calendarUrlInput->setPlaceholderText("Enter url to your calendar.");
+                calendarUrlInput->setFont(QFont("Roboto", 16, QFont::Normal));
+                calendarUrlConatinerLayout->addWidget(calendarUrlInput);
+
+                QtMaterialRaisedButton *changeUrlButton = new QtMaterialRaisedButton("Change", calendarUrlConatiner);
+                calendarUrlConatinerLayout->addWidget(changeUrlButton);
+            calendarUrlConatiner->setLayout(calendarUrlConatinerLayout);
+        containerLayout->addWidget(calendarUrlConatiner);
         containerLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
     container->setLayout(containerLayout);
     ui->mainWidget->layout()->addWidget(container);
