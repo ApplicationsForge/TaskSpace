@@ -31,13 +31,14 @@ void Router::setupConnections()
 {
     QObject::connect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
     QObject::connect(m_repository.data(), SIGNAL(dbPathChanged(QString)), this, SLOT(onRepository_DbPathChanged(QString)));
-
+    QObject::connect(m_repository.data(), SIGNAL(calendarUrlChanged(QString)), this, SLOT(onRepository_CalendarUrlChanged(QString)));
 }
 
 void Router::resetConnections()
 {
     QObject::disconnect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
     QObject::disconnect(m_repository.data(), SIGNAL(dbPathChanged(QString)), this, SLOT(onRepository_DbPathChanged(QString)));
+    QObject::disconnect(m_repository.data(), SIGNAL(calendarUrlChanged(QString)), this, SLOT(onRepository_CalendarUrlChanged(QString)));
 }
 
 void Router::onRepository_TasksUpdated()
@@ -49,4 +50,9 @@ void Router::onRepository_TasksUpdated()
 void Router::onRepository_DbPathChanged(QString path)
 {
     emit this->dbPathChanged(path);
+}
+
+void Router::onRepository_CalendarUrlChanged(QString url)
+{
+    emit this->calendarUrlChanged(url);
 }

@@ -309,6 +309,7 @@ void MainWindow::setupSettingsTab()
                 m_calendarUrlInput->setPlaceholderText("Enter url to your calendar.");
                 m_calendarUrlInput->setFont(QFont("Roboto", 16, QFont::Normal));
                 m_calendarUrlInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+                QObject::connect(&router, SIGNAL(calendarUrlChanged(QString)), m_calendarUrlInput, SLOT(setText(QString)));
                 calendarUrlConatinerLayout->addWidget(m_calendarUrlInput);
 
                 //calendarUrlConatinerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
@@ -621,9 +622,6 @@ void MainWindow::onApplySettingsButton_Clicked()
     }
 
     QString calendarUrl = m_calendarUrlInput->text();
-    if(!calendarUrl.isEmpty())
-    {
-        router.getRepository()->setCalendarUrl(calendarUrl);
-    }
+    router.getRepository()->setCalendarUrl(calendarUrl);
 }
 
