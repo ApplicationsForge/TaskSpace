@@ -48,7 +48,7 @@ private:
 
     void setTasks(const QList< QSharedPointer<Task> > &tasks);
 
-    Task addNewBaseTask();
+    Task createNewBaseTask();
 
     void addTask(Task task);
 

@@ -27,17 +27,9 @@ Repository *Router::getRepository()
     return m_repository.data();
 }
 
-void Router::addExampleTask()
+Task Router::createNewBaseTask()
 {
-    Task task(size_t(m_repository.data()->m_tasks.length()),
-              "add example task",
-              m_repository.data()->getAvaliableStatuses().first());
-    m_repository->addTask(task);
-}
-
-Task Router::addNewBaseTask()
-{
-    return m_repository->addNewBaseTask();
+    return m_repository->createNewBaseTask();
 }
 
 void Router::changeTaskStatus(size_t taskIndex, QString status)

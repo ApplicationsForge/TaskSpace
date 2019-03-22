@@ -473,7 +473,7 @@ void MainWindow::onRouter_TasksUpdated()
 void MainWindow::onAddNewTaskButton_Clicked()
 {
     Router& router = Router::getInstance();
-    Task task = router.addNewBaseTask();
+    Task task = router.createNewBaseTask();
     this->showTaskDialog(task, true);
 }
 

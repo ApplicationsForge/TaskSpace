@@ -16,9 +16,7 @@ public:
 
      Repository* getRepository();
 
-     void addExampleTask();
-
-     Task addNewBaseTask();
+     Task createNewBaseTask();
 
      void changeTaskStatus(size_t taskIndex, QString status);
 
