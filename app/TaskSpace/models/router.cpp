@@ -27,48 +27,18 @@ Repository *Router::getRepository()
     return m_repository.data();
 }
 
-Task Router::createNewBaseTask()
-{
-    return m_repository->createNewBaseTask();
-}
-
-void Router::changeTaskStatus(size_t taskIndex, QString status)
-{
-    m_repository->updateTaskStatus(taskIndex, status);
-}
-
-void Router::updateTask(size_t index,
-                        QString title,
-                        QString description,
-                        QDate dueToDate,
-                        bool dueToDateEnabled,
-                        QTime estimatedTime,
-                        QTime actualTime)
-{
-    m_repository->updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
-}
-
-void Router::removeTask(size_t index)
-{
-    m_repository->removeTask(index);
-}
-
-void Router::setDbPath(QString path)
-{
-    m_repository->setDbPath(path);
-}
-
 void Router::setupConnections()
 {
     QObject::connect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
-    QObject::connect(m_repository.data(), SIGNAL(dbPathChanged(QString)), this, SLOT(onRepository_DbPathChanged(QString)));
-
+    QObject::connect(m_repository.data(), SIGNAL(databasePathChanged(QString)), this, SLOT(onRepository_DatabasePathChanged(QString)));
+    QObject::connect(m_repository.data(), SIGNAL(calendarUrlChanged(QString)), this, SLOT(onRepository_CalendarUrlChanged(QString)));
 }
 
 void Router::resetConnections()
 {
     QObject::disconnect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
-    QObject::disconnect(m_repository.data(), SIGNAL(dbPathChanged(QString)), this, SLOT(onRepository_DbPathChanged(QString)));
+    QObject::disconnect(m_repository.data(), SIGNAL(databasePathChanged(QString)), this, SLOT(onRepository_DatabasePathChanged(QString)));
+    QObject::disconnect(m_repository.data(), SIGNAL(calendarUrlChanged(QString)), this, SLOT(onRepository_CalendarUrlChanged(QString)));
 }
 
 void Router::onRepository_TasksUpdated()
@@ -77,7 +47,12 @@ void Router::onRepository_TasksUpdated()
     emit this->tasksUpdated();
 }
 
-void Router::onRepository_DbPathChanged(QString path)
+void Router::onRepository_DatabasePathChanged(QString path)
 {
-    emit this->dbPathChanged(path);
+    emit this->databasePathChanged(path);
+}
+
+void Router::onRepository_CalendarUrlChanged(QString url)
+{
+    emit this->calendarUrlChanged(url);
 }

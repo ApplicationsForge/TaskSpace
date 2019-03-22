@@ -7,7 +7,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_widgets(QMap<QString, QWidget*>()),
     m_appBar(new QtMaterialAppBar(this)),
     m_drawer(new QtMaterialDrawer(this)),
-    m_taskListWidgets(QList<TaskListWidget*>())
+    m_taskListWidgets(QList<TaskListWidget*>()),
+    m_databasePathInput(new QtMaterialTextField(this)),
+    m_calendarUrlInput(new QtMaterialTextField(this))
 {
     ui->setupUi(this);
     // cоздаем модель
@@ -46,6 +48,7 @@ void MainWindow::setupWidgets()
     this->setupSettingsTab();
 
     this->showBacklogTab();
+    //this->showDashboardTab();
     this->onRouter_TasksUpdated();
 }
 
@@ -110,11 +113,6 @@ void MainWindow::setupDrawer()
     archiveButton->setForegroundColor(QColor("#333"));
     //QObject::connect(archiveButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
     drawerLayout->addWidget(archiveButton);
-
-    QtMaterialFlatButton* calendarButton = new QtMaterialFlatButton("Calendar", m_drawer);
-    calendarButton->setForegroundColor(QColor("#333"));
-    QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarTab()));
-    drawerLayout->addWidget(calendarButton);
 
     QtMaterialFlatButton* notesButton = new QtMaterialFlatButton("Notes", m_drawer);
     notesButton->setForegroundColor(QColor("#333"));
@@ -188,9 +186,12 @@ void MainWindow::setupDashboardTab()
                     QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
                     toolsContainerWidgetLayout->addWidget(focusTimerButton);
 
+                    QtMaterialRaisedButton *calendarButton = new QtMaterialRaisedButton("Calendar", toolsContainerWidget);
+                    QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarDialog()));
+                    toolsContainerWidgetLayout->addWidget(calendarButton);
 
-                    toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Export", toolsContainerWidget));
-                    toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("History", toolsContainerWidget));
+                    /*toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Export", toolsContainerWidget));
+                    toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("History", toolsContainerWidget));*/
 
                     toolsContainerWidgetLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
                 subContainerLayout->addWidget(toolsContainerWidget);
@@ -260,35 +261,65 @@ void MainWindow::setupBacklogTab()
 void MainWindow::setupSettingsTab()
 {
     Router &router = Router::getInstance();
-    QString dbPath = router.getRepository()->dbPath();
+    QString dbPath = router.getRepository()->databasePath();
+    QString calendarUrl = router.getRepository()->getCalendarUrl();
 
     QWidget* container = new QWidget(ui->mainWidget);
     container->setObjectName("settingsContainerWidget");
     m_widgets.insert(container->objectName(), container);
     QVBoxLayout *containerLayout = new QVBoxLayout(container);
+    containerLayout->setContentsMargins(5, 5, 5, 5);
         QLabel *settingsTitleLabel = new QLabel("Settings", container);
         settingsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
         settingsTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
         settingsTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
         containerLayout->addWidget(settingsTitleLabel);
 
-        QWidget *dbPathWidget = new QWidget(container);
-        dbPathWidget->setLayout(new QHBoxLayout(dbPathWidget));
-            QLabel *dbPathTitleLabel = new QLabel("Database Path:", dbPathWidget);
-            dbPathWidget->layout()->addWidget(dbPathTitleLabel);
+        QWidget *dbPathWidgetContainer = new QWidget(container);
+        dbPathWidgetContainer->setLayout(new QHBoxLayout(dbPathWidgetContainer));
+        dbPathWidgetContainer->layout()->setContentsMargins(0, 0, 0, 0);
+            m_databasePathInput->setParent(dbPathWidgetContainer);
+            m_databasePathInput->setLabel("Database Path");
+            m_databasePathInput->setText(dbPath);
+            m_databasePathInput->setReadOnly(true);
+            m_databasePathInput->setLabelFontSize(16);
+            m_databasePathInput->setInkColor(QColor("#333"));
+            m_databasePathInput->setPlaceholderText("Please, enter full path to database with task.");
+            m_databasePathInput->setFont(QFont("Roboto", 16, QFont::Normal));
+            m_databasePathInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+            QObject::connect(&router, SIGNAL(databasePathChanged(QString)), m_databasePathInput, SLOT(setText(QString)));
+            dbPathWidgetContainer->layout()->addWidget(m_databasePathInput);
 
-            QLabel *dbPathValueLabel = new QLabel(dbPath, dbPathWidget);
-            QObject::connect(&router, SIGNAL(dbPathChanged(QString)), dbPathValueLabel, SLOT(setText(QString)));
-            dbPathWidget->layout()->addWidget(dbPathValueLabel);
+            QtMaterialFlatButton *selectDbButton = new QtMaterialFlatButton("Change", dbPathWidgetContainer);
+            QObject::connect(selectDbButton, SIGNAL(clicked()), this, SLOT(onSelectDbButton_clicked()));
+            dbPathWidgetContainer->layout()->addWidget(selectDbButton);
 
-            QToolButton* selectDbToolButton = new QToolButton(dbPathWidget);
-            selectDbToolButton->setText("...");
-            QObject::connect(selectDbToolButton, SIGNAL(clicked()), this, SLOT(onSelectDbToolButton_clicked()));
-            dbPathWidget->layout()->addWidget(selectDbToolButton);
+            //dbPathWidgetContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+        containerLayout->addWidget(dbPathWidgetContainer);
 
-            dbPathWidget->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-        containerLayout->addWidget(dbPathWidget);
-        containerLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+        QWidget *calendarUrlConatiner = new QWidget(container);
+            QHBoxLayout *calendarUrlConatinerLayout = new QHBoxLayout(calendarUrlConatiner);
+            calendarUrlConatinerLayout->setContentsMargins(0, 10, 0, 0);
+                m_calendarUrlInput->setParent(calendarUrlConatiner);
+                m_calendarUrlInput->setLabel("Calendar Url");
+                m_calendarUrlInput->setText(calendarUrl);
+                m_calendarUrlInput->setReadOnly(false);
+                m_calendarUrlInput->setLabelFontSize(16);
+                m_calendarUrlInput->setInkColor(QColor("#333"));
+                m_calendarUrlInput->setPlaceholderText("Enter url to your calendar.");
+                m_calendarUrlInput->setFont(QFont("Roboto", 16, QFont::Normal));
+                m_calendarUrlInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+                QObject::connect(&router, SIGNAL(calendarUrlChanged(QString)), m_calendarUrlInput, SLOT(setText(QString)));
+                calendarUrlConatinerLayout->addWidget(m_calendarUrlInput);
+
+                //calendarUrlConatinerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+            calendarUrlConatiner->setLayout(calendarUrlConatinerLayout);
+        containerLayout->addWidget(calendarUrlConatiner);
+        containerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+
+        QtMaterialFlatButton *applySettingsButton = new QtMaterialFlatButton("Apply Settings", container);
+        QObject::connect(applySettingsButton, SIGNAL(clicked()), this, SLOT(onApplySettingsButton_Clicked()));
+        containerLayout->addWidget(applySettingsButton);
     container->setLayout(containerLayout);
     ui->mainWidget->layout()->addWidget(container);
     container->hide();
@@ -326,13 +357,6 @@ void MainWindow::showBacklogTab()
     m_widgets["dashboardContainerWidget"]->hide();
     m_widgets["backlogContainerWidget"]->show();
     m_widgets["settingsContainerWidget"]->hide();
-}
-
-void MainWindow::showCalendarTab()
-{
-    /*qDeleteAll(ui->mainFrame->children());
-    ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
-    ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Calendar", ui->mainFrame));*/
 }
 
 void MainWindow::showNotesTab()
@@ -378,6 +402,29 @@ void MainWindow::showFocusTimerDialog()
     focusTimerDialog->setWindowTitle("Focus Timer Dialog");
     focusTimerDialog->setMinimumSize(400, 300);
     focusTimerDialog->show();
+}
+
+void MainWindow::showCalendarDialog()
+{
+    Router& router = Router::getInstance();
+    QString calendarUrl = router.getRepository()->getCalendarUrl();
+
+    QDialog *calendarDialog = new QDialog(this);
+    calendarDialog->setWindowTitle("Calendar");
+    calendarDialog->setMinimumSize(800, 600);
+        QVBoxLayout* calendarDialogLayout = new QVBoxLayout(calendarDialog);
+        calendarDialogLayout->setContentsMargins(0, 0, 0, 0);
+            QWidget* container = new QWidget(ui->mainWidget);
+                QVBoxLayout *containerLayout = new QVBoxLayout(container);
+                containerLayout->setContentsMargins(0, 0, 0, 0);
+                    QWebEngineView *view = new QWebEngineView(container);
+                    view->load(QUrl(calendarUrl));
+                    view->show();
+                    containerLayout->addWidget(view);
+                container->setLayout(containerLayout);
+            calendarDialogLayout->addWidget(container);
+        calendarDialog->setLayout(calendarDialogLayout);
+    calendarDialog->showMaximized();
 }
 
 void MainWindow::showTaskDialog(Task task, bool newTask)
@@ -432,13 +479,12 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
     taskDialog->exec();
 }
 
-void MainWindow::onSelectDbToolButton_clicked()
+void MainWindow::onSelectDbButton_clicked()
 {
-    Router& router = Router::getInstance();
     QString path = QFileDialog::getOpenFileName(this, "Select Database", "", "*.db");
     if(path.length() > 0)
     {
-        router.setDbPath(path);
+        m_databasePathInput->setText(path);
     }
 }
 
@@ -478,7 +524,7 @@ void MainWindow::onRouter_TasksUpdated()
 void MainWindow::onAddNewTaskButton_Clicked()
 {
     Router& router = Router::getInstance();
-    Task task = router.createNewBaseTask();
+    Task task = router.getRepository()->createNewBaseTask();
     this->showTaskDialog(task, true);
 }
 
@@ -550,18 +596,32 @@ void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskLi
 void MainWindow::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
 {
     Router& router = Router::getInstance();
-    router.changeTaskStatus(taskIndex, status);
+    router.getRepository()->updateTaskStatus(taskIndex, status);
 }
 
 void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QString description, QDate dueToDate, bool dueToDateEnabled, QTime estimatedTime, QTime actualTime)
 {
     Router& router = Router::getInstance();
-    router.updateTask(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
+    router.getRepository()->updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
 }
 
 void MainWindow::onRemoveTaskInputWidget_IndexSelected(size_t index)
 {
     Router& router = Router::getInstance();
-    router.removeTask(index);
+    router.getRepository()->removeTask(index);
+}
+
+void MainWindow::onApplySettingsButton_Clicked()
+{
+    Router &router = router.getInstance();
+
+    QString databasePath = m_databasePathInput->text();
+    if(!databasePath.isEmpty())
+    {
+        router.getRepository()->setDatabasePath(databasePath);
+    }
+
+    QString calendarUrl = m_calendarUrlInput->text();
+    router.getRepository()->setCalendarUrl(calendarUrl);
 }
 

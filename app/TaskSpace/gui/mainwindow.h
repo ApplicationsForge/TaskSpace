@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QDialogButtonBox>
 #include <QFormLayout>
+#include <QWebEngineView>
 
 #include "models/router.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"
@@ -57,6 +58,9 @@ private:
 
     QList<TaskListWidget*> m_taskListWidgets;
 
+    QtMaterialTextField* m_databasePathInput;
+    QtMaterialTextField* m_calendarUrlInput;
+
     void setupWidgets();
 
     void setupAppBar();
@@ -83,8 +87,6 @@ private slots:
 
     void showBacklogTab();
 
-    void showCalendarTab();
-
     void showNotesTab();
 
     void showSettingsTab();
@@ -93,9 +95,11 @@ private slots:
 
     void showFocusTimerDialog();
 
+    void showCalendarDialog();
+
     void showTaskDialog(Task task, bool newTask = false);
 
-    void onSelectDbToolButton_clicked();
+    void onSelectDbButton_clicked();
 
     void onRouter_TasksUpdated();
 
@@ -116,6 +120,8 @@ private slots:
                                         QTime actualTime);
 
     void onRemoveTaskInputWidget_IndexSelected(size_t index);
+
+    void onApplySettingsButton_Clicked();
 };
 
 #endif // MAINWINDOW_H

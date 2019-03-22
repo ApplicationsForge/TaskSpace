@@ -19,23 +19,36 @@ public:
 
     ~Repository();
 
-    QString dbPath() const;
-
     QStringList getAvaliableStatuses();
 
     QList<Task> getTasks() const;
-
     QList<Task> getTasks(QString status) const;
-
     int getTaskCountByStatus(QString status);
-
     Task getTaskByIndex(size_t index) const;
+    Task createNewBaseTask();
+    void addTask(Task task);
+    void removeTask(size_t index);
+    void updateTaskStatus(size_t index, QString status);
+    void updateTaskInfo(size_t index,
+                    QString title,
+                    QString description,
+                    QDate dueToDate,
+                    bool dueToDateEnabled,
+                    QTime estimatedTime,
+                    QTime actualTime);
+
+    QString databasePath() const;
+    void setDatabasePath(const QString &databasePath);
+
+    QString getCalendarUrl() const;
+    void setCalendarUrl(const QString &calendarUrl);
 
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
 
-    QString m_dbPath;
+    QString m_databasePath;
     QList< QSharedPointer<Task> > m_tasks;
+    QString m_calendarUrl;
 
     void loadSettings();
     void loadMockData();
@@ -48,29 +61,12 @@ private:
 
     void setTasks(const QList< QSharedPointer<Task> > &tasks);
 
-    Task createNewBaseTask();
-
-    void addTask(Task task);
-
-    void removeTask(size_t index);
-
-    void updateTaskStatus(size_t index, QString status);
-
-    void updateTaskInfo(size_t index,
-                    QString title,
-                    QString description,
-                    QDate dueToDate,
-                    bool dueToDateEnabled,
-                    QTime estimatedTime,
-                    QTime actualTime);
-
-    void setDbPath(const QString &dbPath);
-
     friend class Router;
 
 signals:
-    void dbPathChanged(QString path);
+    void databasePathChanged(QString path);
     void tasksUpdated();
+    void calendarUrlChanged(QString url);
 
 public slots:
 };
