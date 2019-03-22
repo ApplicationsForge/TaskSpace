@@ -419,7 +419,6 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
 
                        QtMaterialFlatButton *saveTaskButton = new QtMaterialFlatButton("Save", actionsContainerWidget);
                        QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(saveTaskData()));
-                       QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(disableEditing()));
                        actionsContainerWidgetLayout->addWidget(saveTaskButton);
 
                        QtMaterialFlatButton *closeButton = new QtMaterialFlatButton("Close", actionsContainerWidget);

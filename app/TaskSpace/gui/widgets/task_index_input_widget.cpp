@@ -10,7 +10,7 @@ TaskIndexInputWidget::TaskIndexInputWidget(QWidget *parent) :
         m_indexInput->setLabel("Index:");
         m_indexInput->setLabelFontSize(16);
         m_indexInput->setInkColor(QColor("#333"));
-        m_indexInput->setPlaceholderText("Enter the task index, plaese.");
+        m_indexInput->setPlaceholderText("Enter the task [index], please.");
         m_indexInput->setFont(QFont("Roboto", 16, QFont::Normal));
         containerLayout->addWidget(m_indexInput);
     this->setLayout(containerLayout);

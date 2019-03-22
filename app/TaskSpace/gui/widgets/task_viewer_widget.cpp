@@ -22,7 +22,7 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
         m_titleWidget->setLabelFontSize(16);
         m_titleWidget->setInkColor(QColor("#333"));
         //m_titleTextField->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
-        m_titleWidget->setPlaceholderText("Enter the task title, plaese.");
+        m_titleWidget->setPlaceholderText("Enter the task title, please.");
         m_titleWidget->setFont(QFont("Roboto", 16, QFont::Normal));
         //m_titleTextField->setShowInputLine(false);
         containerLayout->addWidget(m_titleWidget);
@@ -149,8 +149,8 @@ void TaskViewerWidget::saveTaskData()
 
     if(title.length() <= 0)
     {
-        QMessageBox(QMessageBox::Warning, "Empty title", "Please type a title for your task").exec();
-        this->setEditingEnable(false);
+        QMessageBox(QMessageBox::Warning, "Empty title", "Please enter a title for your task").exec();
+        this->enableEditing();
         return;
     }
 
@@ -163,6 +163,7 @@ void TaskViewerWidget::saveTaskData()
                                dueToDateEnabled,
                                estimatedTime,
                                actualTime);
+        this->disableEditing();
     }
 }
 
