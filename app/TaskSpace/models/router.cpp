@@ -58,6 +58,11 @@ void Router::setDbPath(QString path)
     m_repository->setDbPath(path);
 }
 
+void Router::setCalendarUrl(QString url)
+{
+    m_repository->setCalendarUrl(url);
+}
+
 void Router::setupConnections()
 {
     QObject::connect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));

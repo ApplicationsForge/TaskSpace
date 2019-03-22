@@ -612,6 +612,18 @@ void MainWindow::onRemoveTaskInputWidget_IndexSelected(size_t index)
 
 void MainWindow::onApplySettingsButton_Clicked()
 {
-    qDebug() << "Apply Settings";
+    Router &router = router.getInstance();
+
+    QString databasePath = m_databasePathInput->text();
+    if(!databasePath.isEmpty())
+    {
+        router.setDbPath(databasePath);
+    }
+
+    QString calendarUrl = m_calendarUrlInput->text();
+    if(!calendarUrl.isEmpty())
+    {
+        router.setCalendarUrl(calendarUrl);
+    }
 }
 

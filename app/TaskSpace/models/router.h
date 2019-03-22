@@ -32,6 +32,8 @@ public:
 
      void setDbPath(QString path);
 
+     void setCalendarUrl(QString url);
+
 private:
     explicit Router(QObject *parent = nullptr);
 
