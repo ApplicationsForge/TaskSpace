@@ -92,7 +92,8 @@ SOURCES += \
     gui/widgets/mylistwidgetitem.cpp \
     gui/widgets/task_status_chart_widget.cpp \
     gui/widgets/task_viewer_widget.cpp \
-    gui/widgets/task_index_input_widget.cpp
+    gui/widgets/task_index_input_widget.cpp \
+    models/database_adapter/sqlite_adapter.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -188,7 +189,8 @@ HEADERS += \
     gui/widgets/mylistwidgetitem.h \
     gui/widgets/task_status_chart_widget.h \
     gui/widgets/task_viewer_widget.h \
-    gui/widgets/task_index_input_widget.h
+    gui/widgets/task_index_input_widget.h \
+    models/database_adapter/sqlite_adapter.h
 
 FORMS += \
         gui/mainwindow.ui

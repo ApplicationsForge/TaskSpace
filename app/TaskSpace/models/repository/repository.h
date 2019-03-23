@@ -9,6 +9,8 @@
 #include "models/settings_manager/settings_manager.h"
 #include "models/types/task/task.h"
 
+#include "models/database_adapter/sqlite_adapter.h"
+
 class Router;
 
 class Repository : public QObject
