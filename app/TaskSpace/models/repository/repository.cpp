@@ -67,7 +67,7 @@ Task Repository::getTaskByIndex(size_t index) const
     }
     catch(std::invalid_argument e)
     {
-        qDebug() << e.what();
+        qDebug() << "Repository::getTaskByIndex:" << e.what();
         throw e;
     }
 }
@@ -141,9 +141,17 @@ QList<QSharedPointer<Task> > Repository::reloadTasksFromDatabase(const QString &
 
 Task Repository::createNewBaseTask()
 {
-    Task newTask = Task(this->getNewTaskIndex(), "NewBaseTask", this->getAvaliableStatuses().first());
-    this->addTask(newTask);
-    return this->getTaskByIndex(newTask.index());
+    try
+    {
+        Task newTask = Task(this->getNewTaskIndex(), "NewBaseTask", this->getAvaliableStatuses().first());
+        this->addTask(newTask);
+        return this->getTaskByIndex(newTask.index());
+    }
+    catch(std::invalid_argument e)
+    {
+        qDebug() << "Repository::createNewBaseTask:" << e.what();
+        throw;
+    }
 }
 
 void Repository::addTask(Task task)
