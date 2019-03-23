@@ -61,7 +61,7 @@ private:
 
     void syncTasksWithDatabase();
     static void saveTasksToDatabase(const QString &databasePath, const QList< QSharedPointer<Task> >& tasks);
-    static QList< QSharedPointer<Task> > reloadTasksFromDatabase(const QString &databasePath);
+    static QList< QSharedPointer<Task> > loadTasksFromDatabase(const QString &databasePath);
 
     friend class Router;
 

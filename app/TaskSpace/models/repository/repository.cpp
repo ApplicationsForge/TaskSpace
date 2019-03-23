@@ -7,7 +7,7 @@ Repository::Repository(QObject *parent) :
     m_tasks(QList< QSharedPointer<Task> >())
 {
     this->loadSettings();
-    m_tasks = Repository::reloadTasksFromDatabase(m_databasePath);
+    m_tasks = Repository::loadTasksFromDatabase(m_databasePath);
     //this->loadMockData();
 }
 
@@ -126,7 +126,7 @@ void Repository::syncTasksWithDatabase()
 {
     Repository::saveTasksToDatabase(m_databasePath, m_tasks);
     m_tasks.clear();
-    m_tasks = Repository::reloadTasksFromDatabase(m_databasePath);
+    m_tasks = Repository::loadTasksFromDatabase(m_databasePath);
     emit this->tasksUpdated();
 }
 
@@ -135,7 +135,7 @@ void Repository::saveTasksToDatabase(const QString &databasePath, const QList<QS
     return;
 }
 
-QList<QSharedPointer<Task> > Repository::reloadTasksFromDatabase(const QString &databasePath)
+QList<QSharedPointer<Task> > Repository::loadTasksFromDatabase(const QString &databasePath)
 {
     return QList<QSharedPointer<Task> >();
 }
