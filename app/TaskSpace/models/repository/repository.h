@@ -59,7 +59,9 @@ private:
 
     size_t getNewTaskIndex();
 
-    void setTasks(const QList< QSharedPointer<Task> > &tasks);
+    void syncTasksWithDatabase();
+    static void saveTasksToDatabase(const QString &databasePath, const QList< QSharedPointer<Task> >& tasks);
+    static QList< QSharedPointer<Task> > reloadTasksFromDatabase(const QString &databasePath);
 
     friend class Router;
 

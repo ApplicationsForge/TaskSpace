@@ -7,8 +7,8 @@ Repository::Repository(QObject *parent) :
     m_tasks(QList< QSharedPointer<Task> >())
 {
     this->loadSettings();
-
-    this->loadMockData();
+    m_tasks = Repository::reloadTasksFromDatabase(m_databasePath);
+    //this->loadMockData();
 }
 
 Repository::~Repository()
@@ -61,7 +61,15 @@ int Repository::getTaskCountByStatus(QString status)
 
 Task Repository::getTaskByIndex(size_t index) const
 {
-    return *(this->findTask(index).data());
+    try
+    {
+        return *(this->findTask(index).data());
+    }
+    catch(std::invalid_argument e)
+    {
+        qDebug() << e.what();
+        throw e;
+    }
 }
 
 void Repository::loadSettings()
@@ -113,10 +121,22 @@ size_t Repository::getNewTaskIndex()
     return maxIndex + 1;
 }
 
-void Repository::setTasks(const QList< QSharedPointer<Task> > &tasks)
+void Repository::syncTasksWithDatabase()
 {
-    m_tasks = tasks;
+    Repository::saveTasksToDatabase(m_databasePath, m_tasks);
+    m_tasks.clear();
+    m_tasks = Repository::reloadTasksFromDatabase(m_databasePath);
     emit this->tasksUpdated();
+}
+
+void Repository::saveTasksToDatabase(const QString &databasePath, const QList<QSharedPointer<Task> > &tasks)
+{
+    return;
+}
+
+QList<QSharedPointer<Task> > Repository::reloadTasksFromDatabase(const QString &databasePath)
+{
+    return QList<QSharedPointer<Task> >();
 }
 
 Task Repository::createNewBaseTask()
@@ -129,7 +149,7 @@ Task Repository::createNewBaseTask()
 void Repository::addTask(Task task)
 {
     m_tasks.append(QSharedPointer<Task>(new Task(task.index(), task.title(), task.status())));
-    emit this->tasksUpdated();
+    this->syncTasksWithDatabase();
 }
 
 void Repository::removeTask(size_t index)
@@ -138,7 +158,7 @@ void Repository::removeTask(size_t index)
     {
         auto task = this->findTask(index);
         m_tasks.removeAll(task);
-        emit this->tasksUpdated();
+        this->syncTasksWithDatabase();
     }
     catch (std::invalid_argument e)
     {
@@ -152,7 +172,7 @@ void Repository::updateTaskStatus(size_t index, QString status)
     {
         auto task = this->findTask(index);
         task->setStatus(status);
-        emit this->tasksUpdated();
+        this->syncTasksWithDatabase();
     }
     catch(std::invalid_argument e)
     {
@@ -177,7 +197,7 @@ void Repository::updateTaskInfo(size_t index,
         task->setDueToDateEnabled(dueToDateEnabled);
         task->setEstimatedTime(estimatedTime);
         task->setActualTime(actualTime);
-        emit this->tasksUpdated();
+        this->syncTasksWithDatabase();
     }
     catch (std::invalid_argument e)
     {
