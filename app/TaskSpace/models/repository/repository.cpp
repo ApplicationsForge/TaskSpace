@@ -80,6 +80,7 @@ void Repository::loadSettings()
     }
     catch(std::invalid_argument e) {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+        qDebug() << "Repository::loadSettings:" << e.what();
         this->setDatabasePath("");
         this->setCalendarUrl("");
     }
@@ -171,6 +172,7 @@ void Repository::removeTask(size_t index)
     catch (std::invalid_argument e)
     {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+        qDebug() << "Repository::removeTask:" << e.what();
     }
 }
 
@@ -185,6 +187,7 @@ void Repository::updateTaskStatus(size_t index, QString status)
     catch(std::invalid_argument e)
     {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+        qDebug() << "Repository::updateTaskStatus:" << e.what();
     }
 }
 
@@ -210,6 +213,7 @@ void Repository::updateTaskInfo(size_t index,
     catch (std::invalid_argument e)
     {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+        qDebug() << "Repository::updateTaskInfo:" << e.what();
     }
 }
 
