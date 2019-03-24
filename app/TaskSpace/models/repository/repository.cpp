@@ -100,15 +100,16 @@ void Repository::loadTasks()
 {
     QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
     QFile file(tasksFilePath);
-    if(!file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text))
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "Repository::loadTasks:" << "Can not open file" << file << "for reading";
         throw std::runtime_error("Can not load tasks");
     }
 
     QString tasksFileContent = QString::fromUtf8(file.readAll());
-    QList<Task> tasks = Repository::convertTaskJsonToList(QtJson::parse(tasksFileContent).toList());
+    file.close();
 
+    QList<Task> tasks = Repository::convertTaskJsonToList(QtJson::parse(tasksFileContent).toList());
     for(auto task : tasks)
     {
         m_tasks.append(QSharedPointer<Task>(new Task(task)));
@@ -123,16 +124,15 @@ void Repository::saveTasks()
     QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
 
     QFile file(tasksFilePath);
-    if(!file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text))
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         qDebug() << "Repository::saveTasks:" << "Can not open file" << file << "for writing";
         throw std::runtime_error("Can not save tasks");
     }
 
-    qDebug() << tasksJson << m_storeDirectory;
     QByteArray serilizedContent = QtJson::serialize(tasksJson);
-    qDebug() << serilizedContent;
-    file.write(serilizedContent);
+    QTextStream stream( &file );
+    stream << serilizedContent << endl;
     file.close();
 }
 
@@ -165,9 +165,9 @@ QList<Task> Repository::convertTaskJsonToList(const QtJson::JsonArray &taskJsonA
         size_t index = size_t(taskMap["index"].toUInt());
         QString title = taskMap["title"].toString();
         QString status = taskMap["status"].toString();
-        QDateTime updated_at = taskMap["updated_at"].toDateTime();
+        QDateTime updated_at = QDateTime::fromString(taskMap["updated_at"].toString());
         QString description = taskMap["description"].toString();
-        QDate dueToDate = taskMap["due_to_date"].toDate();
+        QDate dueToDate = QDate::fromString(taskMap["due_to_date"].toString());
         bool dueToDateEnabled = taskMap["due_to_date_enabled"].toBool();
         QTime estimatedTime = taskMap["estimated_time"].toTime();
         QTime actualTime = taskMap["actual_time"].toTime();
@@ -185,7 +185,7 @@ QList<Task> Repository::convertTaskJsonToList(const QtJson::JsonArray &taskJsonA
 
 QString Repository::resolveTaskFilePath(const QString &storeDirectory)
 {
-    return storeDirectory + "/tasks.json";
+    return storeDirectory + "tasks.json";
 }
 
 QSharedPointer<Task> Repository::findTask(size_t index) const
