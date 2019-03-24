@@ -105,7 +105,7 @@ void SettingsManager::set(QString group, QString key, QVariant value)
 void SettingsManager::generateDefaultSettings()
 {
     settings->beginGroup("Main");
-        settings->setValue("DBPath", "/Users/xtail/Projects/MyTaskManager/TaskSpace/db/taskspace.db");
+        settings->setValue("StoreDirectory", "/Users/xtail/Projects/MyTaskManager/TaskSpace/db/");
         settings->setValue("CalendarUrl", "https://calendar.google.com/calendar/r");
     settings->endGroup();
 

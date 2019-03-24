@@ -6,6 +6,8 @@
 #include <QSqlQuery>
 #include <QtDebug>
 
+#include "libs/json_parser/json.h"
+
 #include "models/settings_manager/settings_manager.h"
 #include "models/types/task/task.h"
 
@@ -37,8 +39,8 @@ public:
                     QTime estimatedTime,
                     QTime actualTime);
 
-    QString databasePath() const;
-    void setDatabasePath(const QString &databasePath);
+    QString storeDirectory() const;
+    void setStoreDirectory(const QString &storeDirectory);
 
     QString getCalendarUrl() const;
     void setCalendarUrl(const QString &calendarUrl);
@@ -46,14 +48,12 @@ public:
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
 
-    QString m_databasePath;
+    QString m_storeDirectory;
     QList< QSharedPointer<Task> > m_tasks;
     QString m_calendarUrl;
 
     void loadSettings();
     void loadMockData();
-
-    bool initDb(QString path="");
 
     QSharedPointer<Task> findTask(size_t index) const;
 
@@ -64,7 +64,7 @@ private:
     friend class Router;
 
 signals:
-    void databasePathChanged(QString path);
+    void storeDirectoryChanged(QString path);
     void tasksUpdated();
     void calendarUrlChanged(QString url);
 

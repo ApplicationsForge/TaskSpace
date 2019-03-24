@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_appBar(new QtMaterialAppBar(this)),
     m_drawer(new QtMaterialDrawer(this)),
     m_taskListWidgets(QList<TaskListWidget*>()),
-    m_databasePathInput(new QtMaterialTextField(this)),
+    m_storeDirectoryInput(new QtMaterialTextField(this)),
     m_calendarUrlInput(new QtMaterialTextField(this))
 {
     ui->setupUi(this);
@@ -261,7 +261,7 @@ void MainWindow::setupBacklogTab()
 void MainWindow::setupSettingsTab()
 {
     Router &router = Router::getInstance();
-    QString dbPath = router.getRepository()->databasePath();
+    QString storeDirectory = router.getRepository()->storeDirectory();
     QString calendarUrl = router.getRepository()->getCalendarUrl();
 
     QWidget* container = new QWidget(ui->mainWidget);
@@ -275,27 +275,25 @@ void MainWindow::setupSettingsTab()
         settingsTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
         containerLayout->addWidget(settingsTitleLabel);
 
-        QWidget *dbPathWidgetContainer = new QWidget(container);
-        dbPathWidgetContainer->setLayout(new QHBoxLayout(dbPathWidgetContainer));
-        dbPathWidgetContainer->layout()->setContentsMargins(0, 0, 0, 0);
-            m_databasePathInput->setParent(dbPathWidgetContainer);
-            m_databasePathInput->setLabel("Database Path");
-            m_databasePathInput->setText(dbPath);
-            m_databasePathInput->setReadOnly(true);
-            m_databasePathInput->setLabelFontSize(16);
-            m_databasePathInput->setInkColor(QColor("#333"));
-            m_databasePathInput->setPlaceholderText("Please, enter full path to database with task.");
-            m_databasePathInput->setFont(QFont("Roboto", 16, QFont::Normal));
-            m_databasePathInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
-            QObject::connect(&router, SIGNAL(databasePathChanged(QString)), m_databasePathInput, SLOT(setText(QString)));
-            dbPathWidgetContainer->layout()->addWidget(m_databasePathInput);
+        QWidget *storeDirectoryWidgetContainer = new QWidget(container);
+        storeDirectoryWidgetContainer->setLayout(new QHBoxLayout(storeDirectoryWidgetContainer));
+        storeDirectoryWidgetContainer->layout()->setContentsMargins(0, 0, 0, 0);
+            m_storeDirectoryInput->setParent(storeDirectoryWidgetContainer);
+            m_storeDirectoryInput->setLabel("Store Directory");
+            m_storeDirectoryInput->setText(storeDirectory);
+            m_storeDirectoryInput->setReadOnly(true);
+            m_storeDirectoryInput->setLabelFontSize(16);
+            m_storeDirectoryInput->setInkColor(QColor("#333"));
+            m_storeDirectoryInput->setPlaceholderText("Please, enter full path to database with task.");
+            m_storeDirectoryInput->setFont(QFont("Roboto", 16, QFont::Normal));
+            m_storeDirectoryInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+            QObject::connect(&router, SIGNAL(storeDirectoryChanged(QString)), m_storeDirectoryInput, SLOT(setText(QString)));
+            storeDirectoryWidgetContainer->layout()->addWidget(m_storeDirectoryInput);
 
-            QtMaterialFlatButton *selectDbButton = new QtMaterialFlatButton("Change", dbPathWidgetContainer);
+            QtMaterialFlatButton *selectDbButton = new QtMaterialFlatButton("Change", storeDirectoryWidgetContainer);
             QObject::connect(selectDbButton, SIGNAL(clicked()), this, SLOT(onSelectDbButton_clicked()));
-            dbPathWidgetContainer->layout()->addWidget(selectDbButton);
-
-            //dbPathWidgetContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-        containerLayout->addWidget(dbPathWidgetContainer);
+            storeDirectoryWidgetContainer->layout()->addWidget(selectDbButton);
+        containerLayout->addWidget(storeDirectoryWidgetContainer);
 
         QWidget *calendarUrlConatiner = new QWidget(container);
             QHBoxLayout *calendarUrlConatinerLayout = new QHBoxLayout(calendarUrlConatiner);
@@ -484,7 +482,7 @@ void MainWindow::onSelectDbButton_clicked()
     QString path = QFileDialog::getOpenFileName(this, "Select Database", "", "*.db");
     if(path.length() > 0)
     {
-        m_databasePathInput->setText(path);
+        m_storeDirectoryInput->setText(path);
     }
 }
 
@@ -615,10 +613,10 @@ void MainWindow::onApplySettingsButton_Clicked()
 {
     Router &router = router.getInstance();
 
-    QString databasePath = m_databasePathInput->text();
-    if(!databasePath.isEmpty())
+    QString storeDirectory = m_storeDirectoryInput->text();
+    if(!storeDirectory.isEmpty())
     {
-        router.getRepository()->setDatabasePath(databasePath);
+        router.getRepository()->setStoreDirectory(storeDirectory);
     }
 
     QString calendarUrl = m_calendarUrlInput->text();

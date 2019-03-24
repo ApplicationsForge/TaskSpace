@@ -58,7 +58,7 @@ private:
 
     QList<TaskListWidget*> m_taskListWidgets;
 
-    QtMaterialTextField* m_databasePathInput;
+    QtMaterialTextField* m_storeDirectoryInput;
     QtMaterialTextField* m_calendarUrlInput;
 
     void setupWidgets();
