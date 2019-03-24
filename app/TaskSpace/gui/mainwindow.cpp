@@ -9,7 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_drawer(new QtMaterialDrawer(this)),
     m_taskListWidgets(QList<TaskListWidget*>()),
     m_storeDirectoryInput(new QtMaterialTextField(this)),
-    m_calendarUrlInput(new QtMaterialTextField(this))
+    m_calendarUrlInput(new QtMaterialTextField(this)),
+    m_avaliableStatusesListInput(new QtMaterialTextField(this))
 {
     ui->setupUi(this);
     // cоздаем модель
@@ -280,6 +281,7 @@ void MainWindow::setupSettingsTab()
         Router &router = Router::getInstance();
         QString storeDirectory = router.getRepository()->storeDirectory();
         QString calendarUrl = router.getRepository()->getCalendarUrl();
+        QString avaliableStatuses = router.getRepository()->getAvaliableStatuses().join(";");
 
         QWidget* container = new QWidget(ui->mainWidget);
         container->setObjectName("settingsContainerWidget");
@@ -301,7 +303,7 @@ void MainWindow::setupSettingsTab()
                 m_storeDirectoryInput->setReadOnly(true);
                 m_storeDirectoryInput->setLabelFontSize(16);
                 m_storeDirectoryInput->setInkColor(QColor("#333"));
-                m_storeDirectoryInput->setPlaceholderText("Please, enter full path to database with task.");
+                m_storeDirectoryInput->setPlaceholderText("Here you could enter full path to root directory for TaskSpace.");
                 m_storeDirectoryInput->setFont(QFont("Roboto", 16, QFont::Normal));
                 m_storeDirectoryInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
                 QObject::connect(&router, SIGNAL(storeDirectoryChanged(QString)), m_storeDirectoryInput, SLOT(setText(QString)));
@@ -321,7 +323,7 @@ void MainWindow::setupSettingsTab()
                     m_calendarUrlInput->setReadOnly(false);
                     m_calendarUrlInput->setLabelFontSize(16);
                     m_calendarUrlInput->setInkColor(QColor("#333"));
-                    m_calendarUrlInput->setPlaceholderText("Enter url to your calendar.");
+                    m_calendarUrlInput->setPlaceholderText("Here you could enter url to your calendar.");
                     m_calendarUrlInput->setFont(QFont("Roboto", 16, QFont::Normal));
                     m_calendarUrlInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
                     QObject::connect(&router, SIGNAL(calendarUrlChanged(QString)), m_calendarUrlInput, SLOT(setText(QString)));
@@ -330,8 +332,27 @@ void MainWindow::setupSettingsTab()
                     //calendarUrlConatinerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
                 calendarUrlConatiner->setLayout(calendarUrlConatinerLayout);
             containerLayout->addWidget(calendarUrlConatiner);
-            containerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
 
+            QWidget *avaliableStatusesListConatiner = new QWidget(container);
+                QHBoxLayout *avaliableStatusesListConatinerLayout = new QHBoxLayout(avaliableStatusesListConatiner);
+                avaliableStatusesListConatinerLayout->setContentsMargins(0, 10, 0, 0);
+                    m_avaliableStatusesListInput->setParent(avaliableStatusesListConatiner);
+                    m_avaliableStatusesListInput->setLabel("Avaliable Statuses (need reload)");
+                    m_avaliableStatusesListInput->setText(avaliableStatuses);
+                    m_avaliableStatusesListInput->setReadOnly(false);
+                    m_avaliableStatusesListInput->setLabelFontSize(16);
+                    m_avaliableStatusesListInput->setInkColor(QColor("#333"));
+                    m_avaliableStatusesListInput->setPlaceholderText("Here you could some statuses for your tasks separated by ;.");
+                    m_avaliableStatusesListInput->setFont(QFont("Roboto", 16, QFont::Normal));
+                    m_avaliableStatusesListInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+                    QObject::connect(&router, SIGNAL(avaliableStatusesChanged(QString)), m_avaliableStatusesListInput, SLOT(setText(QString)));
+                    avaliableStatusesListConatinerLayout->addWidget(m_avaliableStatusesListInput);
+
+                    //calendarUrlConatinerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+                avaliableStatusesListConatiner->setLayout(avaliableStatusesListConatinerLayout);
+            containerLayout->addWidget(avaliableStatusesListConatiner);
+
+            containerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
             QtMaterialFlatButton *applySettingsButton = new QtMaterialFlatButton("Apply Settings", container);
             QObject::connect(applySettingsButton, SIGNAL(clicked()), this, SLOT(onApplySettingsButton_Clicked()));
             containerLayout->addWidget(applySettingsButton);
@@ -712,5 +733,8 @@ void MainWindow::onApplySettingsButton_Clicked()
 
     QString calendarUrl = m_calendarUrlInput->text();
     router.getRepository()->setCalendarUrl(calendarUrl);
+
+    QString avaliableStatuses = m_avaliableStatusesListInput->text();
+    router.getRepository()->setAvaliableStatuses(avaliableStatuses.split(";"));
 }
 

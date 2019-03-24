@@ -16,15 +16,6 @@ Repository::~Repository()
 {
 }
 
-QStringList Repository::getAvaliableStatuses()
-{
-    return m_avaliableStatuses;
-}
-
-void Repository::setAvaliableStatuses(const QStringList &avaliableStatuses)
-{
-    m_avaliableStatuses = avaliableStatuses;
-}
 
 QList<Task> Repository::getTasks() const
 {
@@ -298,6 +289,7 @@ QString Repository::storeDirectory() const
 void Repository::setStoreDirectory(const QString &storeDirectory)
 {
     m_storeDirectory = storeDirectory;
+    m_settingsManager->set("Main", "StoreDirectory", storeDirectory);
     emit this->storeDirectoryChanged(m_storeDirectory);
 }
 
@@ -309,5 +301,25 @@ QString Repository::getCalendarUrl() const
 void Repository::setCalendarUrl(const QString &calendarUrl)
 {
     m_calendarUrl = calendarUrl;
+    m_settingsManager->set("Main", "CalendarUrl", calendarUrl);
     emit this->calendarUrlChanged(m_calendarUrl);
+}
+
+
+QStringList Repository::getAvaliableStatuses()
+{
+    return m_avaliableStatuses;
+}
+
+void Repository::setAvaliableStatuses(const QStringList &avaliableStatuses)
+{
+    m_avaliableStatuses = avaliableStatuses;
+
+    m_settingsManager->set("Statuses", "Count", m_avaliableStatuses.length());
+    for(int i = 0; i < m_avaliableStatuses.length(); i++)
+    {
+        m_settingsManager->set("Statuses", "Status" + QString::number(i), m_avaliableStatuses[i]);
+    }
+
+    emit this->avaliableStatusesChanged(m_avaliableStatuses);
 }

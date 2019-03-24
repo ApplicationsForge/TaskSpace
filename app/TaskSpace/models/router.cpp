@@ -32,6 +32,7 @@ void Router::setupConnections()
     QObject::connect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
     QObject::connect(m_repository.data(), SIGNAL(storeDirectoryChanged(QString)), this, SLOT(onRepository_StoreDirectoryChanged(QString)));
     QObject::connect(m_repository.data(), SIGNAL(calendarUrlChanged(QString)), this, SLOT(onRepository_CalendarUrlChanged(QString)));
+    QObject::connect(m_repository.data(), SIGNAL(avaliableStatusesChanged(QStringList)), this, SLOT(onRepository_AvaliableStatusesChanged(QStringList)));
 }
 
 void Router::resetConnections()
@@ -39,6 +40,7 @@ void Router::resetConnections()
     QObject::disconnect(m_repository.data(), SIGNAL(tasksUpdated()), this, SLOT(onRepository_TasksUpdated()));
     QObject::disconnect(m_repository.data(), SIGNAL(storeDirectoryChanged(QString)), this, SLOT(onRepository_StoreDirectoryChanged(QString)));
     QObject::disconnect(m_repository.data(), SIGNAL(calendarUrlChanged(QString)), this, SLOT(onRepository_CalendarUrlChanged(QString)));
+    QObject::disconnect(m_repository.data(), SIGNAL(avaliableStatusesChanged(QStringList)), this, SLOT(onRepository_AvaliableStatusesChanged(QStringList)));
 }
 
 void Router::onRepository_TasksUpdated()
@@ -55,4 +57,9 @@ void Router::onRepository_StoreDirectoryChanged(QString path)
 void Router::onRepository_CalendarUrlChanged(QString url)
 {
     emit this->calendarUrlChanged(url);
+}
+
+void Router::onRepository_AvaliableStatusesChanged(QStringList avaliableStatuses)
+{
+    emit this->avaliableStatusesChanged(avaliableStatuses.join(";"));
 }

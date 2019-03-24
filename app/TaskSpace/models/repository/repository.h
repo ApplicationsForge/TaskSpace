@@ -22,9 +22,6 @@ public:
 
     ~Repository();
 
-    QStringList getAvaliableStatuses();
-    void setAvaliableStatuses(const QStringList &avaliableStatuses);
-
     QList<Task> getTasks() const;
     QList<Task> getTasks(QString status) const;
     int getTaskCountByStatus(QString status);
@@ -46,6 +43,9 @@ public:
 
     QString getCalendarUrl() const;
     void setCalendarUrl(const QString &calendarUrl);
+
+    QStringList getAvaliableStatuses();
+    void setAvaliableStatuses(const QStringList &avaliableStatuses);
 
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
@@ -84,6 +84,7 @@ signals:
     void storeDirectoryChanged(QString path);
     void tasksUpdated();
     void calendarUrlChanged(QString url);
+    void avaliableStatusesChanged(QStringList statuses);
 
 public slots:
 };

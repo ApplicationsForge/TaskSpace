@@ -60,6 +60,7 @@ private:
 
     QtMaterialTextField* m_storeDirectoryInput;
     QtMaterialTextField* m_calendarUrlInput;
+    QtMaterialTextField* m_avaliableStatusesListInput;
 
     void setupWidgets();
 
