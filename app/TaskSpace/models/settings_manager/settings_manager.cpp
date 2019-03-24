@@ -1,11 +1,17 @@
 #include "settings_manager.h"
 
-SettingsManager::SettingsManager() : SettingsManager(DEFAULT_SETTINGS_PATH)
+SettingsManager::SettingsManager() : SettingsManager(DEFAULT_SETTINGS_FILE)
 {
 }
 
-SettingsManager::SettingsManager(QString settingsPath)
+SettingsManager::SettingsManager(QString settingsFileName)
 {
+#ifdef Q_OS_MACX
+    QString settingsPath = qApp->applicationDirPath() + "/" + settingsFileName;
+#else
+    QString settingsPath = DEFAULT_SETTINGS_DIR + settingsFileName;
+#endif
+
     // проверка на существование файла с настройками
     if (!QFileInfo::exists(settingsPath))
     {
@@ -14,7 +20,7 @@ SettingsManager::SettingsManager(QString settingsPath)
                     "Файл с настройками не найден. Используем настройки по умолчанию").exec();
 
         // используем настройки по умолчанию
-        settings = std::shared_ptr<QSettings>( new QSettings(DEFAULT_SETTINGS_PATH, QSettings::IniFormat) );
+        settings = std::shared_ptr<QSettings>(new QSettings(settingsPath, QSettings::IniFormat) );
         // используем кодировку юникод
         settings->setIniCodec("UTF-8");
 
@@ -105,12 +111,21 @@ void SettingsManager::set(QString group, QString key, QVariant value)
 void SettingsManager::generateDefaultSettings()
 {
     settings->beginGroup("Main");
-        settings->setValue("DBPath", "/Users/xtail/Projects/MyTaskManager/TaskSpace/db/taskspace.db");
+        settings->setValue("StoreDirectory", "/Users/xtail/Projects/MyTaskManager/TaskSpace/db/");
         settings->setValue("CalendarUrl", "https://calendar.google.com/calendar/r");
     settings->endGroup();
 
+    settings->beginGroup("Statuses");
+        settings->setValue("Count", 5);
+        settings->setValue("Status0", "ProductBacklog");
+        settings->setValue("Status1", "SprintBacklog");
+        settings->setValue("Status2", "InProgress");
+        settings->setValue("Status3", "Testing");
+        settings->setValue("Status4", "Done");
+    settings->endGroup();
+
     // применяем изменения
-    saveSettings();
+    this->saveSettings();
 }
 
 QStringList SettingsManager::settingsKeys()

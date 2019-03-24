@@ -8,12 +8,21 @@ MainWindow::MainWindow(QWidget *parent) :
     m_appBar(new QtMaterialAppBar(this)),
     m_drawer(new QtMaterialDrawer(this)),
     m_taskListWidgets(QList<TaskListWidget*>()),
-    m_databasePathInput(new QtMaterialTextField(this)),
-    m_calendarUrlInput(new QtMaterialTextField(this))
+    m_storeDirectoryInput(new QtMaterialTextField(this)),
+    m_calendarUrlInput(new QtMaterialTextField(this)),
+    m_avaliableStatusesListInput(new QtMaterialTextField(this))
 {
     ui->setupUi(this);
     // cоздаем модель
-    Router::getInstance();
+    try
+    {
+        Router::getInstance();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Critical, "Error", "An error has occured during application initialisation.").exec();
+        QApplication::exit(0);
+    }
 
     this->setupWidgets();
     this->setupConnections();
@@ -205,124 +214,156 @@ void MainWindow::setupDashboardTab()
 
 void MainWindow::setupBacklogTab()
 {
-    Router &router = Router::getInstance();
+    try
+    {
+        Router &router = Router::getInstance();
 
-    QWidget* container = new QWidget(ui->mainWidget);
-    container->setObjectName("backlogContainerWidget");
-    m_widgets.insert(container->objectName(), container);
-    QVBoxLayout *containerLayout = new QVBoxLayout(container);
-    containerLayout->setContentsMargins(5, 5, 5, 5);
-        QLabel *backlogTitleLabel = new QLabel("Backlog", container);
-        backlogTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
-        backlogTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
-        backlogTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
-        containerLayout->addWidget(backlogTitleLabel);
+        QWidget* container = new QWidget(ui->mainWidget);
+        container->setObjectName("backlogContainerWidget");
+        m_widgets.insert(container->objectName(), container);
+        QVBoxLayout *containerLayout = new QVBoxLayout(container);
+        containerLayout->setContentsMargins(5, 5, 5, 5);
+            QLabel *backlogTitleLabel = new QLabel("Backlog", container);
+            backlogTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+            backlogTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
+            backlogTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
+            containerLayout->addWidget(backlogTitleLabel);
 
-        QWidget *actionsContainer = new QWidget(container);
-        actionsContainer->setLayout(new QHBoxLayout(actionsContainer));
-        actionsContainer->layout()->setContentsMargins(0, 0, 0, 10);
-            QtMaterialRaisedButton *addNewTaskButton = new QtMaterialRaisedButton("Add New Task", actionsContainer);
-            QObject::connect(addNewTaskButton, SIGNAL(clicked()), this, SLOT(onAddNewTaskButton_Clicked()));
-            actionsContainer->layout()->addWidget(addNewTaskButton);
+            QWidget *actionsContainer = new QWidget(container);
+            actionsContainer->setLayout(new QHBoxLayout(actionsContainer));
+            actionsContainer->layout()->setContentsMargins(0, 0, 0, 10);
+                QtMaterialRaisedButton *addNewTaskButton = new QtMaterialRaisedButton("Add New Task", actionsContainer);
+                QObject::connect(addNewTaskButton, SIGNAL(clicked()), this, SLOT(onAddNewTaskButton_Clicked()));
+                actionsContainer->layout()->addWidget(addNewTaskButton);
 
-            QtMaterialRaisedButton *removeTaskButton = new QtMaterialRaisedButton("Remove Task", actionsContainer);
-            QObject::connect(removeTaskButton, SIGNAL(clicked()), this, SLOT(onRemoveTaskButton_Clicked()));
-            actionsContainer->layout()->addWidget(removeTaskButton);
+                QtMaterialRaisedButton *removeTaskButton = new QtMaterialRaisedButton("Remove Task", actionsContainer);
+                QObject::connect(removeTaskButton, SIGNAL(clicked()), this, SLOT(onRemoveTaskButton_Clicked()));
+                actionsContainer->layout()->addWidget(removeTaskButton);
 
-            actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-            actionsContainer->layout()->addWidget(new QtMaterialRaisedButton("Sync Tasks With Trello", actionsContainer));
-        containerLayout->addWidget(actionsContainer);
+                actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+                actionsContainer->layout()->addWidget(new QtMaterialRaisedButton("Sync Tasks With Trello", actionsContainer));
+            containerLayout->addWidget(actionsContainer);
 
-        QScrollArea *scrollArea = new QScrollArea(container);
-        scrollArea->setWidgetResizable(true);
-        scrollArea->setStyleSheet("QScrollArea { border: 0px; }");
-            QWidget *scrollAreaContent = new QWidget(scrollArea);
-            scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
-            scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            scrollAreaContent->layout()->setContentsMargins(0, 0, 0, 15);
-                QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
-                for(auto status : avaliableStatuses)
-                {
-                    TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
-                    taskListWidget->setObjectName(status + "TaskListWidget");
-                    QObject::connect(taskListWidget, SIGNAL(taskDropped(size_t, QString)), this, SLOT(onTaskListWidget_TaskDropped(size_t, QString)));
-                    QObject::connect(taskListWidget->list(), SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem*)));
-                    //m_widgets.insert(taskListWidget->objectName(), taskListWidget);
-                    m_taskListWidgets.append(taskListWidget);
-                    scrollAreaContent->layout()->addWidget(taskListWidget);
-                }
-            scrollArea->setWidget(scrollAreaContent);
-        containerLayout->addWidget(scrollArea);
-    container->setLayout(containerLayout);
-    ui->mainWidget->layout()->addWidget(container);
-    container->hide();
+            QScrollArea *scrollArea = new QScrollArea(container);
+            scrollArea->setWidgetResizable(true);
+            scrollArea->setStyleSheet("QScrollArea { border: 0px; }");
+                QWidget *scrollAreaContent = new QWidget(scrollArea);
+                scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
+                scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+                scrollAreaContent->layout()->setContentsMargins(0, 0, 0, 15);
+                    QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
+                    for(auto status : avaliableStatuses)
+                    {
+                        TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
+                        taskListWidget->setObjectName(status + "TaskListWidget");
+                        QObject::connect(taskListWidget, SIGNAL(taskDropped(size_t, QString)), this, SLOT(onTaskListWidget_TaskDropped(size_t, QString)));
+                        QObject::connect(taskListWidget->list(), SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem*)));
+                        //m_widgets.insert(taskListWidget->objectName(), taskListWidget);
+                        m_taskListWidgets.append(taskListWidget);
+                        scrollAreaContent->layout()->addWidget(taskListWidget);
+                    }
+                scrollArea->setWidget(scrollAreaContent);
+            containerLayout->addWidget(scrollArea);
+        container->setLayout(containerLayout);
+        ui->mainWidget->layout()->addWidget(container);
+        container->hide();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
 }
 
 void MainWindow::setupSettingsTab()
 {
-    Router &router = Router::getInstance();
-    QString dbPath = router.getRepository()->databasePath();
-    QString calendarUrl = router.getRepository()->getCalendarUrl();
+    try
+    {
+        Router &router = Router::getInstance();
+        QString storeDirectory = router.getRepository()->storeDirectory();
+        QString calendarUrl = router.getRepository()->getCalendarUrl();
+        QString avaliableStatuses = router.getRepository()->getAvaliableStatuses().join(";");
 
-    QWidget* container = new QWidget(ui->mainWidget);
-    container->setObjectName("settingsContainerWidget");
-    m_widgets.insert(container->objectName(), container);
-    QVBoxLayout *containerLayout = new QVBoxLayout(container);
-    containerLayout->setContentsMargins(5, 5, 5, 5);
-        QLabel *settingsTitleLabel = new QLabel("Settings", container);
-        settingsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
-        settingsTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
-        settingsTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
-        containerLayout->addWidget(settingsTitleLabel);
+        QWidget* container = new QWidget(ui->mainWidget);
+        container->setObjectName("settingsContainerWidget");
+        m_widgets.insert(container->objectName(), container);
+        QVBoxLayout *containerLayout = new QVBoxLayout(container);
+        containerLayout->setContentsMargins(5, 5, 5, 5);
+            QLabel *settingsTitleLabel = new QLabel("Settings", container);
+            settingsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
+            settingsTitleLabel->setFont(QFont("Roboto", 18, QFont::Normal));
+            settingsTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
+            containerLayout->addWidget(settingsTitleLabel);
 
-        QWidget *dbPathWidgetContainer = new QWidget(container);
-        dbPathWidgetContainer->setLayout(new QHBoxLayout(dbPathWidgetContainer));
-        dbPathWidgetContainer->layout()->setContentsMargins(0, 0, 0, 0);
-            m_databasePathInput->setParent(dbPathWidgetContainer);
-            m_databasePathInput->setLabel("Database Path");
-            m_databasePathInput->setText(dbPath);
-            m_databasePathInput->setReadOnly(true);
-            m_databasePathInput->setLabelFontSize(16);
-            m_databasePathInput->setInkColor(QColor("#333"));
-            m_databasePathInput->setPlaceholderText("Please, enter full path to database with task.");
-            m_databasePathInput->setFont(QFont("Roboto", 16, QFont::Normal));
-            m_databasePathInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
-            QObject::connect(&router, SIGNAL(databasePathChanged(QString)), m_databasePathInput, SLOT(setText(QString)));
-            dbPathWidgetContainer->layout()->addWidget(m_databasePathInput);
+            QWidget *storeDirectoryWidgetContainer = new QWidget(container);
+            storeDirectoryWidgetContainer->setLayout(new QHBoxLayout(storeDirectoryWidgetContainer));
+            storeDirectoryWidgetContainer->layout()->setContentsMargins(0, 0, 0, 0);
+                m_storeDirectoryInput->setParent(storeDirectoryWidgetContainer);
+                m_storeDirectoryInput->setLabel("Store Directory");
+                m_storeDirectoryInput->setText(storeDirectory);
+                m_storeDirectoryInput->setReadOnly(true);
+                m_storeDirectoryInput->setLabelFontSize(16);
+                m_storeDirectoryInput->setInkColor(QColor("#333"));
+                m_storeDirectoryInput->setPlaceholderText("Here you could enter full path to root directory for TaskSpace.");
+                m_storeDirectoryInput->setFont(QFont("Roboto", 16, QFont::Normal));
+                m_storeDirectoryInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+                QObject::connect(&router, SIGNAL(storeDirectoryChanged(QString)), m_storeDirectoryInput, SLOT(setText(QString)));
+                storeDirectoryWidgetContainer->layout()->addWidget(m_storeDirectoryInput);
 
-            QtMaterialFlatButton *selectDbButton = new QtMaterialFlatButton("Change", dbPathWidgetContainer);
-            QObject::connect(selectDbButton, SIGNAL(clicked()), this, SLOT(onSelectDbButton_clicked()));
-            dbPathWidgetContainer->layout()->addWidget(selectDbButton);
+                QtMaterialFlatButton *selectDbButton = new QtMaterialFlatButton("Change", storeDirectoryWidgetContainer);
+                QObject::connect(selectDbButton, SIGNAL(clicked()), this, SLOT(onSelectDbButton_clicked()));
+                storeDirectoryWidgetContainer->layout()->addWidget(selectDbButton);
+            containerLayout->addWidget(storeDirectoryWidgetContainer);
 
-            //dbPathWidgetContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-        containerLayout->addWidget(dbPathWidgetContainer);
+            QWidget *calendarUrlConatiner = new QWidget(container);
+                QHBoxLayout *calendarUrlConatinerLayout = new QHBoxLayout(calendarUrlConatiner);
+                calendarUrlConatinerLayout->setContentsMargins(0, 10, 0, 0);
+                    m_calendarUrlInput->setParent(calendarUrlConatiner);
+                    m_calendarUrlInput->setLabel("Calendar Url");
+                    m_calendarUrlInput->setText(calendarUrl);
+                    m_calendarUrlInput->setReadOnly(false);
+                    m_calendarUrlInput->setLabelFontSize(16);
+                    m_calendarUrlInput->setInkColor(QColor("#333"));
+                    m_calendarUrlInput->setPlaceholderText("Here you could enter url to your calendar.");
+                    m_calendarUrlInput->setFont(QFont("Roboto", 16, QFont::Normal));
+                    m_calendarUrlInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+                    QObject::connect(&router, SIGNAL(calendarUrlChanged(QString)), m_calendarUrlInput, SLOT(setText(QString)));
+                    calendarUrlConatinerLayout->addWidget(m_calendarUrlInput);
 
-        QWidget *calendarUrlConatiner = new QWidget(container);
-            QHBoxLayout *calendarUrlConatinerLayout = new QHBoxLayout(calendarUrlConatiner);
-            calendarUrlConatinerLayout->setContentsMargins(0, 10, 0, 0);
-                m_calendarUrlInput->setParent(calendarUrlConatiner);
-                m_calendarUrlInput->setLabel("Calendar Url");
-                m_calendarUrlInput->setText(calendarUrl);
-                m_calendarUrlInput->setReadOnly(false);
-                m_calendarUrlInput->setLabelFontSize(16);
-                m_calendarUrlInput->setInkColor(QColor("#333"));
-                m_calendarUrlInput->setPlaceholderText("Enter url to your calendar.");
-                m_calendarUrlInput->setFont(QFont("Roboto", 16, QFont::Normal));
-                m_calendarUrlInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
-                QObject::connect(&router, SIGNAL(calendarUrlChanged(QString)), m_calendarUrlInput, SLOT(setText(QString)));
-                calendarUrlConatinerLayout->addWidget(m_calendarUrlInput);
+                    //calendarUrlConatinerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+                calendarUrlConatiner->setLayout(calendarUrlConatinerLayout);
+            containerLayout->addWidget(calendarUrlConatiner);
 
-                //calendarUrlConatinerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-            calendarUrlConatiner->setLayout(calendarUrlConatinerLayout);
-        containerLayout->addWidget(calendarUrlConatiner);
-        containerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+            QWidget *avaliableStatusesListConatiner = new QWidget(container);
+                QHBoxLayout *avaliableStatusesListConatinerLayout = new QHBoxLayout(avaliableStatusesListConatiner);
+                avaliableStatusesListConatinerLayout->setContentsMargins(0, 10, 0, 0);
+                    m_avaliableStatusesListInput->setParent(avaliableStatusesListConatiner);
+                    m_avaliableStatusesListInput->setLabel("Avaliable Statuses (need reload)");
+                    m_avaliableStatusesListInput->setText(avaliableStatuses);
+                    m_avaliableStatusesListInput->setReadOnly(false);
+                    m_avaliableStatusesListInput->setLabelFontSize(16);
+                    m_avaliableStatusesListInput->setInkColor(QColor("#333"));
+                    m_avaliableStatusesListInput->setPlaceholderText("Here you could some statuses for your tasks separated by ;.");
+                    m_avaliableStatusesListInput->setFont(QFont("Roboto", 16, QFont::Normal));
+                    m_avaliableStatusesListInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
+                    QObject::connect(&router, SIGNAL(avaliableStatusesChanged(QString)), m_avaliableStatusesListInput, SLOT(setText(QString)));
+                    avaliableStatusesListConatinerLayout->addWidget(m_avaliableStatusesListInput);
 
-        QtMaterialFlatButton *applySettingsButton = new QtMaterialFlatButton("Apply Settings", container);
-        QObject::connect(applySettingsButton, SIGNAL(clicked()), this, SLOT(onApplySettingsButton_Clicked()));
-        containerLayout->addWidget(applySettingsButton);
-    container->setLayout(containerLayout);
-    ui->mainWidget->layout()->addWidget(container);
-    container->hide();
+                    //calendarUrlConatinerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+                avaliableStatusesListConatiner->setLayout(avaliableStatusesListConatinerLayout);
+            containerLayout->addWidget(avaliableStatusesListConatiner);
+
+            containerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
+            QtMaterialFlatButton *applySettingsButton = new QtMaterialFlatButton("Apply Settings", container);
+            QObject::connect(applySettingsButton, SIGNAL(clicked()), this, SLOT(onApplySettingsButton_Clicked()));
+            containerLayout->addWidget(applySettingsButton);
+        container->setLayout(containerLayout);
+        ui->mainWidget->layout()->addWidget(container);
+        container->hide();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
 }
 
 void MainWindow::setupConnections()
@@ -406,25 +447,32 @@ void MainWindow::showFocusTimerDialog()
 
 void MainWindow::showCalendarDialog()
 {
-    Router& router = Router::getInstance();
-    QString calendarUrl = router.getRepository()->getCalendarUrl();
+    try
+    {
+        Router& router = Router::getInstance();
+        QString calendarUrl = router.getRepository()->getCalendarUrl();
 
-    QDialog *calendarDialog = new QDialog(this);
-    calendarDialog->setWindowTitle("Calendar");
-    calendarDialog->setMinimumSize(800, 600);
-        QVBoxLayout* calendarDialogLayout = new QVBoxLayout(calendarDialog);
-        calendarDialogLayout->setContentsMargins(0, 0, 0, 0);
-            QWidget* container = new QWidget(ui->mainWidget);
-                QVBoxLayout *containerLayout = new QVBoxLayout(container);
-                containerLayout->setContentsMargins(0, 0, 0, 0);
-                    QWebEngineView *view = new QWebEngineView(container);
-                    view->load(QUrl(calendarUrl));
-                    view->show();
-                    containerLayout->addWidget(view);
-                container->setLayout(containerLayout);
-            calendarDialogLayout->addWidget(container);
-        calendarDialog->setLayout(calendarDialogLayout);
-    calendarDialog->showMaximized();
+        QDialog *calendarDialog = new QDialog(this);
+        calendarDialog->setWindowTitle("Calendar");
+        calendarDialog->setMinimumSize(800, 600);
+            QVBoxLayout* calendarDialogLayout = new QVBoxLayout(calendarDialog);
+            calendarDialogLayout->setContentsMargins(0, 0, 0, 0);
+                QWidget* container = new QWidget(ui->mainWidget);
+                    QVBoxLayout *containerLayout = new QVBoxLayout(container);
+                    containerLayout->setContentsMargins(0, 0, 0, 0);
+                        QWebEngineView *view = new QWebEngineView(container);
+                        view->load(QUrl(calendarUrl));
+                        view->show();
+                        containerLayout->addWidget(view);
+                    container->setLayout(containerLayout);
+                calendarDialogLayout->addWidget(container);
+            calendarDialog->setLayout(calendarDialogLayout);
+        calendarDialog->showMaximized();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
 }
 
 void MainWindow::showTaskDialog(Task task, bool newTask)
@@ -484,48 +532,66 @@ void MainWindow::onSelectDbButton_clicked()
     QString path = QFileDialog::getOpenFileName(this, "Select Database", "", "*.db");
     if(path.length() > 0)
     {
-        m_databasePathInput->setText(path);
+        m_storeDirectoryInput->setText(path);
     }
 }
 
 void MainWindow::onRouter_TasksUpdated()
 {
-    //qDebug() << "MainWindow::onRouter_TasksUpdated";
-
-    // update backlog lists
-    Router& router = Router::getInstance();
-    for(auto taskListWidget : m_taskListWidgets)
+    try
     {
-        taskListWidget->list()->clear();
-        QList<Task> tasks = router.getRepository()->getTasks(taskListWidget->status());
-        for(auto task : tasks)
+        //qDebug() << "MainWindow::onRouter_TasksUpdated";
+
+        // update backlog lists
+        Router& router = Router::getInstance();
+        for(auto taskListWidget : m_taskListWidgets)
         {
-            QListWidgetItem *item = new QListWidgetItem();
-            item->setText(task.decoratedBaseInformation());
-            taskListWidget->list()->addItem(item);
+            taskListWidget->list()->clear();
+            QList<Task> tasks = router.getRepository()->getTasks(taskListWidget->status());
+            for(auto task : tasks)
+            {
+                QListWidgetItem *item = new QListWidgetItem();
+                item->setText(task.decoratedBaseInformation());
+                taskListWidget->list()->addItem(item);
+            }
+        }
+
+        // update dashboard charts
+        QWidget* rawTaskStatusBarWidget = m_widgets["taskStatusChartWidget"];
+        TaskStatusChartWidget* taskStatusChartWidget = qobject_cast<TaskStatusChartWidget*>(rawTaskStatusBarWidget);
+        if(taskStatusChartWidget != nullptr)
+        {
+            QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
+            QList<int> taskCountByStatus;
+            for(auto status : avaliableStatuses)
+            {
+                taskCountByStatus << router.getRepository()->getTaskCountByStatus(status);
+            }
+            taskStatusChartWidget->updateChartWidget(taskCountByStatus, avaliableStatuses);
         }
     }
-
-    // update dashboard charts
-    QWidget* rawTaskStatusBarWidget = m_widgets["taskStatusChartWidget"];
-    TaskStatusChartWidget* taskStatusChartWidget = qobject_cast<TaskStatusChartWidget*>(rawTaskStatusBarWidget);
-    if(taskStatusChartWidget != nullptr)
+    catch(...)
     {
-        QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
-        QList<int> taskCountByStatus;
-        for(auto status : avaliableStatuses)
-        {
-            taskCountByStatus << router.getRepository()->getTaskCountByStatus(status);
-        }
-        taskStatusChartWidget->updateChartWidget(taskCountByStatus, avaliableStatuses);
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
     }
 }
 
 void MainWindow::onAddNewTaskButton_Clicked()
 {
-    Router& router = Router::getInstance();
-    Task task = router.getRepository()->createNewBaseTask();
-    this->showTaskDialog(task, true);
+    try
+    {
+        Router& router = Router::getInstance();
+        Task task = router.getRepository()->createNewBaseTask();
+        this->showTaskDialog(task, true);
+    }
+    catch(std::invalid_argument e)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
 }
 
 void MainWindow::onRemoveTaskButton_Clicked()
@@ -567,61 +633,108 @@ void MainWindow::onRemoveTaskButton_Clicked()
 
 void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskListWidgetItem)
 {
-    Router& router = Router::getInstance();
-    QString itemText = taskListWidgetItem->text();
-
-    QRegExp rawIndexRegExp = QRegExp("\\[(\\s)*[0-9]*(\\s)*\\]");
-    rawIndexRegExp.indexIn(itemText);
-    QStringList rawIndexRegExpResult = rawIndexRegExp.capturedTexts();
-    if(rawIndexRegExpResult.length() <= 0)
+    try
     {
-        QMessageBox(QMessageBox::Warning, "Parse Error", "Can not find taskIndex " + itemText).exec();
-        return;
-    }
-    QString rawTaskIndex = rawIndexRegExpResult.first();
-    rawTaskIndex = rawTaskIndex.remove("[");
-    rawTaskIndex = rawTaskIndex.remove("]");
+        Router& router = Router::getInstance();
+        QString itemText = taskListWidgetItem->text();
 
-    bool ok = false;
-    size_t taskIndex = rawTaskIndex.toUInt(&ok);
-    if(!ok) {
-        QMessageBox(QMessageBox::Warning, "Parse Error", "Can not parse taskIndex in " + rawTaskIndex).exec();
-        return;
-    }
+        QRegExp rawIndexRegExp = QRegExp("\\[(\\s)*[0-9]*(\\s)*\\]");
+        rawIndexRegExp.indexIn(itemText);
+        QStringList rawIndexRegExpResult = rawIndexRegExp.capturedTexts();
+        if(rawIndexRegExpResult.length() <= 0)
+        {
+            QMessageBox(QMessageBox::Warning, "Parse Error", "Can not find taskIndex " + itemText).exec();
+            return;
+        }
+        QString rawTaskIndex = rawIndexRegExpResult.first();
+        rawTaskIndex = rawTaskIndex.remove("[");
+        rawTaskIndex = rawTaskIndex.remove("]");
 
-    Task task = router.getRepository()->getTaskByIndex(taskIndex);
-    this->showTaskDialog(task, false);
+        bool ok = false;
+        size_t taskIndex = rawTaskIndex.toUInt(&ok);
+        if(!ok) {
+            QMessageBox(QMessageBox::Warning, "Parse Error", "Can not parse taskIndex in " + rawTaskIndex).exec();
+            return;
+        }
+
+        Task task = router.getRepository()->getTaskByIndex(taskIndex);
+        this->showTaskDialog(task, false);
+    }
+    catch(std::invalid_argument e)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
 }
 
 void MainWindow::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
 {
-    Router& router = Router::getInstance();
-    router.getRepository()->updateTaskStatus(taskIndex, status);
+    try
+    {
+        Router& router = Router::getInstance();
+        router.getRepository()->updateTaskStatus(taskIndex, status);
+    }
+    catch(std::invalid_argument e)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
 }
 
 void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QString description, QDate dueToDate, bool dueToDateEnabled, QTime estimatedTime, QTime actualTime)
 {
-    Router& router = Router::getInstance();
-    router.getRepository()->updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
+    try
+    {
+        Router& router = Router::getInstance();
+        router.getRepository()->updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
+    }
+    catch(std::invalid_argument e)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
 }
 
 void MainWindow::onRemoveTaskInputWidget_IndexSelected(size_t index)
 {
-    Router& router = Router::getInstance();
-    router.getRepository()->removeTask(index);
+    try
+    {
+        Router& router = Router::getInstance();
+        router.getRepository()->removeTask(index);
+    }
+    catch(std::invalid_argument e)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
 }
 
 void MainWindow::onApplySettingsButton_Clicked()
 {
     Router &router = router.getInstance();
 
-    QString databasePath = m_databasePathInput->text();
-    if(!databasePath.isEmpty())
+    QString storeDirectory = m_storeDirectoryInput->text();
+    if(!storeDirectory.isEmpty())
     {
-        router.getRepository()->setDatabasePath(databasePath);
+        router.getRepository()->setStoreDirectory(storeDirectory);
     }
 
     QString calendarUrl = m_calendarUrlInput->text();
     router.getRepository()->setCalendarUrl(calendarUrl);
+
+    QString avaliableStatuses = m_avaliableStatusesListInput->text();
+    router.getRepository()->setAvaliableStatuses(avaliableStatuses.split(";"));
 }
 

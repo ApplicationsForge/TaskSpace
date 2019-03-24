@@ -3,29 +3,19 @@
 Repository::Repository(QObject *parent) :
     QObject(parent),
     m_settingsManager(new SettingsManager()),
-    m_databasePath(""),
-    m_tasks(QList< QSharedPointer<Task> >())
+    m_storeDirectory(""),
+    m_avaliableStatuses(QStringList()),
+    m_tasks(QList< QSharedPointer<Task> >()),
+    m_calendarUrl("")
 {
     this->loadSettings();
-
-    this->loadMockData();
+    this->loadTasks();
 }
 
 Repository::~Repository()
 {
 }
 
-QStringList Repository::getAvaliableStatuses()
-{
-    QStringList avaliableStatuses = {
-        "ProductBacklog",
-        "SprintBacklog",
-        "InProgress",
-        "Testing",
-        "Done"
-    };
-    return avaliableStatuses;
-}
 
 QList<Task> Repository::getTasks() const
 {
@@ -66,36 +56,142 @@ Task Repository::getTaskByIndex(size_t index) const
 
 void Repository::loadSettings()
 {
-    try {
-        this->setDatabasePath(m_settingsManager->get("Main", "DBPath").toString());
-        this->setCalendarUrl(m_settingsManager->get("Main", "CalendarUrl").toString());
-    }
-    catch(std::invalid_argument e) {
-        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
-        this->setDatabasePath("");
-        this->setCalendarUrl("");
-    }
-}
-
-void Repository::loadMockData()
-{
-    QStringList avaliableStatuses = this->getAvaliableStatuses();
-    QList<Task> tasks = QList<Task>();
-    for(int i = 0; i < 10; i++)
+    try
     {
-        m_tasks.append(QSharedPointer<Task>(new Task(size_t(i), "example task", avaliableStatuses.first())));
+        this->setStoreDirectory(m_settingsManager->get("Main", "StoreDirectory").toString());
+        this->setCalendarUrl(m_settingsManager->get("Main", "CalendarUrl").toString());
+
+        QStringList avaliableStatuses;
+        unsigned int avaliableStatusesCount = m_settingsManager->get("Statuses", "Count").toUInt();
+        for(unsigned int i = 0; i < avaliableStatusesCount; i++)
+        {
+            avaliableStatuses.append(m_settingsManager->get("Statuses", "Status" + QString::number(i)).toString());
+        }
+        this->setAvaliableStatuses(avaliableStatuses);
+
+    }
+    catch(std::invalid_argument e)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+        this->setStoreDirectory(qApp->applicationDirPath());
+        this->setCalendarUrl("");
+        this->setAvaliableStatuses(QStringList {"ProductBacklog", "SprintBacklog", "InProgress", "Testing", "Done"});
     }
 }
 
-bool Repository::initDb(QString path)
+void Repository::syncTasks()
 {
-    return true;
+    this->saveTasks();
+    m_tasks.clear();
+    this->loadTasks();
+}
+
+void Repository::loadTasks()
+{
+    QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
+    QFile file(tasksFilePath);
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
+        qDebug() << "Repository::loadTasks:" << "Can not open file" << file << "for reading";
+        throw std::runtime_error("Can not load tasks");
+    }
+
+    QString tasksFileContent = QString::fromUtf8(file.readAll());
+    file.close();
+
+    QList<Task> tasks = Repository::convertTaskJsonToList(QtJson::parse(tasksFileContent).toList());
+    for(auto task : tasks)
+    {
+        m_tasks.append(QSharedPointer<Task>(new Task(task)));
+    }
+    emit this->tasksUpdated();
+}
+
+void Repository::saveTasks()
+{
+    QtJson::JsonArray tasksJson = Repository::convertTaskListToJson(m_tasks);
+
+    QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
+
+    QFile file(tasksFilePath);
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
+        qDebug() << "Repository::saveTasks:" << "Can not open file" << file << "for writing";
+        throw std::runtime_error("Can not save tasks");
+    }
+
+    // clear file content
+    file.resize(0);
+
+    QByteArray serilizedContent = QtJson::serialize(tasksJson);
+    QTextStream stream( &file );
+    stream << serilizedContent << endl;
+    file.close();
+}
+
+QtJson::JsonArray Repository::convertTaskListToJson(const QList<QSharedPointer<Task> > &tasks)
+{
+    QtJson::JsonArray result;
+    for(auto task : tasks)
+    {
+        QtJson::JsonObject taskJsonObject;
+        taskJsonObject["index"] = int(task->index());
+        taskJsonObject["title"] = task->title();
+        taskJsonObject["status"] = task->status();
+        taskJsonObject["updated_at"] = task->updatedAt();
+        taskJsonObject["description"] = task->description();
+        taskJsonObject["due_to_date"] = task->dueToDate();
+        taskJsonObject["due_to_date_enabled"] = task->dueToDateEnabled();
+        taskJsonObject["estimated_time"] = task->estimatedTime();
+        taskJsonObject["actual_time"] = task->actualTime();
+        result.push_back(taskJsonObject);
+    }
+    return result;
+}
+
+QList<Task> Repository::convertTaskJsonToList(const QtJson::JsonArray &taskJsonArray)
+{
+    QList<Task> result = QList<Task>();
+    for(auto taskJson : taskJsonArray)
+    {
+        QMap<QString, QVariant> taskMap = taskJson.toMap();
+        size_t index = size_t(taskMap["index"].toUInt());
+        QString title = taskMap["title"].toString();
+        QString status = taskMap["status"].toString();
+        QDateTime updated_at = QDateTime::fromString(taskMap["updated_at"].toString());
+        QString description = taskMap["description"].toString();
+        QDate dueToDate = QDate::fromString(taskMap["due_to_date"].toString());
+        bool dueToDateEnabled = taskMap["due_to_date_enabled"].toBool();
+        QTime estimatedTime = taskMap["estimated_time"].toTime();
+        QTime actualTime = taskMap["actual_time"].toTime();
+
+        Task task = Task(index, title, status, description);
+        task.setUpdatedAt(updated_at);
+        task.setDueToDate(dueToDate);
+        task.setDueToDateEnabled(dueToDateEnabled);
+        task.setEstimatedTime(estimatedTime);
+        task.setActualTime(actualTime);
+        result.append(task);
+    }
+    return result;
+}
+
+QString Repository::resolveTaskFilePath(const QString &storeDirectory)
+{
+    return storeDirectory + "tasks.json";
+}
+
+QString Repository::resolveArchiveFilePath(const QString &storeDirectory)
+{
+    return storeDirectory + "archive.json";
 }
 
 QSharedPointer<Task> Repository::findTask(size_t index) const
 {
-    for(auto task : m_tasks) {
-        if(task->index() == index) {
+    for(auto task : m_tasks)
+    {
+        if(task->index() == index)
+        {
             return task;
         }
     }
@@ -129,7 +225,7 @@ Task Repository::createNewBaseTask()
 void Repository::addTask(Task task)
 {
     m_tasks.append(QSharedPointer<Task>(new Task(task.index(), task.title(), task.status())));
-    emit this->tasksUpdated();
+    this->syncTasks();
 }
 
 void Repository::removeTask(size_t index)
@@ -138,7 +234,7 @@ void Repository::removeTask(size_t index)
     {
         auto task = this->findTask(index);
         m_tasks.removeAll(task);
-        emit this->tasksUpdated();
+        this->syncTasks();
     }
     catch (std::invalid_argument e)
     {
@@ -152,7 +248,7 @@ void Repository::updateTaskStatus(size_t index, QString status)
     {
         auto task = this->findTask(index);
         task->setStatus(status);
-        emit this->tasksUpdated();
+        this->syncTasks();
     }
     catch(std::invalid_argument e)
     {
@@ -177,7 +273,7 @@ void Repository::updateTaskInfo(size_t index,
         task->setDueToDateEnabled(dueToDateEnabled);
         task->setEstimatedTime(estimatedTime);
         task->setActualTime(actualTime);
-        emit this->tasksUpdated();
+        this->syncTasks();
     }
     catch (std::invalid_argument e)
     {
@@ -185,15 +281,16 @@ void Repository::updateTaskInfo(size_t index,
     }
 }
 
-QString Repository::databasePath() const
+QString Repository::storeDirectory() const
 {
-    return m_databasePath;
+    return m_storeDirectory;
 }
 
-void Repository::setDatabasePath(const QString &databasePath)
+void Repository::setStoreDirectory(const QString &storeDirectory)
 {
-    m_databasePath = databasePath;
-    emit this->databasePathChanged(m_databasePath);
+    m_storeDirectory = storeDirectory;
+    m_settingsManager->set("Main", "StoreDirectory", storeDirectory);
+    emit this->storeDirectoryChanged(m_storeDirectory);
 }
 
 QString Repository::getCalendarUrl() const
@@ -204,5 +301,24 @@ QString Repository::getCalendarUrl() const
 void Repository::setCalendarUrl(const QString &calendarUrl)
 {
     m_calendarUrl = calendarUrl;
+    m_settingsManager->set("Main", "CalendarUrl", calendarUrl);
     emit this->calendarUrlChanged(m_calendarUrl);
+}
+
+QStringList Repository::getAvaliableStatuses()
+{
+    return m_avaliableStatuses;
+}
+
+void Repository::setAvaliableStatuses(const QStringList &avaliableStatuses)
+{
+    m_avaliableStatuses = avaliableStatuses;
+
+    m_settingsManager->set("Statuses", "Count", m_avaliableStatuses.length());
+    for(int i = 0; i < m_avaliableStatuses.length(); i++)
+    {
+        m_settingsManager->set("Statuses", "Status" + QString::number(i), m_avaliableStatuses[i]);
+    }
+
+    emit this->avaliableStatusesChanged(m_avaliableStatuses);
 }
