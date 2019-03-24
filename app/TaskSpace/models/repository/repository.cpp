@@ -4,7 +4,9 @@ Repository::Repository(QObject *parent) :
     QObject(parent),
     m_settingsManager(new SettingsManager()),
     m_storeDirectory(""),
-    m_tasks(QList< QSharedPointer<Task> >())
+    m_avaliableStatuses(QStringList()),
+    m_tasks(QList< QSharedPointer<Task> >()),
+    m_calendarUrl("")
 {
     this->loadSettings();
     this->loadTasks();
@@ -16,14 +18,12 @@ Repository::~Repository()
 
 QStringList Repository::getAvaliableStatuses()
 {
-    QStringList avaliableStatuses = {
-        "ProductBacklog",
-        "SprintBacklog",
-        "InProgress",
-        "Testing",
-        "Done"
-    };
-    return avaliableStatuses;
+    return m_avaliableStatuses;
+}
+
+void Repository::setAvaliableStatuses(const QStringList &avaliableStatuses)
+{
+    m_avaliableStatuses = avaliableStatuses;
 }
 
 QList<Task> Repository::getTasks() const
@@ -69,22 +69,22 @@ void Repository::loadSettings()
     {
         this->setStoreDirectory(m_settingsManager->get("Main", "StoreDirectory").toString());
         this->setCalendarUrl(m_settingsManager->get("Main", "CalendarUrl").toString());
+
+        QStringList avaliableStatuses;
+        unsigned int avaliableStatusesCount = m_settingsManager->get("Statuses", "Count").toUInt();
+        for(unsigned int i = 0; i < avaliableStatusesCount; i++)
+        {
+            avaliableStatuses.append(m_settingsManager->get("Statuses", "Status" + QString::number(i)).toString());
+        }
+        this->setAvaliableStatuses(avaliableStatuses);
+
     }
     catch(std::invalid_argument e)
     {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
         this->setStoreDirectory(qApp->applicationDirPath());
         this->setCalendarUrl("");
-    }
-}
-
-void Repository::loadMockData()
-{
-    QStringList avaliableStatuses = this->getAvaliableStatuses();
-    QList<Task> tasks = QList<Task>();
-    for(int i = 0; i < 10; i++)
-    {
-        m_tasks.append(QSharedPointer<Task>(new Task(size_t(i), "example task", avaliableStatuses.first())));
+        this->setAvaliableStatuses(QStringList {"ProductBacklog", "SprintBacklog", "InProgress", "Testing", "Done"});
     }
 }
 
@@ -188,6 +188,11 @@ QList<Task> Repository::convertTaskJsonToList(const QtJson::JsonArray &taskJsonA
 QString Repository::resolveTaskFilePath(const QString &storeDirectory)
 {
     return storeDirectory + "tasks.json";
+}
+
+QString Repository::resolveArchiveFilePath(const QString &storeDirectory)
+{
+    return storeDirectory + "archive.json";
 }
 
 QSharedPointer<Task> Repository::findTask(size_t index) const

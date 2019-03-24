@@ -23,6 +23,7 @@ public:
     ~Repository();
 
     QStringList getAvaliableStatuses();
+    void setAvaliableStatuses(const QStringList &avaliableStatuses);
 
     QList<Task> getTasks() const;
     QList<Task> getTasks(QString status) const;
@@ -50,18 +51,26 @@ private:
     QScopedPointer<SettingsManager> m_settingsManager;
 
     QString m_storeDirectory;
+
+    QStringList m_avaliableStatuses;
     QList< QSharedPointer<Task> > m_tasks;
     QString m_calendarUrl;
 
     void loadSettings();
-    void loadMockData();
+
     void syncTasks();
+
     void loadTasks();
+
     void saveTasks();
+
     static QtJson::JsonArray convertTaskListToJson(const QList< QSharedPointer<Task> > &tasks);
+
     static QList<Task> convertTaskJsonToList(const QtJson::JsonArray &taskJsonArray);
 
     static QString resolveTaskFilePath(const QString &storeDirectory);
+
+    static QString resolveArchiveFilePath(const QString &storeDirectory);
 
     QSharedPointer<Task> findTask(size_t index) const;
 

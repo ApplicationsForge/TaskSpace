@@ -7,7 +7,7 @@ SettingsManager::SettingsManager() : SettingsManager(DEFAULT_SETTINGS_FILE)
 SettingsManager::SettingsManager(QString settingsFileName)
 {
 #ifdef Q_OS_MACX
-    QString settingsPath = qApp->applicationDirPath() + settingsFileName;
+    QString settingsPath = qApp->applicationDirPath() + "/" + settingsFileName;
 #else
     QString settingsPath = DEFAULT_SETTINGS_DIR + settingsFileName;
 #endif
@@ -113,6 +113,15 @@ void SettingsManager::generateDefaultSettings()
     settings->beginGroup("Main");
         settings->setValue("StoreDirectory", "/Users/xtail/Projects/MyTaskManager/TaskSpace/db/");
         settings->setValue("CalendarUrl", "https://calendar.google.com/calendar/r");
+    settings->endGroup();
+
+    settings->beginGroup("Statuses");
+        settings->setValue("Count", 5);
+        settings->setValue("Status0", "ProductBacklog");
+        settings->setValue("Status1", "SprintBacklog");
+        settings->setValue("Status2", "InProgress");
+        settings->setValue("Status3", "Testing");
+        settings->setValue("Status4", "Done");
     settings->endGroup();
 
     // применяем изменения
