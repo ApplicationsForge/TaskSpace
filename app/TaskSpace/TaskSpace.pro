@@ -86,7 +86,6 @@ SOURCES += \
     models/settings_manager/settings_manager.cpp \
     libs/orm-qt-master/src/activerecord.cpp \
     libs/orm-qt-master/src/query.cpp \
-    models/types/sqlite_adapter/sqlite_adapter.cpp \
     models/types/task/task.cpp \
     gui/widgets/burndown_chart_widget.cpp \
     gui/widgets/mylistwidgetitem.cpp \
@@ -184,7 +183,6 @@ HEADERS += \
     libs/orm-qt-master/src/activerecord.h \
     libs/orm-qt-master/src/orm-qt_global.h \
     libs/orm-qt-master/src/query.h \
-    models/types/sqlite_adapter/sqlite_adapter.h \
     models/types/task/task.h \
     gui/widgets/burndown_chart_widget.h \
     gui/widgets/mylistwidgetitem.h \
