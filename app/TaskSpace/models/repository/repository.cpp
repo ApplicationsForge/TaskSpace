@@ -7,8 +7,8 @@ Repository::Repository(QObject *parent) :
     m_tasks(QList< QSharedPointer<Task> >())
 {
     this->loadSettings();
-
-    this->loadMockData();
+    this->loadTasks();
+    //this->loadMockData();
 }
 
 Repository::~Repository()
@@ -66,11 +66,13 @@ Task Repository::getTaskByIndex(size_t index) const
 
 void Repository::loadSettings()
 {
-    try {
+    try
+    {
         this->setStoreDirectory(m_settingsManager->get("Main", "StoreDirectory").toString());
         this->setCalendarUrl(m_settingsManager->get("Main", "CalendarUrl").toString());
     }
-    catch(std::invalid_argument e) {
+    catch(std::invalid_argument e)
+    {
         QMessageBox(QMessageBox::Critical, "Error", e.what()).exec();
         this->setStoreDirectory("");
         this->setCalendarUrl("");
@@ -87,10 +89,111 @@ void Repository::loadMockData()
     }
 }
 
+void Repository::syncTasks()
+{
+    this->saveTasks();
+    m_tasks.clear();
+    this->loadTasks();
+}
+
+void Repository::loadTasks()
+{
+    QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
+    QFile file(tasksFilePath);
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text))
+    {
+        qDebug() << "Repository::loadTasks:" << "Can not open file" << file << "for reading";
+        throw std::runtime_error("Can not load tasks");
+    }
+
+    QString tasksFileContent = QString::fromUtf8(file.readAll());
+    QList<Task> tasks = Repository::convertTaskJsonToList(QtJson::parse(tasksFileContent).toList());
+
+    for(auto task : tasks)
+    {
+        m_tasks.append(QSharedPointer<Task>(new Task(task)));
+    }
+    emit this->tasksUpdated();
+}
+
+void Repository::saveTasks()
+{
+    QtJson::JsonArray tasksJson = Repository::convertTaskListToJson(m_tasks);
+
+    QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
+
+    QFile file(tasksFilePath);
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text))
+    {
+        qDebug() << "Repository::saveTasks:" << "Can not open file" << file << "for writing";
+        throw std::runtime_error("Can not save tasks");
+    }
+
+    qDebug() << tasksJson << m_storeDirectory;
+    QByteArray serilizedContent = QtJson::serialize(tasksJson);
+    qDebug() << serilizedContent;
+    file.write(serilizedContent);
+    file.close();
+}
+
+QtJson::JsonArray Repository::convertTaskListToJson(const QList<QSharedPointer<Task> > &tasks)
+{
+    QtJson::JsonArray result;
+    for(auto task : tasks)
+    {
+        QtJson::JsonObject taskJsonObject;
+        taskJsonObject["index"] = int(task->index());
+        taskJsonObject["title"] = task->title();
+        taskJsonObject["status"] = task->status();
+        taskJsonObject["updated_at"] = task->updatedAt();
+        taskJsonObject["description"] = task->description();
+        taskJsonObject["due_to_date"] = task->dueToDate();
+        taskJsonObject["due_to_date_enabled"] = task->dueToDateEnabled();
+        taskJsonObject["estimated_time"] = task->estimatedTime();
+        taskJsonObject["actual_time"] = task->actualTime();
+        result.push_back(taskJsonObject);
+    }
+    return result;
+}
+
+QList<Task> Repository::convertTaskJsonToList(const QtJson::JsonArray &taskJsonArray)
+{
+    QList<Task> result = QList<Task>();
+    for(auto taskJson : taskJsonArray)
+    {
+        QMap<QString, QVariant> taskMap = taskJson.toMap();
+        size_t index = size_t(taskMap["index"].toUInt());
+        QString title = taskMap["title"].toString();
+        QString status = taskMap["status"].toString();
+        QDateTime updated_at = taskMap["updated_at"].toDateTime();
+        QString description = taskMap["description"].toString();
+        QDate dueToDate = taskMap["due_to_date"].toDate();
+        bool dueToDateEnabled = taskMap["due_to_date_enabled"].toBool();
+        QTime estimatedTime = taskMap["estimated_time"].toTime();
+        QTime actualTime = taskMap["actual_time"].toTime();
+
+        Task task = Task(index, title, status, description);
+        task.setUpdatedAt(updated_at);
+        task.setDueToDate(dueToDate);
+        task.setDueToDateEnabled(dueToDateEnabled);
+        task.setEstimatedTime(estimatedTime);
+        task.setActualTime(actualTime);
+        result.append(task);
+    }
+    return result;
+}
+
+QString Repository::resolveTaskFilePath(const QString &storeDirectory)
+{
+    return storeDirectory + "/tasks.json";
+}
+
 QSharedPointer<Task> Repository::findTask(size_t index) const
 {
-    for(auto task : m_tasks) {
-        if(task->index() == index) {
+    for(auto task : m_tasks)
+    {
+        if(task->index() == index)
+        {
             return task;
         }
     }
@@ -124,7 +227,7 @@ Task Repository::createNewBaseTask()
 void Repository::addTask(Task task)
 {
     m_tasks.append(QSharedPointer<Task>(new Task(task.index(), task.title(), task.status())));
-    emit this->tasksUpdated();
+    this->syncTasks();
 }
 
 void Repository::removeTask(size_t index)
@@ -133,7 +236,7 @@ void Repository::removeTask(size_t index)
     {
         auto task = this->findTask(index);
         m_tasks.removeAll(task);
-        emit this->tasksUpdated();
+        this->syncTasks();
     }
     catch (std::invalid_argument e)
     {
@@ -147,7 +250,7 @@ void Repository::updateTaskStatus(size_t index, QString status)
     {
         auto task = this->findTask(index);
         task->setStatus(status);
-        emit this->tasksUpdated();
+        this->syncTasks();
     }
     catch(std::invalid_argument e)
     {
@@ -172,7 +275,7 @@ void Repository::updateTaskInfo(size_t index,
         task->setDueToDateEnabled(dueToDateEnabled);
         task->setEstimatedTime(estimatedTime);
         task->setActualTime(actualTime);
-        emit this->tasksUpdated();
+        this->syncTasks();
     }
     catch (std::invalid_argument e)
     {

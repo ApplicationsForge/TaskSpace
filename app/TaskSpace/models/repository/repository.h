@@ -10,6 +10,7 @@
 
 #include "models/settings_manager/settings_manager.h"
 #include "models/types/task/task.h"
+#include "models/utils/file_reader.h"
 
 class Router;
 
@@ -54,6 +55,13 @@ private:
 
     void loadSettings();
     void loadMockData();
+    void syncTasks();
+    void loadTasks();
+    void saveTasks();
+    static QtJson::JsonArray convertTaskListToJson(const QList< QSharedPointer<Task> > &tasks);
+    static QList<Task> convertTaskJsonToList(const QtJson::JsonArray &taskJsonArray);
+
+    static QString resolveTaskFilePath(const QString &storeDirectory);
 
     QSharedPointer<Task> findTask(size_t index) const;
 

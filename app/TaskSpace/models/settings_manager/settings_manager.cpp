@@ -110,7 +110,7 @@ void SettingsManager::generateDefaultSettings()
     settings->endGroup();
 
     // применяем изменения
-    saveSettings();
+    this->saveSettings();
 }
 
 QStringList SettingsManager::settingsKeys()

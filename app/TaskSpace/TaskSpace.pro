@@ -93,7 +93,8 @@ SOURCES += \
     gui/widgets/task_status_chart_widget.cpp \
     gui/widgets/task_viewer_widget.cpp \
     gui/widgets/task_index_input_widget.cpp \
-    libs/json_parser/json.cpp
+    libs/json_parser/json.cpp \
+    models/utils/file_reader.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -190,7 +191,8 @@ HEADERS += \
     gui/widgets/task_status_chart_widget.h \
     gui/widgets/task_viewer_widget.h \
     gui/widgets/task_index_input_widget.h \
-    libs/json_parser/json.h
+    libs/json_parser/json.h \
+    models/utils/file_reader.h
 
 FORMS += \
         gui/mainwindow.ui
