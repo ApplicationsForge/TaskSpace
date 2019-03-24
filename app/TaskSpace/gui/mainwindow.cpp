@@ -56,8 +56,8 @@ void MainWindow::setupWidgets()
     this->setupBacklogTab();
     this->setupSettingsTab();
 
-    this->showBacklogTab();
-    //this->showDashboardTab();
+    //this->showBacklogTab();
+    this->showDashboardTab();
     this->onRouter_TasksUpdated();
 }
 
@@ -298,7 +298,7 @@ void MainWindow::setupSettingsTab()
             storeDirectoryWidgetContainer->setLayout(new QHBoxLayout(storeDirectoryWidgetContainer));
             storeDirectoryWidgetContainer->layout()->setContentsMargins(0, 0, 0, 0);
                 m_storeDirectoryInput->setParent(storeDirectoryWidgetContainer);
-                m_storeDirectoryInput->setLabel("Store Directory");
+                m_storeDirectoryInput->setLabel("Store Directory (need reload)");
                 m_storeDirectoryInput->setText(storeDirectory);
                 m_storeDirectoryInput->setReadOnly(true);
                 m_storeDirectoryInput->setLabelFontSize(16);
@@ -309,9 +309,9 @@ void MainWindow::setupSettingsTab()
                 QObject::connect(&router, SIGNAL(storeDirectoryChanged(QString)), m_storeDirectoryInput, SLOT(setText(QString)));
                 storeDirectoryWidgetContainer->layout()->addWidget(m_storeDirectoryInput);
 
-                QtMaterialFlatButton *selectDbButton = new QtMaterialFlatButton("Change", storeDirectoryWidgetContainer);
-                QObject::connect(selectDbButton, SIGNAL(clicked()), this, SLOT(onSelectDbButton_clicked()));
-                storeDirectoryWidgetContainer->layout()->addWidget(selectDbButton);
+                QtMaterialFlatButton *selectStorageDirectoryButton = new QtMaterialFlatButton("Change", storeDirectoryWidgetContainer);
+                QObject::connect(selectStorageDirectoryButton, SIGNAL(clicked()), this, SLOT(onSelectStorageDirectoryButton_Clicked()));
+                storeDirectoryWidgetContainer->layout()->addWidget(selectStorageDirectoryButton);
             containerLayout->addWidget(storeDirectoryWidgetContainer);
 
             QWidget *calendarUrlConatiner = new QWidget(container);
@@ -342,7 +342,7 @@ void MainWindow::setupSettingsTab()
                     m_avaliableStatusesListInput->setReadOnly(false);
                     m_avaliableStatusesListInput->setLabelFontSize(16);
                     m_avaliableStatusesListInput->setInkColor(QColor("#333"));
-                    m_avaliableStatusesListInput->setPlaceholderText("Here you could some statuses for your tasks separated by ;.");
+                    m_avaliableStatusesListInput->setPlaceholderText("Here you could enter some statuses for your tasks separated by \";\".");
                     m_avaliableStatusesListInput->setFont(QFont("Roboto", 16, QFont::Normal));
                     m_avaliableStatusesListInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
                     QObject::connect(&router, SIGNAL(avaliableStatusesChanged(QString)), m_avaliableStatusesListInput, SLOT(setText(QString)));
@@ -527,9 +527,9 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
     taskDialog->exec();
 }
 
-void MainWindow::onSelectDbButton_clicked()
+void MainWindow::onSelectStorageDirectoryButton_Clicked()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Select Database", "", "*.db");
+    QString path = QFileDialog::getExistingDirectory(this, "Select storage directory", "");
     if(path.length() > 0)
     {
         m_storeDirectoryInput->setText(path);

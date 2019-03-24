@@ -178,12 +178,12 @@ QList<Task> Repository::convertTaskJsonToList(const QtJson::JsonArray &taskJsonA
 
 QString Repository::resolveTaskFilePath(const QString &storeDirectory)
 {
-    return storeDirectory + "tasks.json";
+    return storeDirectory + "/tasks.json";
 }
 
 QString Repository::resolveArchiveFilePath(const QString &storeDirectory)
 {
-    return storeDirectory + "archive.json";
+    return storeDirectory + "/archive.json";
 }
 
 QSharedPointer<Task> Repository::findTask(size_t index) const

@@ -100,7 +100,7 @@ private slots:
 
     void showTaskDialog(Task task, bool newTask = false);
 
-    void onSelectDbButton_clicked();
+    void onSelectStorageDirectoryButton_Clicked();
 
     void onRouter_TasksUpdated();
 
