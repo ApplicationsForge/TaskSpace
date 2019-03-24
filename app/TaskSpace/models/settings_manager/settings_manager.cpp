@@ -1,11 +1,12 @@
 #include "settings_manager.h"
 
-SettingsManager::SettingsManager() : SettingsManager(DEFAULT_SETTINGS_PATH)
+SettingsManager::SettingsManager() : SettingsManager(DEFAULT_SETTINGS_FILE)
 {
 }
 
-SettingsManager::SettingsManager(QString settingsPath)
+SettingsManager::SettingsManager(QString settingsFileName)
 {
+    QString settingsPath = qApp->applicationDirPath() + settingsFileName;
     // проверка на существование файла с настройками
     if (!QFileInfo::exists(settingsPath))
     {
@@ -14,7 +15,7 @@ SettingsManager::SettingsManager(QString settingsPath)
                     "Файл с настройками не найден. Используем настройки по умолчанию").exec();
 
         // используем настройки по умолчанию
-        settings = std::shared_ptr<QSettings>( new QSettings(DEFAULT_SETTINGS_PATH, QSettings::IniFormat) );
+        settings = std::shared_ptr<QSettings>(new QSettings(settingsPath, QSettings::IniFormat) );
         // используем кодировку юникод
         settings->setIniCodec("UTF-8");
 

@@ -13,7 +13,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     // cоздаем модель
-    Router::getInstance();
+    try
+    {
+        Router::getInstance();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Critical, "Error", "An error has occured during application initialisation.").exec();
+        QApplication::exit(0);
+    }
 
     this->setupWidgets();
     this->setupConnections();

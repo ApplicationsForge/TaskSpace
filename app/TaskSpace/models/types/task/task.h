@@ -38,9 +38,6 @@ public:
     QTime actualTime() const;
     void setActualTime(const QTime &actualTime);
 
-    bool archived() const;
-    void setArchived(bool archived);
-
 private:
     size_t m_index;
     QString m_title;
@@ -51,7 +48,6 @@ private:
     bool m_dueToDateEnabled;
     QTime m_estimatedTime;
     QTime m_actualTime;
-    bool m_archived;
 };
 
 #endif // TASK_H

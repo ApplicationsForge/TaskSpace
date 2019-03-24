@@ -9,8 +9,7 @@ Task::Task(size_t index, QString title, QString status, QString descripion) :
     m_dueToDate(QDate()),
     m_dueToDateEnabled(false),
     m_estimatedTime(QTime(0, 0)),
-    m_actualTime(QTime(0, 0)),
-    m_archived(false)
+    m_actualTime(QTime(0, 0))
 {
 
 }
@@ -124,14 +123,4 @@ QTime Task::actualTime() const
 void Task::setActualTime(const QTime &actualTime)
 {
     m_actualTime = actualTime;
-}
-
-bool Task::archived() const
-{
-    return m_archived;
-}
-
-void Task::setArchived(bool archived)
-{
-    m_archived = archived;
 }

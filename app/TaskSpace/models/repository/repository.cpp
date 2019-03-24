@@ -8,7 +8,6 @@ Repository::Repository(QObject *parent) :
 {
     this->loadSettings();
     this->loadTasks();
-    //this->loadMockData();
 }
 
 Repository::~Repository()
@@ -73,8 +72,8 @@ void Repository::loadSettings()
     }
     catch(std::invalid_argument e)
     {
-        QMessageBox(QMessageBox::Critical, "Error", e.what()).exec();
-        this->setStoreDirectory("");
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+        this->setStoreDirectory(qApp->applicationDirPath());
         this->setCalendarUrl("");
     }
 }
@@ -100,7 +99,7 @@ void Repository::loadTasks()
 {
     QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
     QFile file(tasksFilePath);
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         qDebug() << "Repository::loadTasks:" << "Can not open file" << file << "for reading";
         throw std::runtime_error("Can not load tasks");
