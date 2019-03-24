@@ -7,7 +7,7 @@
 class Task
 {
 public:
-    Task(size_t index, QString title, QString status, QString descripion = "");
+    Task(size_t index, QString title, QString status, QString descripion = "# Description");
     bool operator< (const Task &task) const;
 
     size_t index() const;

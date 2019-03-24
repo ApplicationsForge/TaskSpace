@@ -9,8 +9,7 @@
 #include "models/settings_manager/settings_manager.h"
 #include "models/types/task/task.h"
 
-//#include "models/database_adapter/sqlite_adapter.h"
-#include "libs/orm-qt-master/src/activerecord.h"
+#include "models/database_adapter/my_sqlite_adapter.h"
 
 class Router;
 
@@ -28,8 +27,7 @@ public:
     QList<Task> getTasks(QString status) const;
     int getTaskCountByStatus(QString status);
     Task getTaskByIndex(size_t index) const;
-    Task createNewBaseTask();
-    void addTask(Task task);
+    void createNewBaseTask();
     void removeTask(size_t index);
     void updateTaskStatus(size_t index, QString status);
     void updateTaskInfo(size_t index,
@@ -62,11 +60,11 @@ private:
 
     QSharedPointer<Task> findTask(size_t index) const;
 
-    size_t getNewTaskIndex();
+    //size_t getNewTaskIndex();
 
-    void syncTasksWithDatabase();
-    static void saveTasksToDatabase(const QString &databasePath, const QList< QSharedPointer<Task> >& tasks);
-    static QList< QSharedPointer<Task> > loadTasksFromDatabase(const QString &databasePath);
+    //void syncTasksWithDatabase();
+    //static void saveTasksToDatabase(const QString &databasePath, const QList< QSharedPointer<Task> >& tasks);
+    void loadTasksFromDatabase();
 
     friend class Router;
 

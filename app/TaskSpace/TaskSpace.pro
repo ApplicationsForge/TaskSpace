@@ -84,16 +84,15 @@ SOURCES += \
     gui/widgets/my_list_widget.cpp \
     gui/widgets/task_list_widget.cpp \
     models/settings_manager/settings_manager.cpp \
-    libs/orm-qt-master/src/activerecord.cpp \
-    libs/orm-qt-master/src/query.cpp \
-    models/types/sqlite_adapter/sqlite_adapter.cpp \
+    #libs/orm-qt-master/src/activerecord.cpp \
+    #libs/orm-qt-master/src/query.cpp \
     models/types/task/task.cpp \
     gui/widgets/burndown_chart_widget.cpp \
     gui/widgets/mylistwidgetitem.cpp \
     gui/widgets/task_status_chart_widget.cpp \
     gui/widgets/task_viewer_widget.cpp \
-    gui/widgets/task_index_input_widget.cpp
-#    models/database_adapter/sqlite_adapter.cpp
+    gui/widgets/task_index_input_widget.cpp \
+    models/database_adapter/my_sqlite_adapter.cpp
 
 HEADERS += \
         gui/mainwindow.h \
@@ -180,17 +179,16 @@ HEADERS += \
     gui/widgets/my_list_widget.h \
     gui/widgets/task_list_widget.h \
     models/settings_manager/settings_manager.h \
-    libs/orm-qt-master/src/activerecord.h \
-    libs/orm-qt-master/src/orm-qt_global.h \
-    libs/orm-qt-master/src/query.h \
-    models/types/sqlite_adapter/sqlite_adapter.h \
+    #libs/orm-qt-master/src/activerecord.h \
+    #libs/orm-qt-master/src/orm-qt_global.h \
+    #libs/orm-qt-master/src/query.h \
     models/types/task/task.h \
     gui/widgets/burndown_chart_widget.h \
     gui/widgets/mylistwidgetitem.h \
     gui/widgets/task_status_chart_widget.h \
     gui/widgets/task_viewer_widget.h \
-    gui/widgets/task_index_input_widget.h
-#    models/database_adapter/sqlite_adapter.h
+    gui/widgets/task_index_input_widget.h \
+    models/database_adapter/my_sqlite_adapter.h
 
 FORMS += \
         gui/mainwindow.ui

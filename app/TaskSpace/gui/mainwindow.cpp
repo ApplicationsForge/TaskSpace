@@ -537,8 +537,8 @@ void MainWindow::onAddNewTaskButton_Clicked()
     try
     {
         Router& router = Router::getInstance();
-        Task task = router.getRepository()->createNewBaseTask();
-        this->showTaskDialog(task, true);
+        router.getRepository()->createNewBaseTask();
+        //this->showTaskDialog(task, true);
     }
     catch(std::invalid_argument e)
     {
@@ -628,8 +628,19 @@ void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskLi
 
 void MainWindow::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
 {
-    Router& router = Router::getInstance();
-    router.getRepository()->updateTaskStatus(taskIndex, status);
+    try
+    {
+        Router& router = Router::getInstance();
+        router.getRepository()->updateTaskStatus(taskIndex, status);
+    }
+    catch(std::runtime_error e)
+    {
+       QMessageBox(QMessageBox::Critical, "Error", e.what()).exec();
+    }
+    catch(...)
+    {
+         QMessageBox(QMessageBox::Critical, "Error", "???").exec();
+    }
 }
 
 void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QString description, QDate dueToDate, bool dueToDateEnabled, QTime estimatedTime, QTime actualTime)

@@ -6,7 +6,7 @@ Task::Task(size_t index, QString title, QString status, QString descripion) :
     m_status(status),
     m_updatedAt(QDateTime::currentDateTime()),
     m_description(descripion),
-    m_dueToDate(QDate()),
+    m_dueToDate(QDate::currentDate()),
     m_dueToDateEnabled(false),
     m_estimatedTime(QTime(0, 0)),
     m_actualTime(QTime(0, 0)),

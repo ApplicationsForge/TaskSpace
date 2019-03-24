@@ -8,7 +8,7 @@ Repository::Repository(QObject *parent) :
     //m_tasksTable("tasks")
 {
     this->loadSettings();
-    m_tasks = Repository::loadTasksFromDatabase(m_databasePath);
+    this->loadTasksFromDatabase();
     //this->loadMockData();
 }
 
@@ -117,7 +117,7 @@ QSharedPointer<Task> Repository::findTask(size_t index) const
     throw std::invalid_argument("Can not find task with index " + std::to_string(index));
 }
 
-size_t Repository::getNewTaskIndex()
+/*size_t Repository::getNewTaskIndex()
 {
     size_t maxIndex = 0;
     for(auto task : m_tasks)
@@ -125,109 +125,153 @@ size_t Repository::getNewTaskIndex()
         maxIndex = std::max(maxIndex, task->index());
     }
     return maxIndex + 1;
-}
+}*/
 
-void Repository::syncTasksWithDatabase()
+/*void Repository::syncTasksWithDatabase()
 {
     Repository::saveTasksToDatabase(m_databasePath, m_tasks);
-    m_tasks.clear();
-    m_tasks = Repository::loadTasksFromDatabase(m_databasePath);
+    this->loadTasksFromDatabase();
     emit this->tasksUpdated();
-}
+}*/
 
-void Repository::saveTasksToDatabase(const QString &databasePath, const QList<QSharedPointer<Task> > &tasks)
+/*void Repository::saveTasksToDatabase(const QString &databasePath, const QList<QSharedPointer<Task> > &tasks)
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(databasePath);
     if(!db.open())
     {
+        qDebug() << "Repository::saveTasksToDatabase:" << "database is not connected";
         throw std::runtime_error("database is not connected");
     }
 
+    QStringList rawRequest;
+            rawRequest << "INSERT INTO tasks (title, status, updated_at, description,"
+                    << "due_to_date_enabled, due_to_date, estimated_time, actual_time, archived)"
+                    << "VALUES (:title, :status, :updated_at, :description,"
+                    << ":due_to_date_enabled, :due_to_date, :estimated_time, :actual_time, :archived);";
+    QSqlQuery request;
+    qDebug() << request.prepare(rawRequest.join(" "));
+
     for(auto task : tasks)
     {
-        orm::ActiveRecord tasksTable("tasks");
-        tasksTable.setValue("index", static_cast<unsigned int>(task->index()));
-        tasksTable.setValue("title", task->title());
-        tasksTable.setValue("status", task->status());
-        tasksTable.setValue("updated_at", task->updatedAt());
-        tasksTable.setValue("description", task->description());
-        tasksTable.setValue("due_to_date_enabled", task->dueToDateEnabled());
-        tasksTable.setValue("due_to_date", task->dueToDate());
-        tasksTable.setValue("estimated_time", task->estimatedTime());
-        tasksTable.setValue("actual_time", task->actualTime());
-        tasksTable.setValue("archived", task->archived());
-        bool res = tasksTable.save();
-        qDebug() << res;
+        //request.bindValue(":index", QString::number(task->index()));
+        request.bindValue(":title", task->title());
+        request.bindValue(":status", task->status());
+        request.bindValue(":updated_at", task->updatedAt());
+        request.bindValue(":description", task->description());
+        request.bindValue(":due_to_date_enabled", task->dueToDateEnabled());
+        request.bindValue(":due_to_date", task->dueToDate());
+        request.bindValue(":estimated_time", task->estimatedTime());
+        request.bindValue(":actual_time", task->actualTime());
+        request.bindValue(":archived", task->archived());
+        request.exec();
     }
 
+    QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+    qDebug() << "AfterDelete" << QSqlDatabase::database().connectionNames();
+}*/
 
-    return;
-}
-
-QList<QSharedPointer<Task> > Repository::loadTasksFromDatabase(const QString &databasePath)
+void Repository::loadTasksFromDatabase()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(databasePath);
+    db.setDatabaseName(m_databasePath);
     if(!db.open())
     {
-       throw std::runtime_error("database is not connected");
+        qDebug() << "Repository::saveTasksToDatabase:" << "database is not connected";
+        throw std::runtime_error("database is not connected");
     }
 
-    QList<QSharedPointer<Task> > tasks = QList<QSharedPointer<Task> >();
-    QSqlQuery qr = orm::Query::select("tasks").make(); //.where("id > ?", 100).make();
-    if (qr.exec()) {
-            while (qr.next()) {
-                    orm::ActiveRecord ar_obj("tasks");
-                    ar_obj.setRecord(qr.record());
-                    //ar_obj.setValue("foo", "new_foo_value");
-
-                    size_t index = size_t(ar_obj.value("index").toUInt());
-                    QString title = ar_obj.value("title").toString();
-                    QString status = ar_obj.value("status").toString();
-                    QDateTime updatedAt = ar_obj.value("updated_at").toDateTime();
-                    QString description = ar_obj.value("description").toString();
-                    bool dueToDateEnabled = ar_obj.value("due_to_date_enabled").toBool();
-                    QDate dueToDate = ar_obj.value("due_to_date").toDate();
-                    QTime estimatedTime = ar_obj.value("estimated_time").toTime();
-                    QTime actualTime = ar_obj.value("actual_time").toTime();
-
-                    Task task = Task(index, title, status, description);
-                    task.setUpdatedAt(updatedAt);
-                    task.setDueToDate(dueToDate);
-                    task.setDueToDateEnabled(dueToDateEnabled);
-                    task.setEstimatedTime(estimatedTime);
-                    task.setActualTime(actualTime);
-                    tasks.append(QSharedPointer<Task>(&task));
-            }
+    QStringList rawRequest;
+            rawRequest << "SELECT * FROM tasks;";
+    QSqlQuery request;
+    if(!request.prepare(rawRequest.join(" ")))
+    {
+        QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+        qDebug() << "Repository::loadTasksFromDatabase:" << "can not prepare request";
+        throw std::runtime_error("Repository::loadTasksFromDatabase: can not prepare request");
     }
-    return tasks;
+
+    if(!request.exec())
+    {
+        QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+        qDebug() << "Repository::loadTasksFromDatabase:" << "can not run request";
+        throw std::runtime_error("Repository::loadTasksFromDatabase: can not run request");
+    }
+
+    m_tasks.clear();
+    while (request.next())
+    {
+            size_t index = size_t(request.value("id").toUInt());
+            QString title = request.value("title").toString();
+            QString status = request.value("status").toString();
+            QDateTime updatedAt = request.value("updated_at").toDateTime();
+            QString description = request.value("description").toString();
+            bool dueToDateEnabled = request.value("due_to_date_enabled").toBool();
+            QDate dueToDate = request.value("due_to_date").toDate();
+            QTime estimatedTime = request.value("estimated_time").toTime();
+            QTime actualTime = request.value("actual_time").toTime();
+
+            Task* task = new Task(index, title, status, description);
+            task->setUpdatedAt(updatedAt);
+            task->setDueToDate(dueToDate);
+            task->setDueToDateEnabled(dueToDateEnabled);
+            task->setEstimatedTime(estimatedTime);
+            task->setActualTime(actualTime);
+            m_tasks.append(QSharedPointer<Task>(task));
+    }
+
+    emit this->tasksUpdated();
+    QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+    qDebug() << "AfterDelete" << QSqlDatabase::database().connectionNames();
 }
 
-Task Repository::createNewBaseTask()
+void Repository::createNewBaseTask()
 {
-    try
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(m_databasePath);
+    if(!db.open())
     {
-        Task newTask = Task(this->getNewTaskIndex(), "NewBaseTask", this->getAvaliableStatuses().first());
-        this->addTask(newTask);
-        return this->getTaskByIndex(newTask.index());
+        qDebug() << "Repository::createNewBaseTask:" << "database is not connected";
+        throw std::runtime_error("database is not connected");
     }
-    catch(std::invalid_argument e)
-    {
-        qDebug() << "Repository::createNewBaseTask:" << e.what();
-        throw;
-    }
-}
 
-void Repository::addTask(Task task)
-{
-    m_tasks.append(QSharedPointer<Task>(new Task(task.index(), task.title(), task.status())));
-    this->syncTasksWithDatabase();
+    QStringList rawRequest;
+            rawRequest << "INSERT INTO tasks (title, status, updated_at, description,"
+                    << "due_to_date_enabled, due_to_date, estimated_time, actual_time, archived)"
+                    << "VALUES (:title, :status, :updated_at, :description,"
+                    << ":due_to_date_enabled, :due_to_date, :estimated_time, :actual_time, :archived);";
+    QSqlQuery request;
+    if(!request.prepare(rawRequest.join(" ")))
+    {
+        QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+        qDebug() << "Repository::createNewBaseTask:" << "can not prepare request";
+        throw std::runtime_error("Repository::createNewBaseTask: can not prepare request");
+    }
+
+    request.bindValue(":title", "BaseTask");
+    request.bindValue(":status", this->getAvaliableStatuses().first());
+    request.bindValue(":updated_at", QDateTime::currentDateTime());
+    request.bindValue(":description", "");
+    request.bindValue(":due_to_date_enabled", true);
+    request.bindValue(":due_to_date", QDate::currentDate());
+    request.bindValue(":estimated_time", QTime());
+    request.bindValue(":actual_time", QTime());
+    request.bindValue(":archived", false);
+
+    if(!request.exec())
+    {
+        QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+        qDebug() << "Repository::createNewBaseTask:" << "can not exec request";
+        throw std::runtime_error("Repository::createNewBaseTask: can not exec request");
+    }
+
+    QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+    this->loadTasksFromDatabase();
 }
 
 void Repository::removeTask(size_t index)
 {
-    try
+    /*try
     {
         auto task = this->findTask(index);
         m_tasks.removeAll(task);
@@ -237,12 +281,47 @@ void Repository::removeTask(size_t index)
     {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
         qDebug() << "Repository::removeTask:" << e.what();
-    }
+    }*/
 }
 
 void Repository::updateTaskStatus(size_t index, QString status)
 {
-    try
+    auto task = this->findTask(index);
+    task->setStatus(status);
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(m_databasePath);
+    if(!db.open())
+    {
+        qDebug() << "Repository::createNewBaseTask:" << "database is not connected";
+        throw std::runtime_error("database is not connected");
+    }
+
+    QStringList rawRequest;
+            rawRequest << "UPDATE tasks"
+                    << "SET status = " + task->status()
+                    << "WHERE tasks.id = " + QString::number(task->index())
+                    << ";";
+
+    QSqlQuery request;
+    if(!request.prepare(rawRequest.join(" ")))
+    {
+        QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+        qDebug() << "Repository::updateTaskStatus:" << "can not prepare request"<< rawRequest.join(" ");;
+        throw std::runtime_error("Repository::updateTaskStatus: can not prepare request");
+    }
+
+    if(!request.exec())
+    {
+        QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+        qDebug() << "Repository::updateTaskStatus:" << "can not exec request";
+        throw std::runtime_error("Repository::updateTaskStatus: can not exec request");
+    }
+
+    QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+    this->loadTasksFromDatabase();
+
+    /*try
     {
         auto task = this->findTask(index);
         task->setStatus(status);
@@ -252,7 +331,7 @@ void Repository::updateTaskStatus(size_t index, QString status)
     {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
         qDebug() << "Repository::updateTaskStatus:" << e.what();
-    }
+    }*/
 }
 
 void Repository::updateTaskInfo(size_t index,
@@ -263,7 +342,7 @@ void Repository::updateTaskInfo(size_t index,
                             QTime estimatedTime,
                             QTime actualTime)
 {
-    try
+    /*try
     {
         auto task = this->findTask(index);
         task->setTitle(title);
@@ -278,7 +357,7 @@ void Repository::updateTaskInfo(size_t index,
     {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
         qDebug() << "Repository::updateTaskInfo:" << e.what();
-    }
+    }*/
 }
 
 QString Repository::databasePath() const
