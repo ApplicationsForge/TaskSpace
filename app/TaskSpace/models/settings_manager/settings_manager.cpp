@@ -6,7 +6,12 @@ SettingsManager::SettingsManager() : SettingsManager(DEFAULT_SETTINGS_FILE)
 
 SettingsManager::SettingsManager(QString settingsFileName)
 {
+#ifdef Q_OS_MACX
     QString settingsPath = qApp->applicationDirPath() + settingsFileName;
+#else
+    QString settingsPath = DEFAULT_SETTINGS_DIR + settingsFileName;
+#endif
+
     // проверка на существование файла с настройками
     if (!QFileInfo::exists(settingsPath))
     {

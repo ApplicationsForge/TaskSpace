@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <memory>
 
+#define DEFAULT_SETTINGS_DIR ""
 #define DEFAULT_SETTINGS_FILE "TaskSpaceSettings.ini"
 
 /**
