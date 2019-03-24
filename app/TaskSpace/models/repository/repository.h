@@ -9,7 +9,8 @@
 #include "models/settings_manager/settings_manager.h"
 #include "models/types/task/task.h"
 
-#include "models/database_adapter/sqlite_adapter.h"
+//#include "models/database_adapter/sqlite_adapter.h"
+#include "libs/orm-qt-master/src/activerecord.h"
 
 class Router;
 
@@ -51,6 +52,8 @@ private:
     QString m_databasePath;
     QList< QSharedPointer<Task> > m_tasks;
     QString m_calendarUrl;
+
+    //orm::ActiveRecord m_tasksTable;
 
     void loadSettings();
     void loadMockData();

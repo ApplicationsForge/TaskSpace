@@ -5,6 +5,7 @@ Repository::Repository(QObject *parent) :
     m_settingsManager(new SettingsManager()),
     m_databasePath(""),
     m_tasks(QList< QSharedPointer<Task> >())
+    //m_tasksTable("tasks")
 {
     this->loadSettings();
     m_tasks = Repository::loadTasksFromDatabase(m_databasePath);
@@ -74,11 +75,13 @@ Task Repository::getTaskByIndex(size_t index) const
 
 void Repository::loadSettings()
 {
-    try {
+    try
+    {
         this->setDatabasePath(m_settingsManager->get("Main", "DBPath").toString());
         this->setCalendarUrl(m_settingsManager->get("Main", "CalendarUrl").toString());
     }
-    catch(std::invalid_argument e) {
+    catch(std::invalid_argument e)
+    {
         QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
         qDebug() << "Repository::loadSettings:" << e.what();
         this->setDatabasePath("");
@@ -103,8 +106,10 @@ bool Repository::initDb(QString path)
 
 QSharedPointer<Task> Repository::findTask(size_t index) const
 {
-    for(auto task : m_tasks) {
-        if(task->index() == index) {
+    for(auto task : m_tasks)
+    {
+        if(task->index() == index)
+        {
             return task;
         }
     }
@@ -132,12 +137,71 @@ void Repository::syncTasksWithDatabase()
 
 void Repository::saveTasksToDatabase(const QString &databasePath, const QList<QSharedPointer<Task> > &tasks)
 {
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(databasePath);
+    if(!db.open())
+    {
+        throw std::runtime_error("database is not connected");
+    }
+
+    for(auto task : tasks)
+    {
+        orm::ActiveRecord tasksTable("tasks");
+        tasksTable.setValue("index", static_cast<unsigned int>(task->index()));
+        tasksTable.setValue("title", task->title());
+        tasksTable.setValue("status", task->status());
+        tasksTable.setValue("updated_at", task->updatedAt());
+        tasksTable.setValue("description", task->description());
+        tasksTable.setValue("due_to_date_enabled", task->dueToDateEnabled());
+        tasksTable.setValue("due_to_date", task->dueToDate());
+        tasksTable.setValue("estimated_time", task->estimatedTime());
+        tasksTable.setValue("actual_time", task->actualTime());
+        tasksTable.setValue("archived", task->archived());
+        bool res = tasksTable.save();
+        qDebug() << res;
+    }
+
+
     return;
 }
 
 QList<QSharedPointer<Task> > Repository::loadTasksFromDatabase(const QString &databasePath)
 {
-    return QList<QSharedPointer<Task> >();
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(databasePath);
+    if(!db.open())
+    {
+       throw std::runtime_error("database is not connected");
+    }
+
+    QList<QSharedPointer<Task> > tasks = QList<QSharedPointer<Task> >();
+    QSqlQuery qr = orm::Query::select("tasks").make(); //.where("id > ?", 100).make();
+    if (qr.exec()) {
+            while (qr.next()) {
+                    orm::ActiveRecord ar_obj("tasks");
+                    ar_obj.setRecord(qr.record());
+                    //ar_obj.setValue("foo", "new_foo_value");
+
+                    size_t index = size_t(ar_obj.value("index").toUInt());
+                    QString title = ar_obj.value("title").toString();
+                    QString status = ar_obj.value("status").toString();
+                    QDateTime updatedAt = ar_obj.value("updated_at").toDateTime();
+                    QString description = ar_obj.value("description").toString();
+                    bool dueToDateEnabled = ar_obj.value("due_to_date_enabled").toBool();
+                    QDate dueToDate = ar_obj.value("due_to_date").toDate();
+                    QTime estimatedTime = ar_obj.value("estimated_time").toTime();
+                    QTime actualTime = ar_obj.value("actual_time").toTime();
+
+                    Task task = Task(index, title, status, description);
+                    task.setUpdatedAt(updatedAt);
+                    task.setDueToDate(dueToDate);
+                    task.setDueToDateEnabled(dueToDateEnabled);
+                    task.setEstimatedTime(estimatedTime);
+                    task.setActualTime(actualTime);
+                    tasks.append(QSharedPointer<Task>(&task));
+            }
+    }
+    return tasks;
 }
 
 Task Repository::createNewBaseTask()
