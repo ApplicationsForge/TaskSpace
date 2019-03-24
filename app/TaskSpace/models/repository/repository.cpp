@@ -305,7 +305,6 @@ void Repository::setCalendarUrl(const QString &calendarUrl)
     emit this->calendarUrlChanged(m_calendarUrl);
 }
 
-
 QStringList Repository::getAvaliableStatuses()
 {
     return m_avaliableStatuses;
