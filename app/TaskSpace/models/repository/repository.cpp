@@ -129,6 +129,9 @@ void Repository::saveTasks()
         throw std::runtime_error("Can not save tasks");
     }
 
+    // clear file content
+    file.resize(0);
+
     QByteArray serilizedContent = QtJson::serialize(tasksJson);
     QTextStream stream( &file );
     stream << serilizedContent << endl;
