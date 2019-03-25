@@ -184,13 +184,6 @@ QString Repository::resolveArchiveFilePath(const QString &storeDirectory)
 
 Task& Repository::findTask(size_t index)
 {
-    /*for(int i = 0; i < m_tasks.length(); i++)
-    {
-        if(m_tasks[i].index() == index)
-        {
-            return m_tasks[i];
-        }
-    }*/
     for(auto &task : m_tasks)
     {
         if(task.index() == index)
@@ -235,19 +228,8 @@ void Repository::removeTask(size_t index)
 {
     try
     {
-        auto task = this->findTask(index);
+        auto &task = this->findTask(index);
         m_tasks.removeAll(task);
-        //const Task *taskPtr = nullptr;
-        /*for(auto task : m_tasks)
-        {
-            if(task.index() == index)
-            {
-                m_tasks.removeAll(task);
-                //taskPtr = &task;
-                break;
-            }
-        }*/
-        //m_tasks.removeAll(*taskPtr);
         this->syncTasks();
     }
     catch (std::invalid_argument e)
