@@ -23,20 +23,20 @@ public:
     ~Repository();
 
     QList<Task> getTasks() const;
-    QList<Task> getTasks(QString status) const;
+    QList<Task> getTasks(const QString &status) const;
     int getTaskCountByStatus(QString status);
-    Task getTaskByIndex(size_t index) const;
-    Task createNewBaseTask();
-    void addTask(Task task);
+    Task& getTaskByIndex(size_t index);
+    Task& createNewBaseTask();
+    void addTask(const Task &task);
     void removeTask(size_t index);
-    void updateTaskStatus(size_t index, QString status);
+    void updateTaskStatus(size_t index, const QString &status);
     void updateTaskInfo(size_t index,
-                    QString title,
-                    QString description,
-                    QDate dueToDate,
+                    const QString &title,
+                    const QString &description,
+                    const QDate &dueToDate,
                     bool dueToDateEnabled,
-                    QTime estimatedTime,
-                    QTime actualTime);
+                    const QTime &estimatedTime,
+                    const QTime &actualTime);
 
     QString storeDirectory() const;
     void setStoreDirectory(const QString &storeDirectory);
@@ -53,7 +53,7 @@ private:
     QString m_storeDirectory;
 
     QStringList m_avaliableStatuses;
-    QList< QSharedPointer<Task> > m_tasks;
+    QList<Task> m_tasks;
     QString m_calendarUrl;
 
     void loadSettings();
@@ -64,7 +64,7 @@ private:
 
     void saveTasks();
 
-    static QtJson::JsonArray convertTaskListToJson(const QList< QSharedPointer<Task> > &tasks);
+    static QtJson::JsonArray convertTaskListToJson(const QList<Task> &tasks);
 
     static QList<Task> convertTaskJsonToList(const QtJson::JsonArray &taskJsonArray);
 
@@ -72,11 +72,11 @@ private:
 
     static QString resolveArchiveFilePath(const QString &storeDirectory);
 
-    QSharedPointer<Task> findTask(size_t index) const;
+    Task& findTask(size_t index);
 
     size_t getNewTaskIndex();
 
-    void setTasks(const QList< QSharedPointer<Task> > &tasks);
+    void setTasks(const QList<Task> &tasks);
 
     friend class Router;
 

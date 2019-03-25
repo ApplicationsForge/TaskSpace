@@ -5,7 +5,7 @@ Repository::Repository(QObject *parent) :
     m_settingsManager(new SettingsManager()),
     m_storeDirectory(""),
     m_avaliableStatuses(QStringList()),
-    m_tasks(QList< QSharedPointer<Task> >()),
+    m_tasks(QList< Task >()),
     m_calendarUrl("")
 {
     this->loadSettings();
@@ -19,24 +19,20 @@ Repository::~Repository()
 
 QList<Task> Repository::getTasks() const
 {
-    QList<Task> tasks;
-    for(auto task : m_tasks)
-    {
-        tasks.append(*task);
-    }
+    QList<Task> tasks = m_tasks;
     std::sort(tasks.begin(), tasks.end());
     std::reverse(tasks.begin(), tasks.end());
     return tasks;
 }
 
-QList<Task> Repository::getTasks(QString status) const
+QList<Task> Repository::getTasks(const QString &status) const
 {
     QList<Task> tasks;
     for(auto task : m_tasks)
     {
-        if(task->status() == status)
+        if(task.status() == status)
         {
-            tasks.append(*task);
+            tasks.append(task);
         }
     }
     std::sort(tasks.begin(), tasks.end());
@@ -49,9 +45,9 @@ int Repository::getTaskCountByStatus(QString status)
     return this->getTasks(status).length();
 }
 
-Task Repository::getTaskByIndex(size_t index) const
+Task& Repository::getTaskByIndex(size_t index)
 {
-    return *(this->findTask(index).data());
+    return this->findTask(index);
 }
 
 void Repository::loadSettings()
@@ -102,7 +98,7 @@ void Repository::loadTasks()
     QList<Task> tasks = Repository::convertTaskJsonToList(QtJson::parse(tasksFileContent).toList());
     for(auto task : tasks)
     {
-        m_tasks.append(QSharedPointer<Task>(new Task(task)));
+        m_tasks.append(task);
     }
     emit this->tasksUpdated();
 }
@@ -129,21 +125,21 @@ void Repository::saveTasks()
     file.close();
 }
 
-QtJson::JsonArray Repository::convertTaskListToJson(const QList<QSharedPointer<Task> > &tasks)
+QtJson::JsonArray Repository::convertTaskListToJson(const QList<Task> &tasks)
 {
     QtJson::JsonArray result;
     for(auto task : tasks)
     {
         QtJson::JsonObject taskJsonObject;
-        taskJsonObject["index"] = int(task->index());
-        taskJsonObject["title"] = task->title();
-        taskJsonObject["status"] = task->status();
-        taskJsonObject["updated_at"] = task->updatedAt();
-        taskJsonObject["description"] = task->description();
-        taskJsonObject["due_to_date"] = task->dueToDate();
-        taskJsonObject["due_to_date_enabled"] = task->dueToDateEnabled();
-        taskJsonObject["estimated_time"] = task->estimatedTime();
-        taskJsonObject["actual_time"] = task->actualTime();
+        taskJsonObject["index"] = int(task.index());
+        taskJsonObject["title"] = task.title();
+        taskJsonObject["status"] = task.status();
+        taskJsonObject["updated_at"] = task.updatedAt();
+        taskJsonObject["description"] = task.description();
+        taskJsonObject["due_to_date"] = task.dueToDate();
+        taskJsonObject["due_to_date_enabled"] = task.dueToDateEnabled();
+        taskJsonObject["estimated_time"] = task.estimatedTime();
+        taskJsonObject["actual_time"] = task.actualTime();
         result.push_back(taskJsonObject);
     }
     return result;
@@ -186,11 +182,18 @@ QString Repository::resolveArchiveFilePath(const QString &storeDirectory)
     return storeDirectory + "/archive.json";
 }
 
-QSharedPointer<Task> Repository::findTask(size_t index) const
+Task& Repository::findTask(size_t index)
 {
-    for(auto task : m_tasks)
+    /*for(int i = 0; i < m_tasks.length(); i++)
     {
-        if(task->index() == index)
+        if(m_tasks[i].index() == index)
+        {
+            return m_tasks[i];
+        }
+    }*/
+    for(auto &task : m_tasks)
+    {
+        if(task.index() == index)
         {
             return task;
         }
@@ -204,27 +207,27 @@ size_t Repository::getNewTaskIndex()
     size_t maxIndex = 0;
     for(auto task : m_tasks)
     {
-        maxIndex = std::max(maxIndex, task->index());
+        maxIndex = std::max(maxIndex, task.index());
     }
     return maxIndex + 1;
 }
 
-void Repository::setTasks(const QList< QSharedPointer<Task> > &tasks)
+void Repository::setTasks(const QList<Task> &tasks)
 {
     m_tasks = tasks;
     emit this->tasksUpdated();
 }
 
-Task Repository::createNewBaseTask()
+Task &Repository::createNewBaseTask()
 {
     Task newTask = Task(this->getNewTaskIndex(), "NewBaseTask", this->getAvaliableStatuses().first());
     this->addTask(newTask);
     return this->getTaskByIndex(newTask.index());
 }
 
-void Repository::addTask(Task task)
+void Repository::addTask(const Task &task)
 {
-    m_tasks.append(QSharedPointer<Task>(new Task(task.index(), task.title(), task.status())));
+    m_tasks.append(task);
     this->syncTasks();
 }
 
@@ -234,6 +237,17 @@ void Repository::removeTask(size_t index)
     {
         auto task = this->findTask(index);
         m_tasks.removeAll(task);
+        //const Task *taskPtr = nullptr;
+        /*for(auto task : m_tasks)
+        {
+            if(task.index() == index)
+            {
+                m_tasks.removeAll(task);
+                //taskPtr = &task;
+                break;
+            }
+        }*/
+        //m_tasks.removeAll(*taskPtr);
         this->syncTasks();
     }
     catch (std::invalid_argument e)
@@ -242,12 +256,12 @@ void Repository::removeTask(size_t index)
     }
 }
 
-void Repository::updateTaskStatus(size_t index, QString status)
+void Repository::updateTaskStatus(size_t index, const QString &status)
 {
     try
     {
-        auto task = this->findTask(index);
-        task->setStatus(status);
+        Task &task = this->findTask(index);
+        task.setStatus(status);
         this->syncTasks();
     }
     catch(std::invalid_argument e)
@@ -257,22 +271,22 @@ void Repository::updateTaskStatus(size_t index, QString status)
 }
 
 void Repository::updateTaskInfo(size_t index,
-                            QString title,
-                            QString description,
-                            QDate dueToDate,
+                            const QString &title,
+                            const QString &description,
+                            const QDate &dueToDate,
                             bool dueToDateEnabled,
-                            QTime estimatedTime,
-                            QTime actualTime)
+                            const QTime &estimatedTime,
+                            const QTime &actualTime)
 {
     try
     {
-        auto task = this->findTask(index);
-        task->setTitle(title);
-        task->setDescription(description);
-        task->setDueToDate(dueToDate);
-        task->setDueToDateEnabled(dueToDateEnabled);
-        task->setEstimatedTime(estimatedTime);
-        task->setActualTime(actualTime);
+        auto &task = this->findTask(index);
+        task.setTitle(title);
+        task.setDescription(description);
+        task.setDueToDate(dueToDate);
+        task.setDueToDateEnabled(dueToDateEnabled);
+        task.setEstimatedTime(estimatedTime);
+        task.setActualTime(actualTime);
         this->syncTasks();
     }
     catch (std::invalid_argument e)

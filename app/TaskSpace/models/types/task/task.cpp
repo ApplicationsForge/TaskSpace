@@ -23,6 +23,11 @@ bool Task::operator<(const Task &task) const
     return this->index() < task.index();
 }
 
+bool Task::operator==(const Task &task) const
+{
+    return m_index == task.index();
+}
+
 size_t Task::index() const
 {
     return m_index;
