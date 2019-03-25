@@ -123,10 +123,10 @@ void MainWindow::setupDrawer()
     //QObject::connect(archiveButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
     drawerLayout->addWidget(archiveButton);
 
-    QtMaterialFlatButton* notesButton = new QtMaterialFlatButton("Notes", m_drawer);
+    /*QtMaterialFlatButton* notesButton = new QtMaterialFlatButton("Notes", m_drawer);
     notesButton->setForegroundColor(QColor("#333"));
     QObject::connect(notesButton, SIGNAL(clicked()), this, SLOT(showNotesTab()));
-    drawerLayout->addWidget(notesButton);
+    drawerLayout->addWidget(notesButton);*/
 
     QtMaterialFlatButton* settingsButton = new QtMaterialFlatButton("Settings", m_drawer);
     settingsButton->setForegroundColor(QColor("#333"));
@@ -191,6 +191,10 @@ void MainWindow::setupDashboardTab()
                     toolsTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
                     toolsContainerWidget->layout()->addWidget(toolsTitleLabel);
 
+                    QtMaterialRaisedButton* backlogButton = new QtMaterialRaisedButton("Go to Backlog", toolsContainerWidget);;
+                    QObject::connect(backlogButton, SIGNAL(clicked()), this, SLOT(showBacklogTab()));
+                    toolsContainerWidgetLayout->addWidget(backlogButton);
+
                     QtMaterialRaisedButton *focusTimerButton = new QtMaterialRaisedButton("Focus Timer", toolsContainerWidget);
                     QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
                     toolsContainerWidgetLayout->addWidget(focusTimerButton);
@@ -241,7 +245,7 @@ void MainWindow::setupBacklogTab()
                 actionsContainer->layout()->addWidget(removeTaskButton);
 
                 actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-                actionsContainer->layout()->addWidget(new QtMaterialRaisedButton("Sync Tasks With Trello", actionsContainer));
+                //actionsContainer->layout()->addWidget(new QtMaterialRaisedButton("Sync Tasks With Trello", actionsContainer));
             containerLayout->addWidget(actionsContainer);
 
             QScrollArea *scrollArea = new QScrollArea(container);
