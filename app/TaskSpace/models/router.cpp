@@ -22,9 +22,9 @@ Router &Router::getInstance()
     return *m_instance;
 }
 
-Repository *Router::getRepository()
+Repository &Router::getRepository()
 {
-    return m_repository.data();
+    return *m_repository.data();
 }
 
 void Router::setupConnections()

@@ -251,7 +251,7 @@ void MainWindow::setupBacklogTab()
                 scrollAreaContent->setLayout(new QHBoxLayout(scrollAreaContent));
                 scrollAreaContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
                 scrollAreaContent->layout()->setContentsMargins(0, 0, 0, 15);
-                    QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
+                    QStringList avaliableStatuses = router.getRepository().getAvaliableStatuses();
                     for(auto status : avaliableStatuses)
                     {
                         TaskListWidget* taskListWidget = new TaskListWidget(status, scrollAreaContent);
@@ -279,9 +279,9 @@ void MainWindow::setupSettingsTab()
     try
     {
         Router &router = Router::getInstance();
-        QString storeDirectory = router.getRepository()->storeDirectory();
-        QString calendarUrl = router.getRepository()->getCalendarUrl();
-        QString avaliableStatuses = router.getRepository()->getAvaliableStatuses().join(";");
+        QString storeDirectory = router.getRepository().storeDirectory();
+        QString calendarUrl = router.getRepository().getCalendarUrl();
+        QString avaliableStatuses = router.getRepository().getAvaliableStatuses().join(";");
 
         QWidget* container = new QWidget(ui->mainWidget);
         container->setObjectName("settingsContainerWidget");
@@ -450,7 +450,7 @@ void MainWindow::showCalendarDialog()
     try
     {
         Router& router = Router::getInstance();
-        QString calendarUrl = router.getRepository()->getCalendarUrl();
+        QString calendarUrl = router.getRepository().getCalendarUrl();
 
         QDialog *calendarDialog = new QDialog(this);
         calendarDialog->setWindowTitle("Calendar");
@@ -547,7 +547,7 @@ void MainWindow::onRouter_TasksUpdated()
         for(auto taskListWidget : m_taskListWidgets)
         {
             taskListWidget->list()->clear();
-            QList<Task> tasks = router.getRepository()->getTasks(taskListWidget->status());
+            QList<Task> tasks = router.getRepository().getTasks(taskListWidget->status());
             for(auto task : tasks)
             {
                 QListWidgetItem *item = new QListWidgetItem();
@@ -561,11 +561,11 @@ void MainWindow::onRouter_TasksUpdated()
         TaskStatusChartWidget* taskStatusChartWidget = qobject_cast<TaskStatusChartWidget*>(rawTaskStatusBarWidget);
         if(taskStatusChartWidget != nullptr)
         {
-            QStringList avaliableStatuses = router.getRepository()->getAvaliableStatuses();
+            QStringList avaliableStatuses = router.getRepository().getAvaliableStatuses();
             QList<int> taskCountByStatus;
             for(auto status : avaliableStatuses)
             {
-                taskCountByStatus << router.getRepository()->getTaskCountByStatus(status);
+                taskCountByStatus << router.getRepository().getTaskCountByStatus(status);
             }
             taskStatusChartWidget->updateChartWidget(taskCountByStatus, avaliableStatuses);
         }
@@ -581,7 +581,7 @@ void MainWindow::onAddNewTaskButton_Clicked()
     try
     {
         Router& router = Router::getInstance();
-        Task task = router.getRepository()->createNewBaseTask();
+        Task task = router.getRepository().createNewBaseTask();
         this->showTaskDialog(task, true);
     }
     catch(std::invalid_argument e)
@@ -657,7 +657,7 @@ void MainWindow::onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskLi
             return;
         }
 
-        Task task = router.getRepository()->getTaskByIndex(taskIndex);
+        Task task = router.getRepository().getTaskByIndex(taskIndex);
         this->showTaskDialog(task, false);
     }
     catch(std::invalid_argument e)
@@ -675,7 +675,7 @@ void MainWindow::onTaskListWidget_TaskDropped(size_t taskIndex, QString status)
     try
     {
         Router& router = Router::getInstance();
-        router.getRepository()->updateTaskStatus(taskIndex, status);
+        router.getRepository().updateTaskStatus(taskIndex, status);
     }
     catch(std::invalid_argument e)
     {
@@ -692,7 +692,7 @@ void MainWindow::onTaskViewerWidget_TaskUpdated(size_t index, QString title, QSt
     try
     {
         Router& router = Router::getInstance();
-        router.getRepository()->updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
+        router.getRepository().updateTaskInfo(index, title, description, dueToDate, dueToDateEnabled, estimatedTime, actualTime);
     }
     catch(std::invalid_argument e)
     {
@@ -709,7 +709,7 @@ void MainWindow::onRemoveTaskInputWidget_IndexSelected(size_t index)
     try
     {
         Router& router = Router::getInstance();
-        router.getRepository()->removeTask(index);
+        router.getRepository().removeTask(index);
     }
     catch(std::invalid_argument e)
     {
@@ -728,13 +728,13 @@ void MainWindow::onApplySettingsButton_Clicked()
     QString storeDirectory = m_storeDirectoryInput->text();
     if(!storeDirectory.isEmpty())
     {
-        router.getRepository()->setStoreDirectory(storeDirectory);
+        router.getRepository().setStoreDirectory(storeDirectory);
     }
 
     QString calendarUrl = m_calendarUrlInput->text();
-    router.getRepository()->setCalendarUrl(calendarUrl);
+    router.getRepository().setCalendarUrl(calendarUrl);
 
     QString avaliableStatuses = m_avaliableStatusesListInput->text();
-    router.getRepository()->setAvaliableStatuses(avaliableStatuses.split(";"));
+    router.getRepository().setAvaliableStatuses(avaliableStatuses.split(";"));
 }
 
