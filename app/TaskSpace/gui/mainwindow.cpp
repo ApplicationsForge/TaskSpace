@@ -191,10 +191,6 @@ void MainWindow::setupDashboardTab()
                     toolsTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
                     toolsContainerWidget->layout()->addWidget(toolsTitleLabel);
 
-                    QtMaterialRaisedButton* backlogButton = new QtMaterialRaisedButton("Go to Backlog", toolsContainerWidget);;
-                    QObject::connect(backlogButton, SIGNAL(clicked()), this, SLOT(showBacklogTab()));
-                    toolsContainerWidgetLayout->addWidget(backlogButton);
-
                     QtMaterialRaisedButton *focusTimerButton = new QtMaterialRaisedButton("Focus Timer", toolsContainerWidget);
                     QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
                     toolsContainerWidgetLayout->addWidget(focusTimerButton);
