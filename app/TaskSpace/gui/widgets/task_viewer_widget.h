@@ -40,7 +40,7 @@ private:
     QtMaterialTextField* m_titleWidget;
     QMarkdownTextEdit* m_descriptionWidget;
     QCalendarWidget* m_datePickerWidget;
-    QtMaterialCheckBox* m_withoutDateCheckBoxWidget;
+    QCheckBox* m_withoutDateCheckBoxWidget;
     QTimeEdit* m_estimatedTimeWidget;
     QTimeEdit* m_actualTimeWidget;
     bool m_editingEnable;
