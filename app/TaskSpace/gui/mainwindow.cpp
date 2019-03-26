@@ -56,15 +56,15 @@ void MainWindow::setupWidgets()
     this->setupBacklogTab();
     this->setupSettingsTab();
 
-    //this->showBacklogTab();
-    this->showDashboardTab();
+    this->showBacklogTab();
+    //this->showDashboardTab();
     this->onRouter_TasksUpdated();
 }
 
 void MainWindow::setupAppBar()
 {
     // установка оформления mainToolBar
-    QLabel *label = new QLabel("Here is your TaskSpace");
+    QLabel *label = new QLabel("Here is your TaskSpace", this);
     label->setAttribute(Qt::WA_TranslucentBackground);
     label->setForegroundRole(QPalette::Foreground);
     label->setContentsMargins(6, 0, 0, 0);
@@ -75,7 +75,7 @@ void MainWindow::setupAppBar()
 
     label->setFont(QFont("Roboto", 18, QFont::Normal));
 
-    QtMaterialIconButton *button = new QtMaterialIconButton(QtMaterialTheme::icon("navigation", "menu"));
+    QtMaterialIconButton *button = new QtMaterialIconButton(QtMaterialTheme::icon("navigation", "menu"), this);
     button->setIconSize(QSize(24, 24));
     QObject::connect(button, SIGNAL(clicked()), m_drawer, SLOT(openDrawer()));
 
@@ -169,7 +169,7 @@ void MainWindow::setupDashboardTab()
                 chartsContainerWidget->setLayout(new QHBoxLayout(chartsContainerWidget));
                 chartsContainerWidget->layout()->setContentsMargins(0, 0, 0, 0);
                 chartsContainerWidget->layout()->setSpacing(0);
-                    BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
+                    /*BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
                     burndownChartWidget->setObjectName("burndownChartWidget");
                     m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
                     chartsContainerWidget->layout()->addWidget(burndownChartWidget);
@@ -177,7 +177,7 @@ void MainWindow::setupDashboardTab()
                     TaskStatusChartWidget* taskStatusChartWidget = new TaskStatusChartWidget(chartsContainerWidget);
                     taskStatusChartWidget->setObjectName("taskStatusChartWidget");
                     m_widgets.insert(taskStatusChartWidget->objectName(), taskStatusChartWidget);
-                    chartsContainerWidget->layout()->addWidget(taskStatusChartWidget);
+                    chartsContainerWidget->layout()->addWidget(taskStatusChartWidget);*/
 
                 subContainerLayout->addWidget(chartsContainerWidget);
                 subContainerLayout->setStretch(0, 4);
