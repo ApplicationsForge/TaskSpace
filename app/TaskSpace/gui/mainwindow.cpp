@@ -8,9 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_appBar(new QtMaterialAppBar(this)),
     m_drawer(new QtMaterialDrawer(this)),
     m_taskListWidgets(QList<TaskListWidget*>()),
-    m_storeDirectoryInput(new QtMaterialTextField(this)),
-    m_calendarUrlInput(new QtMaterialTextField(this)),
-    m_avaliableStatusesListInput(new QtMaterialTextField(this))
+    m_storeDirectoryInput(new QLineEdit(this)),
+    m_calendarUrlInput(new QLineEdit(this)),
+    m_avaliableStatusesListInput(new QLineEdit(this))
 {
     ui->setupUi(this);
     // cоздаем модель
@@ -108,35 +108,35 @@ void MainWindow::setupDrawer()
     menuTitleLabel->setStyleSheet("QLabel { background-color: transparent; color: #333; }");
     drawerLayout->addWidget(menuTitleLabel);
 
-    QtMaterialFlatButton* dashboardButton = new QtMaterialFlatButton("Dashboard", m_drawer);
-    dashboardButton->setForegroundColor(QColor("#333"));
+    QPushButton* dashboardButton = new QPushButton("Dashboard", m_drawer);
+    //dashboardButton->setForegroundColor(QColor("#333"));
     QObject::connect(dashboardButton, SIGNAL(clicked()), this, SLOT(showDashboardTab()));
     drawerLayout->addWidget(dashboardButton);
 
-    QtMaterialFlatButton* backlogButton = new QtMaterialFlatButton("Backlog", m_drawer);
-    backlogButton->setForegroundColor(QColor("#333"));
+    QPushButton* backlogButton = new QPushButton("Backlog", m_drawer);
+    //backlogButton->setForegroundColor(QColor("#333"));
     QObject::connect(backlogButton, SIGNAL(clicked()), this, SLOT(showBacklogTab()));
     drawerLayout->addWidget(backlogButton);
 
-    QtMaterialFlatButton* archiveButton = new QtMaterialFlatButton("Archive", m_drawer);
-    archiveButton->setForegroundColor(QColor("#333"));
+    QPushButton* archiveButton = new QPushButton("Archive", m_drawer);
+    //archiveButton->setForegroundColor(QColor("#333"));
     //QObject::connect(archiveButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
     drawerLayout->addWidget(archiveButton);
 
-    /*QtMaterialFlatButton* notesButton = new QtMaterialFlatButton("Notes", m_drawer);
+    /*QPushButton* notesButton = new QPushButton("Notes", m_drawer);
     notesButton->setForegroundColor(QColor("#333"));
     QObject::connect(notesButton, SIGNAL(clicked()), this, SLOT(showNotesTab()));
     drawerLayout->addWidget(notesButton);*/
 
-    QtMaterialFlatButton* settingsButton = new QtMaterialFlatButton("Settings", m_drawer);
-    settingsButton->setForegroundColor(QColor("#333"));
+    QPushButton* settingsButton = new QPushButton("Settings", m_drawer);
+    //settingsButton->setForegroundColor(QColor("#333"));
     QObject::connect(settingsButton, SIGNAL(clicked()), this, SLOT(showSettingsTab()));
     drawerLayout->addWidget(settingsButton);
 
     drawerLayout->addStretch(3);
 
-    QtMaterialFlatButton* closeDrawerButton = new QtMaterialFlatButton("Close", m_drawer);
-    closeDrawerButton->setForegroundColor(QColor("#333"));
+    QPushButton* closeDrawerButton = new QPushButton("Close", m_drawer);
+    //closeDrawerButton->setForegroundColor(QColor("#333"));
     QObject::connect(closeDrawerButton, SIGNAL(clicked()), m_drawer, SLOT(closeDrawer()));
     drawerLayout->addWidget(closeDrawerButton);
 }
@@ -191,16 +191,16 @@ void MainWindow::setupDashboardTab()
                     toolsTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
                     toolsContainerWidget->layout()->addWidget(toolsTitleLabel);
 
-                    QtMaterialRaisedButton *focusTimerButton = new QtMaterialRaisedButton("Focus Timer", toolsContainerWidget);
+                    QPushButton *focusTimerButton = new QPushButton("Focus Timer", toolsContainerWidget);
                     QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
                     toolsContainerWidgetLayout->addWidget(focusTimerButton);
 
-                    QtMaterialRaisedButton *calendarButton = new QtMaterialRaisedButton("Calendar", toolsContainerWidget);
+                    QPushButton *calendarButton = new QPushButton("Calendar", toolsContainerWidget);
                     QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarDialog()));
                     toolsContainerWidgetLayout->addWidget(calendarButton);
 
-                    /*toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("Export", toolsContainerWidget));
-                    toolsContainerWidgetLayout->addWidget(new QtMaterialRaisedButton("History", toolsContainerWidget));*/
+                    /*toolsContainerWidgetLayout->addWidget(new QPushButton("Export", toolsContainerWidget));
+                    toolsContainerWidgetLayout->addWidget(new QPushButton("History", toolsContainerWidget));*/
 
                     toolsContainerWidgetLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
                 subContainerLayout->addWidget(toolsContainerWidget);
@@ -232,16 +232,16 @@ void MainWindow::setupBacklogTab()
             QWidget *actionsContainer = new QWidget(container);
             actionsContainer->setLayout(new QHBoxLayout(actionsContainer));
             actionsContainer->layout()->setContentsMargins(0, 0, 0, 10);
-                QtMaterialRaisedButton *addNewTaskButton = new QtMaterialRaisedButton("Add New Task", actionsContainer);
+                QPushButton *addNewTaskButton = new QPushButton("Add New Task", actionsContainer);
                 QObject::connect(addNewTaskButton, SIGNAL(clicked()), this, SLOT(onAddNewTaskButton_Clicked()));
                 actionsContainer->layout()->addWidget(addNewTaskButton);
 
-                QtMaterialRaisedButton *removeTaskButton = new QtMaterialRaisedButton("Remove Task", actionsContainer);
+                QPushButton *removeTaskButton = new QPushButton("Remove Task", actionsContainer);
                 QObject::connect(removeTaskButton, SIGNAL(clicked()), this, SLOT(onRemoveTaskButton_Clicked()));
                 actionsContainer->layout()->addWidget(removeTaskButton);
 
                 actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
-                //actionsContainer->layout()->addWidget(new QtMaterialRaisedButton("Sync Tasks With Trello", actionsContainer));
+                //actionsContainer->layout()->addWidget(new QPushButton("Sync Tasks With Trello", actionsContainer));
             containerLayout->addWidget(actionsContainer);
 
             QScrollArea *scrollArea = new QScrollArea(container);
@@ -298,18 +298,18 @@ void MainWindow::setupSettingsTab()
             storeDirectoryWidgetContainer->setLayout(new QHBoxLayout(storeDirectoryWidgetContainer));
             storeDirectoryWidgetContainer->layout()->setContentsMargins(0, 0, 0, 0);
                 m_storeDirectoryInput->setParent(storeDirectoryWidgetContainer);
-                m_storeDirectoryInput->setLabel("Store Directory (need reload)");
+                //m_storeDirectoryInput->setLabel("Store Directory (need reload)");
                 m_storeDirectoryInput->setText(storeDirectory);
                 m_storeDirectoryInput->setReadOnly(true);
-                m_storeDirectoryInput->setLabelFontSize(16);
-                m_storeDirectoryInput->setInkColor(QColor("#333"));
+                //m_storeDirectoryInput->setLabelFontSize(16);
+                //m_storeDirectoryInput->setInkColor(QColor("#333"));
                 m_storeDirectoryInput->setPlaceholderText("Here you could enter full path to root directory for TaskSpace.");
                 m_storeDirectoryInput->setFont(QFont("Roboto", 16, QFont::Normal));
                 m_storeDirectoryInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
                 QObject::connect(&router, SIGNAL(storeDirectoryChanged(QString)), m_storeDirectoryInput, SLOT(setText(QString)));
                 storeDirectoryWidgetContainer->layout()->addWidget(m_storeDirectoryInput);
 
-                QtMaterialFlatButton *selectStorageDirectoryButton = new QtMaterialFlatButton("Change", storeDirectoryWidgetContainer);
+                QPushButton *selectStorageDirectoryButton = new QPushButton("Change", storeDirectoryWidgetContainer);
                 QObject::connect(selectStorageDirectoryButton, SIGNAL(clicked()), this, SLOT(onSelectStorageDirectoryButton_Clicked()));
                 storeDirectoryWidgetContainer->layout()->addWidget(selectStorageDirectoryButton);
             containerLayout->addWidget(storeDirectoryWidgetContainer);
@@ -318,11 +318,11 @@ void MainWindow::setupSettingsTab()
                 QHBoxLayout *calendarUrlConatinerLayout = new QHBoxLayout(calendarUrlConatiner);
                 calendarUrlConatinerLayout->setContentsMargins(0, 10, 0, 0);
                     m_calendarUrlInput->setParent(calendarUrlConatiner);
-                    m_calendarUrlInput->setLabel("Calendar Url");
+                    //m_calendarUrlInput->setLabel("Calendar Url");
                     m_calendarUrlInput->setText(calendarUrl);
                     m_calendarUrlInput->setReadOnly(false);
-                    m_calendarUrlInput->setLabelFontSize(16);
-                    m_calendarUrlInput->setInkColor(QColor("#333"));
+                    //m_calendarUrlInput->setLabelFontSize(16);
+                    //m_calendarUrlInput->setInkColor(QColor("#333"));
                     m_calendarUrlInput->setPlaceholderText("Here you could enter url to your calendar.");
                     m_calendarUrlInput->setFont(QFont("Roboto", 16, QFont::Normal));
                     m_calendarUrlInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
@@ -337,11 +337,11 @@ void MainWindow::setupSettingsTab()
                 QHBoxLayout *avaliableStatusesListConatinerLayout = new QHBoxLayout(avaliableStatusesListConatiner);
                 avaliableStatusesListConatinerLayout->setContentsMargins(0, 10, 0, 0);
                     m_avaliableStatusesListInput->setParent(avaliableStatusesListConatiner);
-                    m_avaliableStatusesListInput->setLabel("Avaliable Statuses (need reload)");
+                    //m_avaliableStatusesListInput->setLabel("Avaliable Statuses (need reload)");
                     m_avaliableStatusesListInput->setText(avaliableStatuses);
                     m_avaliableStatusesListInput->setReadOnly(false);
-                    m_avaliableStatusesListInput->setLabelFontSize(16);
-                    m_avaliableStatusesListInput->setInkColor(QColor("#333"));
+                    //m_avaliableStatusesListInput->setLabelFontSize(16);
+                    //m_avaliableStatusesListInput->setInkColor(QColor("#333"));
                     m_avaliableStatusesListInput->setPlaceholderText("Here you could enter some statuses for your tasks separated by \";\".");
                     m_avaliableStatusesListInput->setFont(QFont("Roboto", 16, QFont::Normal));
                     m_avaliableStatusesListInput->setStyleSheet("QtMaterialTextField { background-color: transparent; }");
@@ -353,7 +353,7 @@ void MainWindow::setupSettingsTab()
             containerLayout->addWidget(avaliableStatusesListConatiner);
 
             containerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
-            QtMaterialFlatButton *applySettingsButton = new QtMaterialFlatButton("Apply Settings", container);
+            QPushButton *applySettingsButton = new QPushButton("Apply Settings", container);
             QObject::connect(applySettingsButton, SIGNAL(clicked()), this, SLOT(onApplySettingsButton_Clicked()));
             containerLayout->addWidget(applySettingsButton);
         container->setLayout(containerLayout);
@@ -404,7 +404,7 @@ void MainWindow::showNotesTab()
 {
     /*qDeleteAll(ui->mainFrame->children());
     ui->mainFrame->setLayout(new QHBoxLayout(ui->mainFrame));
-    ui->mainFrame->layout()->addWidget(new QtMaterialRaisedButton("Notes", ui->mainFrame));
+    ui->mainFrame->layout()->addWidget(new QPushButton("Notes", ui->mainFrame));
 
     this->showGauge();*/
 }
@@ -505,18 +505,18 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
                    QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
 
 
-                       QtMaterialFlatButton *editOrLockButton = new QtMaterialFlatButton(actionsContainerWidget);
+                       QPushButton *editOrLockButton = new QPushButton(actionsContainerWidget);
                        editOrLockButton->setText("Edit/Lock");
                        QObject::connect(editOrLockButton, SIGNAL(clicked()), taskViewerWidget, SLOT(changeEditingEnableStatus()));
                        actionsContainerWidgetLayout->addWidget(editOrLockButton);
 
                        actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-                       QtMaterialFlatButton *saveTaskButton = new QtMaterialFlatButton("Save", actionsContainerWidget);
+                       QPushButton *saveTaskButton = new QPushButton("Save", actionsContainerWidget);
                        QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(saveTaskData()));
                        actionsContainerWidgetLayout->addWidget(saveTaskButton);
 
-                       QtMaterialFlatButton *closeButton = new QtMaterialFlatButton("Close", actionsContainerWidget);
+                       QPushButton *closeButton = new QPushButton("Close", actionsContainerWidget);
                        QObject::connect(closeButton, SIGNAL(clicked()), taskDialog, SLOT(close()));
                        actionsContainerWidgetLayout->addWidget(closeButton);
                    actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
@@ -616,11 +616,11 @@ void MainWindow::onRemoveTaskButton_Clicked()
                    actionsContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
                        actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-                       QtMaterialFlatButton *removeButton = new QtMaterialFlatButton("Remove", actionsContainerWidget);
+                       QPushButton *removeButton = new QPushButton("Remove", actionsContainerWidget);
                        QObject::connect(removeButton, SIGNAL(clicked()), removeTaskIndexInput, SLOT(getResult()));
                        actionsContainerWidgetLayout->addWidget(removeButton);
 
-                       QtMaterialFlatButton *closeButton = new QtMaterialFlatButton("Close", actionsContainerWidget);
+                       QPushButton *closeButton = new QPushButton("Close", actionsContainerWidget);
                        QObject::connect(closeButton, SIGNAL(clicked()), removeTaskDialog, SLOT(close()));
                        actionsContainerWidgetLayout->addWidget(closeButton);
                    actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
