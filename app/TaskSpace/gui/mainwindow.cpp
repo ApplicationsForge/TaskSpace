@@ -109,16 +109,19 @@ void MainWindow::setupDrawer()
     drawerLayout->addWidget(menuTitleLabel);
 
     QPushButton* dashboardButton = new QPushButton("Dashboard", m_drawer);
+    dashboardButton->setFlat(true);
     //dashboardButton->setForegroundColor(QColor("#333"));
     QObject::connect(dashboardButton, SIGNAL(clicked()), this, SLOT(showDashboardTab()));
     drawerLayout->addWidget(dashboardButton);
 
     QPushButton* backlogButton = new QPushButton("Backlog", m_drawer);
+    backlogButton->setFlat(true);
     //backlogButton->setForegroundColor(QColor("#333"));
     QObject::connect(backlogButton, SIGNAL(clicked()), this, SLOT(showBacklogTab()));
     drawerLayout->addWidget(backlogButton);
 
     QPushButton* archiveButton = new QPushButton("Archive", m_drawer);
+    archiveButton->setFlat(true);
     //archiveButton->setForegroundColor(QColor("#333"));
     //QObject::connect(archiveButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
     drawerLayout->addWidget(archiveButton);
@@ -129,6 +132,7 @@ void MainWindow::setupDrawer()
     drawerLayout->addWidget(notesButton);*/
 
     QPushButton* settingsButton = new QPushButton("Settings", m_drawer);
+    settingsButton->setFlat(true);
     //settingsButton->setForegroundColor(QColor("#333"));
     QObject::connect(settingsButton, SIGNAL(clicked()), this, SLOT(showSettingsTab()));
     drawerLayout->addWidget(settingsButton);
@@ -136,6 +140,7 @@ void MainWindow::setupDrawer()
     drawerLayout->addStretch(3);
 
     QPushButton* closeDrawerButton = new QPushButton("Close", m_drawer);
+    closeDrawerButton->setFlat(true);
     //closeDrawerButton->setForegroundColor(QColor("#333"));
     QObject::connect(closeDrawerButton, SIGNAL(clicked()), m_drawer, SLOT(closeDrawer()));
     drawerLayout->addWidget(closeDrawerButton);
@@ -354,6 +359,7 @@ void MainWindow::setupSettingsTab()
 
             containerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
             QPushButton *applySettingsButton = new QPushButton("Apply Settings", container);
+            applySettingsButton->setFlat(true);
             QObject::connect(applySettingsButton, SIGNAL(clicked()), this, SLOT(onApplySettingsButton_Clicked()));
             containerLayout->addWidget(applySettingsButton);
         container->setLayout(containerLayout);
@@ -506,6 +512,7 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
 
 
                        QPushButton *editOrLockButton = new QPushButton(actionsContainerWidget);
+                       editOrLockButton->setFlat(true);
                        editOrLockButton->setText("Edit/Lock");
                        QObject::connect(editOrLockButton, SIGNAL(clicked()), taskViewerWidget, SLOT(changeEditingEnableStatus()));
                        actionsContainerWidgetLayout->addWidget(editOrLockButton);
@@ -513,10 +520,13 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
                        actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 
                        QPushButton *saveTaskButton = new QPushButton("Save", actionsContainerWidget);
+                       saveTaskButton->setFlat(true);
+                       saveTaskButton->setDefault(true);
                        QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(saveTaskData()));
                        actionsContainerWidgetLayout->addWidget(saveTaskButton);
 
                        QPushButton *closeButton = new QPushButton("Close", actionsContainerWidget);
+                       closeButton->setFlat(true);
                        QObject::connect(closeButton, SIGNAL(clicked()), taskDialog, SLOT(close()));
                        actionsContainerWidgetLayout->addWidget(closeButton);
                    actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
