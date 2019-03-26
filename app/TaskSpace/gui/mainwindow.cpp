@@ -110,7 +110,6 @@ void MainWindow::setupDrawer()
 
     QPushButton* dashboardButton = new QPushButton("Dashboard", m_drawer);
     dashboardButton->setFlat(true);
-    //dashboardButton->setForegroundColor(QColor("#333"));
     QObject::connect(dashboardButton, SIGNAL(clicked()), this, SLOT(showDashboardTab()));
     drawerLayout->addWidget(dashboardButton);
 
@@ -130,6 +129,16 @@ void MainWindow::setupDrawer()
     notesButton->setForegroundColor(QColor("#333"));
     QObject::connect(notesButton, SIGNAL(clicked()), this, SLOT(showNotesTab()));
     drawerLayout->addWidget(notesButton);*/
+
+    QPushButton *calendarButton = new QPushButton("Calendar", m_drawer);
+    calendarButton->setFlat(true);
+    QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarDialog()));
+    drawerLayout->addWidget(calendarButton);
+
+    /*QPushButton *focusTimerButton = new QPushButton("Focus Timer", m_drawer);
+    focusTimerButton->setFlat(true);
+    QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
+    drawerLayout->addWidget(focusTimerButton);*/
 
     QPushButton* settingsButton = new QPushButton("Settings", m_drawer);
     settingsButton->setFlat(true);
@@ -174,7 +183,8 @@ void MainWindow::setupDashboardTab()
                 chartsContainerWidget->setLayout(new QHBoxLayout(chartsContainerWidget));
                 chartsContainerWidget->layout()->setContentsMargins(0, 0, 0, 0);
                 chartsContainerWidget->layout()->setSpacing(0);
-                    /*BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
+
+                    BurndownChartWidget* burndownChartWidget = new BurndownChartWidget(chartsContainerWidget);
                     burndownChartWidget->setObjectName("burndownChartWidget");
                     m_widgets.insert(burndownChartWidget->objectName(), burndownChartWidget);
                     chartsContainerWidget->layout()->addWidget(burndownChartWidget);
@@ -182,7 +192,7 @@ void MainWindow::setupDashboardTab()
                     TaskStatusChartWidget* taskStatusChartWidget = new TaskStatusChartWidget(chartsContainerWidget);
                     taskStatusChartWidget->setObjectName("taskStatusChartWidget");
                     m_widgets.insert(taskStatusChartWidget->objectName(), taskStatusChartWidget);
-                    chartsContainerWidget->layout()->addWidget(taskStatusChartWidget);*/
+                    chartsContainerWidget->layout()->addWidget(taskStatusChartWidget);
 
                 subContainerLayout->addWidget(chartsContainerWidget);
                 subContainerLayout->setStretch(0, 4);
@@ -195,14 +205,6 @@ void MainWindow::setupDashboardTab()
                     toolsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
                     toolsTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
                     toolsContainerWidget->layout()->addWidget(toolsTitleLabel);
-
-                    QPushButton *focusTimerButton = new QPushButton("Focus Timer", toolsContainerWidget);
-                    QObject::connect(focusTimerButton, SIGNAL(clicked()), this, SLOT(showFocusTimerDialog()));
-                    toolsContainerWidgetLayout->addWidget(focusTimerButton);
-
-                    QPushButton *calendarButton = new QPushButton("Calendar", toolsContainerWidget);
-                    QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarDialog()));
-                    toolsContainerWidgetLayout->addWidget(calendarButton);
 
                     /*toolsContainerWidgetLayout->addWidget(new QPushButton("Export", toolsContainerWidget));
                     toolsContainerWidgetLayout->addWidget(new QPushButton("History", toolsContainerWidget));*/
@@ -473,7 +475,8 @@ void MainWindow::showCalendarDialog()
                     container->setLayout(containerLayout);
                 calendarDialogLayout->addWidget(container);
             calendarDialog->setLayout(calendarDialogLayout);
-        calendarDialog->showMaximized();
+        //calendarDialog->showMaximized();
+        calendarDialog->showNormal();
     }
     catch(...)
     {
