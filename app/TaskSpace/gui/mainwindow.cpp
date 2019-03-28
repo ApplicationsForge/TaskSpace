@@ -305,7 +305,7 @@ void MainWindow::setupSettingsTab()
             storeDirectoryWidgetContainer->setLayout(new QHBoxLayout(storeDirectoryWidgetContainer));
             storeDirectoryWidgetContainer->layout()->setContentsMargins(0, 0, 0, 0);
                 m_storeDirectoryInput->setParent(storeDirectoryWidgetContainer);
-                //m_storeDirectoryInput->setLabel("Store Directory (need reload)");
+                //m_storeDirectoryInput->setLabel("Store Directory");
                 m_storeDirectoryInput->setText(storeDirectory);
                 m_storeDirectoryInput->setReadOnly(true);
                 //m_storeDirectoryInput->setLabelFontSize(16);
@@ -344,7 +344,7 @@ void MainWindow::setupSettingsTab()
                 QHBoxLayout *avaliableStatusesListConatinerLayout = new QHBoxLayout(avaliableStatusesListConatiner);
                 avaliableStatusesListConatinerLayout->setContentsMargins(0, 10, 0, 0);
                     m_avaliableStatusesListInput->setParent(avaliableStatusesListConatiner);
-                    //m_avaliableStatusesListInput->setLabel("Avaliable Statuses (need reload)");
+                    //m_avaliableStatusesListInput->setLabel("Avaliable Statuses");
                     m_avaliableStatusesListInput->setText(avaliableStatuses);
                     m_avaliableStatusesListInput->setReadOnly(false);
                     //m_avaliableStatusesListInput->setLabelFontSize(16);
@@ -360,7 +360,7 @@ void MainWindow::setupSettingsTab()
             containerLayout->addWidget(avaliableStatusesListConatiner);
 
             containerLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
-            QPushButton *applySettingsButton = new QPushButton("Apply Settings", container);
+            QPushButton *applySettingsButton = new QPushButton("Apply Settings (need application restart)", container);
             applySettingsButton->setFlat(true);
             QObject::connect(applySettingsButton, SIGNAL(clicked()), this, SLOT(onApplySettingsButton_Clicked()));
             containerLayout->addWidget(applySettingsButton);
