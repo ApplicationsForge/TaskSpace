@@ -1181,6 +1181,6 @@ DISTFILES += \
     libs/Qt-custom-gauge-widget-master/LICENSE \
     task_space_logo.icns
 
-macx:ICON = $${PWD}/task_space_logo.icns
+macx:ICON = $${PWD}/logo_task_space.icns
 DISTFILES += \
-    task_space_logo.icns \
+    logo_task_space.icns \
