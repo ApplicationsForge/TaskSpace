@@ -75,16 +75,23 @@ void MainWindow::setupAppBar()
 
     label->setFont(QFont("Roboto", 18, QFont::Normal));
 
-    QtMaterialIconButton *button = new QtMaterialIconButton(QtMaterialTheme::icon("navigation", "menu"), this);
-    button->setIconSize(QSize(24, 24));
-    QObject::connect(button, SIGNAL(clicked()), m_drawer, SLOT(openDrawer()));
+    QtMaterialIconButton *menuButton = new QtMaterialIconButton(QtMaterialTheme::icon("navigation", "menu"), this);
+    menuButton->setIconSize(QSize(24, 24));
+    menuButton->setColor(Qt::white);
+    menuButton->setFixedWidth(42);
+    QObject::connect(menuButton, SIGNAL(clicked()), m_drawer, SLOT(openDrawer()));
 
-    m_appBar->appBarLayout()->addWidget(button);
+    m_appBar->appBarLayout()->addWidget(menuButton);
     m_appBar->appBarLayout()->addWidget(label);
     m_appBar->appBarLayout()->addStretch(1);
     m_appBar->setBackgroundColor(QColor("#333"));
-    button->setColor(Qt::white);
-    button->setFixedWidth(42);
+
+    QtMaterialIconButton *calendarButton = new QtMaterialIconButton(QtMaterialTheme::icon("action", "event"), this);
+    calendarButton->setIconSize(QSize(24, 24));
+    calendarButton->setColor(Qt::white);
+    calendarButton->setFixedWidth(42);
+    QObject::connect(calendarButton, SIGNAL(pressed()), this, SLOT(showCalendarDialog()));
+    m_appBar->appBarLayout()->addWidget(calendarButton);
 
     ui->mainToolBar->addWidget(m_appBar);
     ui->mainToolBar->setFloatable(false);
@@ -129,11 +136,6 @@ void MainWindow::setupDrawer()
     notesButton->setForegroundColor(QColor("#333"));
     QObject::connect(notesButton, SIGNAL(clicked()), this, SLOT(showNotesTab()));
     drawerLayout->addWidget(notesButton);*/
-
-    QPushButton *calendarButton = new QPushButton("Calendar", m_drawer);
-    calendarButton->setFlat(true);
-    QObject::connect(calendarButton, SIGNAL(clicked()), this, SLOT(showCalendarDialog()));
-    drawerLayout->addWidget(calendarButton);
 
     /*QPushButton *focusTimerButton = new QPushButton("Focus Timer", m_drawer);
     focusTimerButton->setFlat(true);
