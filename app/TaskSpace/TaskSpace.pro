@@ -1179,10 +1179,8 @@ DISTFILES += \
     libs/qt-material-widgets-master/components/icons/toggle/svg/production/ic_star_border_24px.svg \
     libs/qt-material-widgets-master/components/icons/toggle/svg/production/ic_star_half_24px.svg \
     libs/Qt-custom-gauge-widget-master/LICENSE \
-    logo_0.icns \
-    logo_1.icns \
-    logo_2.icns
+    task_space_logo.icns
 
-macx:ICON = $${PWD}/logo_0.icns
+macx:ICON = $${PWD}/logo_task_space_2.icns
 DISTFILES += \
-    logo_0.icns \
+    logo_task_space_2.icns \

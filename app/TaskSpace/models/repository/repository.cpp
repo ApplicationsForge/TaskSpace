@@ -17,18 +17,19 @@ Repository::~Repository()
 }
 
 
-QList<Task> Repository::getTasks() const
+QList<Task> Repository::getTasks(const QString &filter) const
 {
-    QList<Task> tasks = m_tasks;
+    QList<Task> tasks = Repository::filterTasks(m_tasks, filter);
     std::sort(tasks.begin(), tasks.end());
     std::reverse(tasks.begin(), tasks.end());
     return tasks;
 }
 
-QList<Task> Repository::getTasks(const QString &status) const
+QList<Task> Repository::getTasksByStatus(const QString &status, const QString &filter) const
 {
+    QList<Task> filteredTasks = Repository::filterTasks(m_tasks, filter);
     QList<Task> tasks;
-    for(auto task : m_tasks)
+    for(auto task : filteredTasks)
     {
         if(task.status() == status)
         {
@@ -42,7 +43,7 @@ QList<Task> Repository::getTasks(const QString &status) const
 
 int Repository::getTaskCountByStatus(QString status)
 {
-    return this->getTasks(status).length();
+    return this->getTasksByStatus(status).length();
 }
 
 Task& Repository::getTaskByIndex(size_t index)
@@ -180,6 +181,25 @@ QString Repository::resolveTaskFilePath(const QString &storeDirectory)
 QString Repository::resolveArchiveFilePath(const QString &storeDirectory)
 {
     return storeDirectory + "/archive.json";
+}
+
+QList<Task> Repository::filterTasks(const QList<Task> &tasks, const QString &filter)
+{
+    QList<Task> result = {};
+    for(auto task : tasks)
+    {
+        if(filter.isEmpty())
+        {
+            result.append(task);
+            continue;
+        }
+
+        if(task.title().contains(filter, Qt::CaseInsensitive))
+        {
+            result.append(task);
+        }
+    }
+    return result;
 }
 
 Task& Repository::findTask(size_t index)

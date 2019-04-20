@@ -6,7 +6,7 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
     m_titleWidget(new QtMaterialTextField(this)),
     m_descriptionWidget(new QMarkdownTextEdit(this)),
     m_datePickerWidget(new QCalendarWidget(this)),
-    m_withoutDateCheckBoxWidget(new QtMaterialCheckBox(this)),
+    m_withoutDateCheckBoxWidget(new QCheckBox(this)),
     m_estimatedTimeWidget(new QTimeEdit(this)),
     m_actualTimeWidget(new QTimeEdit(this)),
     m_editingEnable(true)
@@ -61,7 +61,7 @@ TaskViewerWidget::TaskViewerWidget(QWidget *parent) :
                         m_withoutDateCheckBoxWidget->setParent(timeSettingsContainerWidget);
                         m_withoutDateCheckBoxWidget->setText("Task without due to date");
                         m_withoutDateCheckBoxWidget->setFont(QFont("Roboto", 14, QFont::Normal));
-                        m_withoutDateCheckBoxWidget->setCheckedColor(QColor("#333"));
+                        //m_withoutDateCheckBoxWidget->setCheckedColor(QColor("#333"));
                         timeSettingsContainerWidgetLayout->addWidget(m_withoutDateCheckBoxWidget);
 
                         QLabel* estimatedTimeLabel = new QLabel("Estimated Time (hh:mm):", timeSettingsContainerWidget);
