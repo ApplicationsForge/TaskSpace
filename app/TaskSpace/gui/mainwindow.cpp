@@ -562,7 +562,7 @@ void MainWindow::onRouter_TasksUpdated()
         for(auto taskListWidget : m_taskListWidgets)
         {
             taskListWidget->list()->clear();
-            QList<Task> tasks = router.getRepository().getTasks(taskListWidget->status());
+            QList<Task> tasks = router.getRepository().getTasksByStatus(taskListWidget->status());
             for(auto task : tasks)
             {
                 QListWidgetItem *item = new QListWidgetItem();

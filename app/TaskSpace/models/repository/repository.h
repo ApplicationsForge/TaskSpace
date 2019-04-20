@@ -22,8 +22,8 @@ public:
 
     ~Repository();
 
-    QList<Task> getTasks() const;
-    QList<Task> getTasks(const QString &status) const;
+    QList<Task> getTasks(const QString &filter="") const;
+    QList<Task> getTasksByStatus(const QString &status, const QString &filter="") const;
     int getTaskCountByStatus(QString status);
     Task& getTaskByIndex(size_t index);
     Task& createNewBaseTask();
@@ -71,6 +71,8 @@ private:
     static QString resolveTaskFilePath(const QString &storeDirectory);
 
     static QString resolveArchiveFilePath(const QString &storeDirectory);
+
+    static QList<Task> filterTasks(const QList<Task> &tasks, const QString &filter = "");
 
     Task& findTask(size_t index);
 
