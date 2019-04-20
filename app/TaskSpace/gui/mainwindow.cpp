@@ -250,7 +250,11 @@ void MainWindow::setupBacklogTab()
                 QObject::connect(removeTaskButton, SIGNAL(clicked()), this, SLOT(onRemoveTaskButton_Clicked()));
                 actionsContainer->layout()->addWidget(removeTaskButton);
 
+                actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+
                 m_filterInput->setParent(actionsContainer);
+                m_filterInput->setPlaceholderText("Quick Search");
+                m_filterInput->setFixedWidth(300);
                 QObject::connect(m_filterInput, &QLineEdit::returnPressed, this, [=]() {
                     this->onApplyFilterTaskButton_Clicked();
                 });
@@ -260,7 +264,6 @@ void MainWindow::setupBacklogTab()
                 QObject::connect(applyFilterTaskButton, SIGNAL(clicked()), this, SLOT(onApplyFilterTaskButton_Clicked()));
                 actionsContainer->layout()->addWidget(applyFilterTaskButton);
 
-                actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
                 //actionsContainer->layout()->addWidget(new QPushButton("Sync Tasks With Trello", actionsContainer));
             containerLayout->addWidget(actionsContainer);
 
