@@ -10,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_taskListWidgets(QList<TaskListWidget*>()),
     m_storeDirectoryInput(new QLineEdit(this)),
     m_calendarUrlInput(new QLineEdit(this)),
-    m_avaliableStatusesListInput(new QLineEdit(this))
+    m_avaliableStatusesListInput(new QLineEdit(this)),
+    m_filterInput(new QLineEdit(this))
 {
     ui->setupUi(this);
     // cоздаем модель
@@ -248,6 +249,16 @@ void MainWindow::setupBacklogTab()
                 QPushButton *removeTaskButton = new QPushButton("Remove Task", actionsContainer);
                 QObject::connect(removeTaskButton, SIGNAL(clicked()), this, SLOT(onRemoveTaskButton_Clicked()));
                 actionsContainer->layout()->addWidget(removeTaskButton);
+
+                m_filterInput->setParent(actionsContainer);
+                QObject::connect(m_filterInput, &QLineEdit::returnPressed, this, [=]() {
+                    this->onApplyFilterTaskButton_Clicked();
+                });
+                actionsContainer->layout()->addWidget(m_filterInput);
+
+                QPushButton *applyFilterTaskButton = new QPushButton("Apply", actionsContainer);
+                QObject::connect(applyFilterTaskButton, SIGNAL(clicked()), this, SLOT(onApplyFilterTaskButton_Clicked()));
+                actionsContainer->layout()->addWidget(applyFilterTaskButton);
 
                 actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
                 //actionsContainer->layout()->addWidget(new QPushButton("Sync Tasks With Trello", actionsContainer));
@@ -562,7 +573,7 @@ void MainWindow::onRouter_TasksUpdated()
         for(auto taskListWidget : m_taskListWidgets)
         {
             taskListWidget->list()->clear();
-            QList<Task> tasks = router.getRepository().getTasksByStatus(taskListWidget->status());
+            QList<Task> tasks = router.getRepository().getTasksByStatus(taskListWidget->status(), m_filterInput->text());
             for(auto task : tasks)
             {
                 QListWidgetItem *item = new QListWidgetItem();
@@ -734,6 +745,11 @@ void MainWindow::onRemoveTaskInputWidget_IndexSelected(size_t index)
     {
         QMessageBox(QMessageBox::Warning, "Error", "???").exec();
     }
+}
+
+void MainWindow::onApplyFilterTaskButton_Clicked()
+{
+    this->onRouter_TasksUpdated();
 }
 
 void MainWindow::onApplySettingsButton_Clicked()
