@@ -14,6 +14,7 @@
 #include <QDialogButtonBox>
 #include <QFormLayout>
 #include <QWebEngineView>
+#include <QComboBox>
 
 #include "models/router.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"
@@ -57,7 +58,7 @@ private:
     QtMaterialDrawer *const m_drawer;
 
     QList<TaskListWidget*> m_activeTaskListWidgets;
-    TaskListWidget* m_archivedTaskListWidget;
+    MyListWidget* m_archivedTaskListWidget;
 
     QLineEdit* m_storeDirectoryInput;
     QLineEdit* m_calendarUrlInput;
@@ -114,9 +115,11 @@ private slots:
 
     void onRemoveTaskButton_Clicked();
 
-    void onArchiveTaskButton_Clicked();
+    void onArchiveByStatusButton_Clicked();
 
     void onActiveTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
+
+    void onArcivedTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
 
     void onActiveTaskListWidget_TaskDropped(size_t taskIndex, QString status);
 
