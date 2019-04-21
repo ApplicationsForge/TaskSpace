@@ -19,7 +19,7 @@ public:
     QString status() const;
     void setStatus(const QString &status);
 
-    QString decoratedBaseInformation();
+    QString decoratedBaseInformation() const;
 
     QDateTime updatedAt() const;
     void setUpdatedAt(const QDateTime &updatedAt = QDateTime::currentDateTime());
