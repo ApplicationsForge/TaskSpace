@@ -48,7 +48,7 @@ int Repository::getTaskCountByStatus(QString status)
 
 Task& Repository::getTaskByIndex(size_t index)
 {
-    return this->findTask(index);
+    return Repository::findTask(m_tasks, index);
 }
 
 void Repository::loadSettings()
@@ -202,9 +202,9 @@ QList<Task> Repository::filterTasks(const QList<Task> &tasks, const QString &fil
     return result;
 }
 
-Task& Repository::findTask(size_t index)
+Task& Repository::findTask(QList<Task> &tasks, size_t index)
 {
-    for(auto &task : m_tasks)
+    for(auto &task : tasks)
     {
         if(task.index() == index)
         {
@@ -248,7 +248,7 @@ void Repository::removeTask(size_t index)
 {
     try
     {
-        auto &task = this->findTask(index);
+        auto &task = Repository::findTask(m_tasks, index);
         m_tasks.removeAll(task);
         this->syncTasks();
     }
@@ -262,7 +262,7 @@ void Repository::updateTaskStatus(size_t index, const QString &status)
 {
     try
     {
-        Task &task = this->findTask(index);
+        Task &task = Repository::findTask(m_tasks, index);
         task.setStatus(status);
         this->syncTasks();
     }
@@ -282,7 +282,7 @@ void Repository::updateTaskInfo(size_t index,
 {
     try
     {
-        auto &task = this->findTask(index);
+        auto &task = Repository::findTask(m_tasks, index);
         task.setTitle(title);
         task.setDescription(description);
         task.setDueToDate(dueToDate);

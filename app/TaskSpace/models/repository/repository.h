@@ -74,7 +74,7 @@ private:
 
     static QList<Task> filterTasks(const QList<Task> &tasks, const QString &filter = "");
 
-    Task& findTask(size_t index);
+    static Task& findTask(QList<Task> &tasks, size_t index);
 
     size_t getNewTaskIndex();
 
