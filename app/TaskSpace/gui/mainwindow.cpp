@@ -750,7 +750,7 @@ void MainWindow::onArchiveByStatusButton_Clicked()
                     statusInput->setLabel("Status:");
                     statusInput->setLabelFontSize(16);
                     statusInput->setInkColor(QColor("#333"));
-                    statusInput->setPlaceholderText("Enter status for archivation, please.");
+                    statusInput->setPlaceholderText("Enter status for archiving, please.");
                     statusInput->setFont(QFont("Roboto", 16, QFont::Normal));
                     containerWidgetLayout->addWidget(statusInput);
 
