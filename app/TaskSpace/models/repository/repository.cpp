@@ -9,7 +9,8 @@ Repository::Repository(QObject *parent) :
     m_calendarUrl("")
 {
     this->loadSettings();
-    this->loadTasks();
+    m_tasks = Repository::loadTasks(Repository::resolveTaskFilePath(m_storeDirectory));
+    this->tasksUpdated();
 }
 
 Repository::~Repository()
@@ -78,15 +79,16 @@ void Repository::loadSettings()
 
 void Repository::syncTasks()
 {
-    this->saveTasks();
+    Repository::saveTasks(m_tasks, m_storeDirectory);
     m_tasks.clear();
-    this->loadTasks();
+    m_tasks = Repository::loadTasks(Repository::resolveTaskFilePath(m_storeDirectory));
+    this->tasksUpdated();
 }
 
-void Repository::loadTasks()
+QList<Task> Repository::loadTasks(const QString &filePath)
 {
-    QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
-    QFile file(tasksFilePath);
+    //QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
+    QFile file(filePath);
     if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         qDebug() << "Repository::loadTasks:" << "Can not open file" << file << "for reading";
@@ -97,18 +99,19 @@ void Repository::loadTasks()
     file.close();
 
     QList<Task> tasks = Repository::convertTaskJsonToList(QtJson::parse(tasksFileContent).toList());
-    for(auto task : tasks)
+    /*for(auto task : tasks)
     {
         m_tasks.append(task);
-    }
-    emit this->tasksUpdated();
+    }*/
+    return tasks;
+    //emit this->tasksUpdated();
 }
 
-void Repository::saveTasks()
+void Repository::saveTasks(const QList<Task> &tasks, const QString &storeDirectory)
 {
-    QtJson::JsonArray tasksJson = Repository::convertTaskListToJson(m_tasks);
+    QtJson::JsonArray tasksJson = Repository::convertTaskListToJson(tasks);
 
-    QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
+    QString tasksFilePath = Repository::resolveTaskFilePath(storeDirectory);
 
     QFile file(tasksFilePath);
     if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
@@ -337,4 +340,52 @@ void Repository::setAvaliableStatuses(const QStringList &avaliableStatuses)
     }
 
     emit this->avaliableStatusesChanged(m_avaliableStatuses);
+}
+
+QList<Task> Repository::getArchivedTasks()
+{
+    return Repository::loadTasks(Repository::resolveArchiveFilePath(m_storeDirectory));
+}
+
+void Repository::archiveTask(size_t index)
+{
+    this->archiveTask(Repository::findTask(m_tasks, index));
+}
+
+void Repository::archiveTask(const Task &task)
+{
+    QString archiveFilePath = Repository::resolveArchiveFilePath(m_storeDirectory);
+    QList<Task> archivedTasks = Repository::loadTasks(archiveFilePath);
+    archivedTasks.append(task);
+    Repository::saveTasks(archivedTasks, archiveFilePath);
+    this->removeTask(task.index());
+}
+
+void Repository::archiveTasksByStatus(QString status)
+{
+    QString archiveFilePath = Repository::resolveArchiveFilePath(m_storeDirectory);
+    QList<Task> archivedTasks = Repository::loadTasks(archiveFilePath);
+    QList<Task> tasks = this->getTasksByStatus(status);
+    for(auto task : tasks)
+    {
+        archivedTasks.append(task);
+    }
+
+    Repository::saveTasks(archivedTasks, archiveFilePath);
+    for(auto task : tasks)
+    {
+        this->removeTask(task.index());
+    }
+}
+
+void Repository::unarchiveTask(const Task &task, QString status)
+{
+    size_t index = this->getNewTaskIndex();
+    Task tmpTask(index, task.title(), status);
+    tmpTask.setActualTime(task.actualTime());
+    tmpTask.setDescription(task.description());
+    tmpTask.setDueToDate(task.dueToDate());
+    tmpTask.setDueToDateEnabled(task.dueToDateEnabled());
+    tmpTask.setEstimatedTime(task.estimatedTime());
+    this->addTask(tmpTask);
 }

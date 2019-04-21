@@ -47,6 +47,12 @@ public:
     QStringList getAvaliableStatuses();
     void setAvaliableStatuses(const QStringList &avaliableStatuses);
 
+    QList<Task> getArchivedTasks();
+    void archiveTask(size_t index);
+    void archiveTask(const Task &task);
+    void archiveTasksByStatus(QString status);
+    void unarchiveTask(const Task &task, QString status);
+
 private:
     QScopedPointer<SettingsManager> m_settingsManager;
 
@@ -60,9 +66,9 @@ private:
 
     void syncTasks();
 
-    void loadTasks();
+    static QList<Task> loadTasks(const QString &filePath);
 
-    void saveTasks();
+    static void saveTasks(const QList<Task> &tasks, const QString &storeDirectory);
 
     static QtJson::JsonArray convertTaskListToJson(const QList<Task> &tasks);
 
