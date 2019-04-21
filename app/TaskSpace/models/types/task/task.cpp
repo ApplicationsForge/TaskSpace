@@ -14,11 +14,6 @@ Task::Task(size_t index, QString title, QString status, QString descripion) :
 
 }
 
-Task::Task(const Task &task):
-    Task(task.index(), task)
-{
-}
-
 Task::Task(size_t index, const Task &task)
 {
     m_index = index;
