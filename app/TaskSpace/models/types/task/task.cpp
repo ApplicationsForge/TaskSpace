@@ -55,7 +55,7 @@ void Task::setStatus(const QString &status)
     this->setUpdatedAt(QDateTime::currentDateTime());
 }
 
-QString Task::decoratedBaseInformation()
+QString Task::decoratedBaseInformation() const
 {
     QString taskInformation = "[" + QString::number(m_index) + "] "
             + m_title;

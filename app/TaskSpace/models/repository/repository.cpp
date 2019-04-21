@@ -79,15 +79,15 @@ void Repository::loadSettings()
 
 void Repository::syncTasks()
 {
-    Repository::saveTasks(m_tasks, m_storeDirectory);
+    QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
+    Repository::saveTasks(m_tasks, tasksFilePath);
     m_tasks.clear();
-    m_tasks = Repository::loadTasks(Repository::resolveTaskFilePath(m_storeDirectory));
+    m_tasks = Repository::loadTasks(tasksFilePath);
     this->tasksUpdated();
 }
 
 QList<Task> Repository::loadTasks(const QString &filePath)
 {
-    //QString tasksFilePath = Repository::resolveTaskFilePath(m_storeDirectory);
     QFile file(filePath);
     if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
@@ -99,21 +99,13 @@ QList<Task> Repository::loadTasks(const QString &filePath)
     file.close();
 
     QList<Task> tasks = Repository::convertTaskJsonToList(QtJson::parse(tasksFileContent).toList());
-    /*for(auto task : tasks)
-    {
-        m_tasks.append(task);
-    }*/
     return tasks;
-    //emit this->tasksUpdated();
 }
 
-void Repository::saveTasks(const QList<Task> &tasks, const QString &storeDirectory)
+void Repository::saveTasks(const QList<Task> &tasks, const QString &filePath)
 {
     QtJson::JsonArray tasksJson = Repository::convertTaskListToJson(tasks);
-
-    QString tasksFilePath = Repository::resolveTaskFilePath(storeDirectory);
-
-    QFile file(tasksFilePath);
+    QFile file(filePath);
     if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         qDebug() << "Repository::saveTasks:" << "Can not open file" << file << "for writing";
@@ -349,6 +341,7 @@ QList<Task> Repository::getArchivedTasks()
 
 void Repository::archiveTask(size_t index)
 {
+    qDebug() << index;
     this->archiveTask(Repository::findTask(m_tasks, index));
 }
 

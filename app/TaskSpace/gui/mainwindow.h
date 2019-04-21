@@ -56,7 +56,8 @@ private:
     QtMaterialAppBar *const m_appBar;
     QtMaterialDrawer *const m_drawer;
 
-    QList<TaskListWidget*> m_taskListWidgets;
+    QList<TaskListWidget*> m_activeTaskListWidgets;
+    TaskListWidget* m_archivedTaskListWidget;
 
     QLineEdit* m_storeDirectoryInput;
     QLineEdit* m_calendarUrlInput;
@@ -75,6 +76,8 @@ private:
 
     void setupBacklogTab();
 
+    void setupArchiveTab();
+
     void setupSettingsTab();
 
     void setupConnections();
@@ -88,6 +91,8 @@ private slots:
     void showDashboardTab();
 
     void showBacklogTab();
+
+    void showArchiveTab();
 
     void showNotesTab();
 
@@ -109,9 +114,11 @@ private slots:
 
     void onRemoveTaskButton_Clicked();
 
-    void onTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
+    void onArchiveTaskButton_Clicked();
 
-    void onTaskListWidget_TaskDropped(size_t taskIndex, QString status);
+    void onActiveTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
+
+    void onActiveTaskListWidget_TaskDropped(size_t taskIndex, QString status);
 
     void onTaskViewerWidget_TaskUpdated(size_t index,
                                         QString title,
