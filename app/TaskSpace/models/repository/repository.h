@@ -25,7 +25,8 @@ public:
     QList<Task> getTasks(const QString &filter="") const;
     QList<Task> getTasksByStatus(const QString &status, const QString &filter="") const;
     int getTaskCountByStatus(QString status);
-    Task& getTaskByIndex(size_t index);
+    Task& getActiveTaskByIndex(size_t index);
+    Task getArchivedTaskByIndex(size_t index);
     Task& createNewBaseTask();
     void addTask(const Task &task);
     void removeTask(size_t index);

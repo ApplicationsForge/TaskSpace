@@ -47,9 +47,15 @@ int Repository::getTaskCountByStatus(QString status)
     return this->getTasksByStatus(status).length();
 }
 
-Task& Repository::getTaskByIndex(size_t index)
+Task& Repository::getActiveTaskByIndex(size_t index)
 {
     return Repository::findTask(m_tasks, index);
+}
+
+Task Repository::getArchivedTaskByIndex(size_t index)
+{
+    QList<Task> archivedTask = Repository::getArchivedTasks();
+    return Repository::findTask(archivedTask, index);
 }
 
 void Repository::loadSettings()
@@ -230,7 +236,7 @@ Task &Repository::createNewBaseTask()
 {
     Task newTask = Task(this->getNewTaskIndex(), "NewBaseTask", this->getAvaliableStatuses().first());
     this->addTask(newTask);
-    return this->getTaskByIndex(newTask.index());
+    return this->getActiveTaskByIndex(newTask.index());
 }
 
 void Repository::addTask(const Task &task)

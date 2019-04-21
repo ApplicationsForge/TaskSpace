@@ -105,7 +105,7 @@ private slots:
 
     void showCalendarDialog();
 
-    void showTaskDialog(Task task, bool newTask = false);
+    void showTaskDialog(Task task, bool newTask = false, bool archived = false);
 
     void onSelectStorageDirectoryButton_Clicked();
 
@@ -119,7 +119,7 @@ private slots:
 
     void onActiveTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
 
-    void onArcivedTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
+    void onArcivedTaskListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
 
     void onActiveTaskListWidget_TaskDropped(size_t taskIndex, QString status);
 
