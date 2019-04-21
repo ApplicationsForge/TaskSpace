@@ -348,8 +348,8 @@ void Repository::archiveTask(const Task &task)
 {
     QString archiveFilePath = Repository::resolveArchiveFilePath(m_storeDirectory);
     QList<Task> archivedTasks = Repository::loadTasks(archiveFilePath);
-    archivedTasks.append(task);
-    Repository::saveTasks(archivedTasks, archiveFilePath);
+    Task tmpTask(size_t(archivedTasks.length()), task);
+    archivedTasks.append(tmpTask);Repository::saveTasks(archivedTasks, archiveFilePath);
     this->removeTask(task.index());
 }
 
@@ -360,7 +360,8 @@ void Repository::archiveTasksByStatus(QString status)
     QList<Task> tasks = this->getTasksByStatus(status);
     for(auto task : tasks)
     {
-        archivedTasks.append(task);
+        Task tmpTask(size_t(archivedTasks.length()), task);
+        archivedTasks.append(tmpTask);
     }
 
     Repository::saveTasks(archivedTasks, archiveFilePath);
@@ -373,11 +374,7 @@ void Repository::archiveTasksByStatus(QString status)
 void Repository::unarchiveTask(const Task &task, QString status)
 {
     size_t index = this->getNewTaskIndex();
-    Task tmpTask(index, task.title(), status);
-    tmpTask.setActualTime(task.actualTime());
-    tmpTask.setDescription(task.description());
-    tmpTask.setDueToDate(task.dueToDate());
-    tmpTask.setDueToDateEnabled(task.dueToDateEnabled());
-    tmpTask.setEstimatedTime(task.estimatedTime());
+    Task tmpTask(index, task);
+    tmpTask.setStatus(status);
     this->addTask(tmpTask);
 }

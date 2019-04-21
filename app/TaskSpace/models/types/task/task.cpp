@@ -14,6 +14,23 @@ Task::Task(size_t index, QString title, QString status, QString descripion) :
 
 }
 
+Task::Task(const Task &task):
+    Task(task.index(), task)
+{
+}
+
+Task::Task(size_t index, const Task &task)
+{
+    m_index = index;
+    this->setActualTime(task.actualTime());
+    this->setDescription(task.description());
+    this->setDueToDate(task.dueToDate());
+    this->setDueToDateEnabled(task.dueToDateEnabled());
+    this->setEstimatedTime(task.estimatedTime());
+    this->setStatus(task.status());
+    this->setTitle(task.title());
+}
+
 bool Task::operator<(const Task &task) const
 {
     if(this->updatedAt() != task.updatedAt()) {
