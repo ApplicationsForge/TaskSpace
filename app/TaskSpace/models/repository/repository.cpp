@@ -216,10 +216,10 @@ Task& Repository::findTask(QList<Task> &tasks, size_t index)
     throw std::invalid_argument("Can not find task with index " + std::to_string(index));
 }
 
-size_t Repository::getNewTaskIndex()
+size_t Repository::getNewTaskIndex(const QList<Task> &tasks)
 {
     size_t maxIndex = 0;
-    for(auto task : m_tasks)
+    for(auto task : tasks)
     {
         maxIndex = std::max(maxIndex, task.index());
     }
@@ -232,9 +232,9 @@ void Repository::setTasks(const QList<Task> &tasks)
     emit this->tasksUpdated();
 }
 
-Task &Repository::createNewBaseTask()
+Task &Repository::createNewActiveBaseTask()
 {
-    Task newTask = Task(this->getNewTaskIndex(), "NewBaseTask", this->getAvaliableStatuses().first());
+    Task newTask = Task(Repository::getNewTaskIndex(m_tasks), "NewBaseTask", this->getAvaliableStatuses().first());
     this->addTask(newTask);
     return this->getActiveTaskByIndex(newTask.index());
 }
@@ -354,7 +354,7 @@ void Repository::archiveTask(const Task &task)
 {
     QString archiveFilePath = Repository::resolveArchiveFilePath(m_storeDirectory);
     QList<Task> archivedTasks = Repository::loadTasks(archiveFilePath);
-    Task tmpTask(size_t(archivedTasks.length()), task);
+    Task tmpTask(Repository::getNewTaskIndex(archivedTasks), task);
     archivedTasks.append(tmpTask);Repository::saveTasks(archivedTasks, archiveFilePath);
     this->removeTask(task.index());
 }
@@ -366,7 +366,7 @@ void Repository::archiveTasksByStatus(QString status)
     QList<Task> tasks = this->getTasksByStatus(status);
     for(auto task : tasks)
     {
-        Task tmpTask(size_t(archivedTasks.length()), task);
+        Task tmpTask(Repository::getNewTaskIndex(archivedTasks), task);
         archivedTasks.append(tmpTask);
     }
 
@@ -379,8 +379,13 @@ void Repository::archiveTasksByStatus(QString status)
 
 void Repository::unarchiveTask(const Task &task, QString status)
 {
-    size_t index = this->getNewTaskIndex();
+    size_t index = Repository::getNewTaskIndex(m_tasks);
     Task tmpTask(index, task);
     tmpTask.setStatus(status);
     this->addTask(tmpTask);
+
+    QString archiveFilePath = Repository::resolveArchiveFilePath(m_storeDirectory);
+    QList<Task> archivedTasks = Repository::loadTasks(archiveFilePath);
+    archivedTasks.removeAll(task);
+    Repository::saveTasks(archivedTasks, archiveFilePath);
 }

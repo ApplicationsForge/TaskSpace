@@ -136,6 +136,8 @@ private slots:
     void onApplyFilterTaskButton_Clicked();
 
     void onApplySettingsButton_Clicked();
+
+    void onUnarchiveTaskButton_Clicked();
 };
 
 #endif // MAINWINDOW_H
