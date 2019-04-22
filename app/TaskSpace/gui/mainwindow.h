@@ -111,11 +111,9 @@ private slots:
 
     void onRouter_TasksUpdated();
 
-    void onAddNewTaskButton_Clicked();
+    void showRemoveTaskDialog();
 
-    void onRemoveTaskButton_Clicked();
-
-    void onArchiveByStatusButton_Clicked();
+    void showArchiveByStatusDialog();
 
     void onActiveTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
 

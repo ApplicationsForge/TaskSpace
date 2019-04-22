@@ -120,19 +120,25 @@ void MainWindow::setupDrawer()
 
     QPushButton* dashboardButton = new QPushButton("Dashboard", m_drawer);
     dashboardButton->setFlat(true);
-    QObject::connect(dashboardButton, SIGNAL(clicked()), this, SLOT(showDashboardTab()));
+    QObject::connect(dashboardButton, &QPushButton::clicked, this, [=](){
+        this->showDashboardTab();
+    });
     drawerLayout->addWidget(dashboardButton);
 
     QPushButton* backlogButton = new QPushButton("Backlog", m_drawer);
     backlogButton->setFlat(true);
     //backlogButton->setForegroundColor(QColor("#333"));
-    QObject::connect(backlogButton, SIGNAL(clicked()), this, SLOT(showBacklogTab()));
+    QObject::connect(backlogButton, &QPushButton::clicked, this, [=](){
+        this->showBacklogTab();
+    });
     drawerLayout->addWidget(backlogButton);
 
     QPushButton* archiveButton = new QPushButton("Archive", m_drawer);
     archiveButton->setFlat(true);
     //archiveButton->setForegroundColor(QColor("#333"));
-    QObject::connect(archiveButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
+    QObject::connect(archiveButton, &QPushButton::clicked, this, [=](){
+        this->showArchiveTab();
+    });
     drawerLayout->addWidget(archiveButton);
 
     /*QPushButton* notesButton = new QPushButton("Notes", m_drawer);
@@ -148,7 +154,9 @@ void MainWindow::setupDrawer()
     QPushButton* settingsButton = new QPushButton("Settings", m_drawer);
     settingsButton->setFlat(true);
     //settingsButton->setForegroundColor(QColor("#333"));
-    QObject::connect(settingsButton, SIGNAL(clicked()), this, SLOT(showSettingsTab()));
+    QObject::connect(settingsButton, &QPushButton::clicked, this, [=](){
+        this->showSettingsTab();
+    });
     drawerLayout->addWidget(settingsButton);
 
     drawerLayout->addStretch(3);
@@ -245,15 +253,34 @@ void MainWindow::setupBacklogTab()
             actionsContainer->setLayout(new QHBoxLayout(actionsContainer));
             actionsContainer->layout()->setContentsMargins(0, 0, 0, 10);
                 QPushButton *addNewTaskButton = new QPushButton("Add New Task", actionsContainer);
-                QObject::connect(addNewTaskButton, SIGNAL(clicked()), this, SLOT(onAddNewTaskButton_Clicked()));
+                QObject::connect(addNewTaskButton, &QPushButton::clicked, this, [=](){
+                    try
+                    {
+                        Router& router = Router::getInstance();
+                        Task task = router.getRepository().createNewActiveBaseTask();
+                        this->showTaskDialog(task, true, false);
+                    }
+                    catch(std::invalid_argument e)
+                    {
+                        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+                    }
+                    catch(...)
+                    {
+                        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+                    }
+                });
                 actionsContainer->layout()->addWidget(addNewTaskButton);
 
                 QPushButton *removeTaskButton = new QPushButton("Remove Task", actionsContainer);
-                QObject::connect(removeTaskButton, SIGNAL(clicked()), this, SLOT(onRemoveTaskButton_Clicked()));
+                QObject::connect(removeTaskButton, &QPushButton::clicked, this, [=](){
+                    this->showRemoveTaskDialog();
+                });
                 actionsContainer->layout()->addWidget(removeTaskButton);
 
                 QPushButton *archiveByStatusButton = new QPushButton("Archive By Status", actionsContainer);
-                QObject::connect(archiveByStatusButton, SIGNAL(clicked()), this, SLOT(onArchiveByStatusButton_Clicked()));
+                QObject::connect(archiveByStatusButton, &QPushButton::clicked, this, [=](){
+                    this->showArchiveByStatusDialog();
+                });
                 actionsContainer->layout()->addWidget(archiveByStatusButton);
 
                 actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
@@ -683,25 +710,7 @@ void MainWindow::onRouter_TasksUpdated()
     }
 }
 
-void MainWindow::onAddNewTaskButton_Clicked()
-{
-    try
-    {
-        Router& router = Router::getInstance();
-        Task task = router.getRepository().createNewActiveBaseTask();
-        this->showTaskDialog(task, true, false);
-    }
-    catch(std::invalid_argument e)
-    {
-        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
-    }
-    catch(...)
-    {
-        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
-    }
-}
-
-void MainWindow::onRemoveTaskButton_Clicked()
+void MainWindow::showRemoveTaskDialog()
 {
     QDialog *removeTaskDialog = new QDialog(this);
     removeTaskDialog->setWindowTitle("Remove Task?");
@@ -741,7 +750,7 @@ void MainWindow::onRemoveTaskButton_Clicked()
     removeTaskDialog->exec();
 }
 
-void MainWindow::onArchiveByStatusButton_Clicked()
+void MainWindow::showArchiveByStatusDialog()
 {
     try
     {
