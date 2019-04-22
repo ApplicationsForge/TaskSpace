@@ -136,6 +136,8 @@ private slots:
     void onApplySettingsButton_Clicked();
 
     void showUnarchiveDialog();
+
+    void syncArchivedTasksState();
 };
 
 #endif // MAINWINDOW_H
