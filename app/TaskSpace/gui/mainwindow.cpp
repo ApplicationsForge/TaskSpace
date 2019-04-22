@@ -361,12 +361,13 @@ void MainWindow::setupArchiveTab()
                 actionsContainer->layout()->addWidget(syncButton);
 
                 QPushButton *unarchiveButton = new QPushButton("Unarchive Task", actionsContainer);
-                QObject::connect(unarchiveButton, SIGNAL(clicked()), this, SLOT(onUnarchiveTaskButton_Clicked()));
+                QObject::connect(unarchiveButton, &QPushButton::clicked, this, [=](){
+                    this->showUnarchiveDialog();
+                });
                 actionsContainer->layout()->addWidget(unarchiveButton);
 
                 actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
             containerLayout->addWidget(actionsContainer);
-
 
             m_archivedTaskListWidget->setParent(container);
             m_archivedTaskListWidget->setObjectName("archivedTaskListWidget");
@@ -955,7 +956,7 @@ void MainWindow::onApplySettingsButton_Clicked()
     router.getRepository().setAvaliableStatuses(avaliableStatuses.split(";"));
 }
 
-void MainWindow::onUnarchiveTaskButton_Clicked()
+void MainWindow::showUnarchiveDialog()
 {
     QDialog *dialog = new QDialog(this);
     dialog->setWindowTitle("Unarchive Task?");
@@ -968,31 +969,49 @@ void MainWindow::onUnarchiveTaskButton_Clicked()
            QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
            containerWidgetLayout->setContentsMargins(0, 0, 0, 0);
 
-                TaskIndexInputWidget* indexInput = new TaskIndexInputWidget(containerWidget);
-                QObject::connect(indexInput, &TaskIndexInputWidget::indexSelected, this, [=](size_t index){
-                    Router &router = Router::getInstance();
-                    Task task = router.getRepository().getArchivedTaskByIndex(index);
-                    router.getRepository().unarchiveTask(task, router.getRepository().getAvaliableStatuses().first());
-                });
-                containerWidgetLayout->addWidget(indexInput);
+               QtMaterialTextField *indexInput = new QtMaterialTextField(containerWidget);
+               indexInput->setText("");
+               indexInput->setLabel("Index:");
+               indexInput->setLabelFontSize(16);
+               indexInput->setInkColor(QColor("#333"));
+               indexInput->setPlaceholderText("Enter the task [index], please.");
+               indexInput->setFont(QFont("Roboto", 16, QFont::Normal));
+               containerWidgetLayout->addWidget(indexInput);
 
-                QWidget* actionsContainerWidget = new QWidget(containerWidget);
-                   QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
-                   actionsContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
-                       actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+               QtMaterialTextField *statusInput = new QtMaterialTextField(containerWidget);
+               statusInput->setText("");
+               statusInput->setLabel("Status:");
+               statusInput->setLabelFontSize(16);
+               statusInput->setInkColor(QColor("#333"));
+               statusInput->setPlaceholderText("Enter the task new status, please.");
+               statusInput->setFont(QFont("Roboto", 16, QFont::Normal));
+               containerWidgetLayout->addWidget(statusInput);
 
-                       QPushButton *unarchiveButton = new QPushButton("Unarchive", actionsContainerWidget);
-                       QObject::connect(unarchiveButton, &QPushButton::clicked, dialog, [=](){
-                            indexInput->getResult();
-                            dialog->close();
-                       });
-                       actionsContainerWidgetLayout->addWidget(unarchiveButton);
+               QWidget* actionsContainerWidget = new QWidget(containerWidget);
+                  QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
+                  actionsContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
+                      actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-                       QPushButton *closeButton = new QPushButton("Close", actionsContainerWidget);
-                       QObject::connect(closeButton, SIGNAL(clicked()), dialog, SLOT(close()));
-                       actionsContainerWidgetLayout->addWidget(closeButton);
-                   actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
-                containerWidgetLayout->addWidget(actionsContainerWidget);
+                      QPushButton *unarchiveButton = new QPushButton("Unarchive", actionsContainerWidget);
+                      QObject::connect(unarchiveButton, &QPushButton::clicked, dialog, [=](){
+                          bool ok = false;
+                          size_t index = indexInput->text().toUInt(&ok);
+                          if(!ok) return;
+
+                          QString status = statusInput->text();
+
+                          Router &router = Router::getInstance();
+                          Task task = router.getRepository().getArchivedTaskByIndex(index);
+                          router.getRepository().unarchiveTask(task, status);
+                          dialog->close();
+                      });
+                      actionsContainerWidgetLayout->addWidget(unarchiveButton);
+
+                      QPushButton *closeButton = new QPushButton("Close", actionsContainerWidget);
+                      QObject::connect(closeButton, SIGNAL(clicked()), dialog, SLOT(close()));
+                      actionsContainerWidgetLayout->addWidget(closeButton);
+                  actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
+               containerWidgetLayout->addWidget(actionsContainerWidget);
             containerWidget->setLayout(containerWidgetLayout);
         dialogLayout->addWidget(containerWidget);
     dialog->setLayout(dialogLayout);
