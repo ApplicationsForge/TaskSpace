@@ -47,9 +47,15 @@ int Repository::getTaskCountByStatus(QString status)
     return this->getTasksByStatus(status).length();
 }
 
-Task& Repository::getTaskByIndex(size_t index)
+Task& Repository::getActiveTaskByIndex(size_t index)
 {
     return Repository::findTask(m_tasks, index);
+}
+
+Task Repository::getArchivedTaskByIndex(size_t index)
+{
+    QList<Task> archivedTask = Repository::getArchivedTasks();
+    return Repository::findTask(archivedTask, index);
 }
 
 void Repository::loadSettings()
@@ -210,10 +216,10 @@ Task& Repository::findTask(QList<Task> &tasks, size_t index)
     throw std::invalid_argument("Can not find task with index " + std::to_string(index));
 }
 
-size_t Repository::getNewTaskIndex()
+size_t Repository::getNewTaskIndex(const QList<Task> &tasks)
 {
     size_t maxIndex = 0;
-    for(auto task : m_tasks)
+    for(auto task : tasks)
     {
         maxIndex = std::max(maxIndex, task.index());
     }
@@ -226,11 +232,11 @@ void Repository::setTasks(const QList<Task> &tasks)
     emit this->tasksUpdated();
 }
 
-Task &Repository::createNewBaseTask()
+Task &Repository::createNewActiveBaseTask()
 {
-    Task newTask = Task(this->getNewTaskIndex(), "NewBaseTask", this->getAvaliableStatuses().first());
+    Task newTask = Task(Repository::getNewTaskIndex(m_tasks), "NewBaseTask", this->getAvaliableStatuses().first());
     this->addTask(newTask);
-    return this->getTaskByIndex(newTask.index());
+    return this->getActiveTaskByIndex(newTask.index());
 }
 
 void Repository::addTask(const Task &task)
@@ -348,8 +354,8 @@ void Repository::archiveTask(const Task &task)
 {
     QString archiveFilePath = Repository::resolveArchiveFilePath(m_storeDirectory);
     QList<Task> archivedTasks = Repository::loadTasks(archiveFilePath);
-    archivedTasks.append(task);
-    Repository::saveTasks(archivedTasks, archiveFilePath);
+    Task tmpTask(Repository::getNewTaskIndex(archivedTasks), task);
+    archivedTasks.append(tmpTask);Repository::saveTasks(archivedTasks, archiveFilePath);
     this->removeTask(task.index());
 }
 
@@ -360,7 +366,8 @@ void Repository::archiveTasksByStatus(QString status)
     QList<Task> tasks = this->getTasksByStatus(status);
     for(auto task : tasks)
     {
-        archivedTasks.append(task);
+        Task tmpTask(Repository::getNewTaskIndex(archivedTasks), task);
+        archivedTasks.append(tmpTask);
     }
 
     Repository::saveTasks(archivedTasks, archiveFilePath);
@@ -372,12 +379,13 @@ void Repository::archiveTasksByStatus(QString status)
 
 void Repository::unarchiveTask(const Task &task, QString status)
 {
-    size_t index = this->getNewTaskIndex();
-    Task tmpTask(index, task.title(), status);
-    tmpTask.setActualTime(task.actualTime());
-    tmpTask.setDescription(task.description());
-    tmpTask.setDueToDate(task.dueToDate());
-    tmpTask.setDueToDateEnabled(task.dueToDateEnabled());
-    tmpTask.setEstimatedTime(task.estimatedTime());
+    size_t index = Repository::getNewTaskIndex(m_tasks);
+    Task tmpTask(index, task);
+    tmpTask.setStatus(status);
     this->addTask(tmpTask);
+
+    QString archiveFilePath = Repository::resolveArchiveFilePath(m_storeDirectory);
+    QList<Task> archivedTasks = Repository::loadTasks(archiveFilePath);
+    archivedTasks.removeAll(task);
+    Repository::saveTasks(archivedTasks, archiveFilePath);
 }

@@ -105,21 +105,19 @@ private slots:
 
     void showCalendarDialog();
 
-    void showTaskDialog(Task task, bool newTask = false);
+    void showTaskDialog(Task task, bool newTask = false, bool archived = false);
 
     void onSelectStorageDirectoryButton_Clicked();
 
     void onRouter_TasksUpdated();
 
-    void onAddNewTaskButton_Clicked();
+    void showRemoveTaskDialog();
 
-    void onRemoveTaskButton_Clicked();
-
-    void onArchiveByStatusButton_Clicked();
+    void showArchiveByStatusDialog();
 
     void onActiveTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
 
-    void onArcivedTaskListWidget_ListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
+    void onArcivedTaskListWidget_ItemEntered(QListWidgetItem* taskListWidgetItem);
 
     void onActiveTaskListWidget_TaskDropped(size_t taskIndex, QString status);
 
@@ -136,6 +134,10 @@ private slots:
     void onApplyFilterTaskButton_Clicked();
 
     void onApplySettingsButton_Clicked();
+
+    void showUnarchiveDialog();
+
+    void syncArchivedTasksState();
 };
 
 #endif // MAINWINDOW_H

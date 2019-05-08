@@ -25,8 +25,9 @@ public:
     QList<Task> getTasks(const QString &filter="") const;
     QList<Task> getTasksByStatus(const QString &status, const QString &filter="") const;
     int getTaskCountByStatus(QString status);
-    Task& getTaskByIndex(size_t index);
-    Task& createNewBaseTask();
+    Task& getActiveTaskByIndex(size_t index);
+    Task getArchivedTaskByIndex(size_t index);
+    Task& createNewActiveBaseTask();
     void addTask(const Task &task);
     void removeTask(size_t index);
     void updateTaskStatus(size_t index, const QString &status);
@@ -82,7 +83,7 @@ private:
 
     static Task& findTask(QList<Task> &tasks, size_t index);
 
-    size_t getNewTaskIndex();
+    static size_t getNewTaskIndex(const QList<Task> &tasks);
 
     void setTasks(const QList<Task> &tasks);
 

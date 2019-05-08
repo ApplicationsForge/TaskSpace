@@ -120,19 +120,25 @@ void MainWindow::setupDrawer()
 
     QPushButton* dashboardButton = new QPushButton("Dashboard", m_drawer);
     dashboardButton->setFlat(true);
-    QObject::connect(dashboardButton, SIGNAL(clicked()), this, SLOT(showDashboardTab()));
+    QObject::connect(dashboardButton, &QPushButton::clicked, this, [=](){
+        this->showDashboardTab();
+    });
     drawerLayout->addWidget(dashboardButton);
 
     QPushButton* backlogButton = new QPushButton("Backlog", m_drawer);
     backlogButton->setFlat(true);
     //backlogButton->setForegroundColor(QColor("#333"));
-    QObject::connect(backlogButton, SIGNAL(clicked()), this, SLOT(showBacklogTab()));
+    QObject::connect(backlogButton, &QPushButton::clicked, this, [=](){
+        this->showBacklogTab();
+    });
     drawerLayout->addWidget(backlogButton);
 
     QPushButton* archiveButton = new QPushButton("Archive", m_drawer);
     archiveButton->setFlat(true);
     //archiveButton->setForegroundColor(QColor("#333"));
-    QObject::connect(archiveButton, SIGNAL(clicked()), this, SLOT(showArchiveTab()));
+    QObject::connect(archiveButton, &QPushButton::clicked, this, [=](){
+        this->showArchiveTab();
+    });
     drawerLayout->addWidget(archiveButton);
 
     /*QPushButton* notesButton = new QPushButton("Notes", m_drawer);
@@ -148,7 +154,9 @@ void MainWindow::setupDrawer()
     QPushButton* settingsButton = new QPushButton("Settings", m_drawer);
     settingsButton->setFlat(true);
     //settingsButton->setForegroundColor(QColor("#333"));
-    QObject::connect(settingsButton, SIGNAL(clicked()), this, SLOT(showSettingsTab()));
+    QObject::connect(settingsButton, &QPushButton::clicked, this, [=](){
+        this->showSettingsTab();
+    });
     drawerLayout->addWidget(settingsButton);
 
     drawerLayout->addStretch(3);
@@ -245,15 +253,34 @@ void MainWindow::setupBacklogTab()
             actionsContainer->setLayout(new QHBoxLayout(actionsContainer));
             actionsContainer->layout()->setContentsMargins(0, 0, 0, 10);
                 QPushButton *addNewTaskButton = new QPushButton("Add New Task", actionsContainer);
-                QObject::connect(addNewTaskButton, SIGNAL(clicked()), this, SLOT(onAddNewTaskButton_Clicked()));
+                QObject::connect(addNewTaskButton, &QPushButton::clicked, this, [=](){
+                    try
+                    {
+                        Router& router = Router::getInstance();
+                        Task task = router.getRepository().createNewActiveBaseTask();
+                        this->showTaskDialog(task, true, false);
+                    }
+                    catch(std::invalid_argument e)
+                    {
+                        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+                    }
+                    catch(...)
+                    {
+                        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+                    }
+                });
                 actionsContainer->layout()->addWidget(addNewTaskButton);
 
                 QPushButton *removeTaskButton = new QPushButton("Remove Task", actionsContainer);
-                QObject::connect(removeTaskButton, SIGNAL(clicked()), this, SLOT(onRemoveTaskButton_Clicked()));
+                QObject::connect(removeTaskButton, &QPushButton::clicked, this, [=](){
+                    this->showRemoveTaskDialog();
+                });
                 actionsContainer->layout()->addWidget(removeTaskButton);
 
                 QPushButton *archiveByStatusButton = new QPushButton("Archive By Status", actionsContainer);
-                QObject::connect(archiveByStatusButton, SIGNAL(clicked()), this, SLOT(onArchiveByStatusButton_Clicked()));
+                QObject::connect(archiveByStatusButton, &QPushButton::clicked, this, [=](){
+                    this->showArchiveByStatusDialog();
+                });
                 actionsContainer->layout()->addWidget(archiveByStatusButton);
 
                 actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
@@ -323,25 +350,24 @@ void MainWindow::setupArchiveTab()
             actionsContainer->layout()->setContentsMargins(0, 0, 0, 10);
                 QPushButton *syncButton = new QPushButton("Sync", actionsContainer);
                 QObject::connect(syncButton, &QPushButton::clicked, this, [=](){
-                    Router& router = Router::getInstance();
-                    QList<Task> archivedTasks = router.getRepository().getArchivedTasks();
-                    m_archivedTaskListWidget->clear();
-                    for(auto task : archivedTasks)
-                    {
-                        m_archivedTaskListWidget->addItem(task.decoratedBaseInformation());
-                    }
+                    this->syncArchivedTasksState();
                 });
                 actionsContainer->layout()->addWidget(syncButton);
 
+                QPushButton *unarchiveButton = new QPushButton("Unarchive Task", actionsContainer);
+                QObject::connect(unarchiveButton, &QPushButton::clicked, this, [=](){
+                    this->showUnarchiveDialog();
+                });
+                actionsContainer->layout()->addWidget(unarchiveButton);
+
                 actionsContainer->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
             containerLayout->addWidget(actionsContainer);
-
 
             m_archivedTaskListWidget->setParent(container);
             m_archivedTaskListWidget->setObjectName("archivedTaskListWidget");
             m_archivedTaskListWidget->setStyleSheet("QListWidget {} QListWidget::item { color: #333; padding: 10px; }");
             m_archivedTaskListWidget->setAlternatingRowColors(true);
-            //QObject::connect(m_archivedTaskListWidget-(), SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onActiveTaskListWidget_ListWidget_ItemEntered(QListWidgetItem*)));
+            QObject::connect(m_archivedTaskListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onArcivedTaskListWidget_ItemEntered(QListWidgetItem*)));
             containerLayout->addWidget(m_archivedTaskListWidget);
         container->setLayout(containerLayout);
         ui->mainWidget->layout()->addWidget(container);
@@ -567,7 +593,7 @@ void MainWindow::showCalendarDialog()
     }
 }
 
-void MainWindow::showTaskDialog(Task task, bool newTask)
+void MainWindow::showTaskDialog(Task task, bool newTask, bool archived)
 {
     QDialog *taskDialog = new QDialog(this);
     taskDialog->setWindowTitle(task.decoratedBaseInformation());
@@ -596,20 +622,27 @@ void MainWindow::showTaskDialog(Task task, bool newTask)
                 QWidget* actionsContainerWidget = new QWidget(containerWidget);
                    QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
 
+                       if(!archived)
+                       {
+                           QPushButton *editOrLockButton = new QPushButton(actionsContainerWidget);
+                           editOrLockButton->setFlat(true);
+                           editOrLockButton->setText("Edit/Lock");
+                           QObject::connect(editOrLockButton, SIGNAL(clicked()), taskViewerWidget, SLOT(changeEditingEnableStatus()));
+                           actionsContainerWidgetLayout->addWidget(editOrLockButton);
 
-                       QPushButton *editOrLockButton = new QPushButton(actionsContainerWidget);
-                       editOrLockButton->setFlat(true);
-                       editOrLockButton->setText("Edit/Lock");
-                       QObject::connect(editOrLockButton, SIGNAL(clicked()), taskViewerWidget, SLOT(changeEditingEnableStatus()));
-                       actionsContainerWidgetLayout->addWidget(editOrLockButton);
+                           actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
 
-                       actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+                           QPushButton *saveTaskButton = new QPushButton("Save", actionsContainerWidget);
+                           saveTaskButton->setFlat(true);
+                           saveTaskButton->setDefault(true);
+                           QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(saveTaskData()));
+                           actionsContainerWidgetLayout->addWidget(saveTaskButton);
 
-                       QPushButton *saveTaskButton = new QPushButton("Save", actionsContainerWidget);
-                       saveTaskButton->setFlat(true);
-                       saveTaskButton->setDefault(true);
-                       QObject::connect(saveTaskButton, SIGNAL(clicked()), taskViewerWidget, SLOT(saveTaskData()));
-                       actionsContainerWidgetLayout->addWidget(saveTaskButton);
+                       }
+                       else
+                       {
+                           actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+                       }
 
                        QPushButton *closeButton = new QPushButton("Close", actionsContainerWidget);
                        closeButton->setFlat(true);
@@ -672,25 +705,7 @@ void MainWindow::onRouter_TasksUpdated()
     }
 }
 
-void MainWindow::onAddNewTaskButton_Clicked()
-{
-    try
-    {
-        Router& router = Router::getInstance();
-        Task task = router.getRepository().createNewBaseTask();
-        this->showTaskDialog(task, true);
-    }
-    catch(std::invalid_argument e)
-    {
-        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
-    }
-    catch(...)
-    {
-        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
-    }
-}
-
-void MainWindow::onRemoveTaskButton_Clicked()
+void MainWindow::showRemoveTaskDialog()
 {
     QDialog *removeTaskDialog = new QDialog(this);
     removeTaskDialog->setWindowTitle("Remove Task?");
@@ -730,14 +745,16 @@ void MainWindow::onRemoveTaskButton_Clicked()
     removeTaskDialog->exec();
 }
 
-void MainWindow::onArchiveByStatusButton_Clicked()
+void MainWindow::showArchiveByStatusDialog()
 {
     try
     {
+        Router &router = Router::getInstance();
+
         QDialog *dialog = new QDialog(this);
-        dialog->setWindowTitle("Archive Task?");
-        dialog->setMinimumSize(300, 150);
-        dialog->setBaseSize(300, 150);
+        dialog->setWindowTitle("Archive Tasks?");
+        dialog->setMinimumSize(300, 100);
+        dialog->setBaseSize(300, 100);
         dialog->setStyleSheet("QDialog {background-color: #fff;}");
         QVBoxLayout* dialogLayout = new QVBoxLayout(dialog);
         dialogLayout->setContentsMargins(15, 15, 15, 0);
@@ -745,14 +762,10 @@ void MainWindow::onArchiveByStatusButton_Clicked()
                QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
                containerWidgetLayout->setContentsMargins(0, 0, 0, 0);
 
-                    QtMaterialTextField *statusInput = new QtMaterialTextField(containerWidget);
-                    statusInput->setText("");
-                    statusInput->setLabel("Status:");
-                    statusInput->setLabelFontSize(16);
-                    statusInput->setInkColor(QColor("#333"));
-                    statusInput->setPlaceholderText("Enter status for archivation, please.");
-                    statusInput->setFont(QFont("Roboto", 16, QFont::Normal));
-                    containerWidgetLayout->addWidget(statusInput);
+                   QComboBox *statusInput = new QComboBox(containerWidget);
+                   statusInput->setFont(QFont("Roboto", 16, QFont::Normal));
+                   statusInput->addItems(router.getRepository().getAvaliableStatuses());
+                   containerWidgetLayout->addWidget(statusInput);
 
                     QWidget* actionsContainerWidget = new QWidget(containerWidget);
                        QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
@@ -762,7 +775,7 @@ void MainWindow::onArchiveByStatusButton_Clicked()
                            QPushButton *archiveButton = new QPushButton("Archive", actionsContainerWidget);
                            QObject::connect(archiveButton, &QPushButton::clicked, dialog, [=](){
                                Router &router = Router::getInstance();
-                               QString status = statusInput->text();
+                               QString status = statusInput->currentText();
                                router.getRepository().archiveTasksByStatus(status);
                                dialog->close();
                            });
@@ -810,8 +823,8 @@ void MainWindow::onActiveTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *
             return;
         }
 
-        Task task = router.getRepository().getTaskByIndex(taskIndex);
-        this->showTaskDialog(task, false);
+        Task task = router.getRepository().getActiveTaskByIndex(taskIndex);
+        this->showTaskDialog(task, false, false);
     }
     catch(std::invalid_argument e)
     {
@@ -823,9 +836,43 @@ void MainWindow::onActiveTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *
     }
 }
 
-void MainWindow::onArcivedTaskListWidget_ListWidget_ItemEntered(QListWidgetItem *taskListWidgetItem)
+void MainWindow::onArcivedTaskListWidget_ItemEntered(QListWidgetItem *taskListWidgetItem)
 {
+    try
+    {
+        Router& router = Router::getInstance();
+        QString itemText = taskListWidgetItem->text();
 
+        QRegExp rawIndexRegExp = QRegExp("\\[(\\s)*[0-9]*(\\s)*\\]");
+        rawIndexRegExp.indexIn(itemText);
+        QStringList rawIndexRegExpResult = rawIndexRegExp.capturedTexts();
+        if(rawIndexRegExpResult.length() <= 0)
+        {
+            QMessageBox(QMessageBox::Warning, "Parse Error", "Can not find taskIndex " + itemText).exec();
+            return;
+        }
+        QString rawTaskIndex = rawIndexRegExpResult.first();
+        rawTaskIndex = rawTaskIndex.remove("[");
+        rawTaskIndex = rawTaskIndex.remove("]");
+
+        bool ok = false;
+        size_t taskIndex = rawTaskIndex.toUInt(&ok);
+        if(!ok) {
+            QMessageBox(QMessageBox::Warning, "Parse Error", "Can not parse taskIndex in " + rawTaskIndex).exec();
+            return;
+        }
+
+        Task task = router.getRepository().getArchivedTaskByIndex(taskIndex);
+        this->showTaskDialog(task, false, true);
+    }
+    catch(std::invalid_argument e)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", e.what()).exec();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
 }
 
 void MainWindow::onActiveTaskListWidget_TaskDropped(size_t taskIndex, QString status)
@@ -886,18 +933,118 @@ void MainWindow::onApplyFilterTaskButton_Clicked()
 
 void MainWindow::onApplySettingsButton_Clicked()
 {
-    Router &router = router.getInstance();
-
-    QString storeDirectory = m_storeDirectoryInput->text();
-    if(!storeDirectory.isEmpty())
+    try
     {
-        router.getRepository().setStoreDirectory(storeDirectory);
+        Router &router = router.getInstance();
+
+        QString storeDirectory = m_storeDirectoryInput->text();
+        if(!storeDirectory.isEmpty())
+        {
+            router.getRepository().setStoreDirectory(storeDirectory);
+        }
+
+        QString calendarUrl = m_calendarUrlInput->text();
+        router.getRepository().setCalendarUrl(calendarUrl);
+
+        QString avaliableStatuses = m_avaliableStatusesListInput->text();
+        router.getRepository().setAvaliableStatuses(avaliableStatuses.split(";"));
     }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
+}
 
-    QString calendarUrl = m_calendarUrlInput->text();
-    router.getRepository().setCalendarUrl(calendarUrl);
+void MainWindow::showUnarchiveDialog()
+{
+    try
+    {
+        Router &router = router.getInstance();
 
-    QString avaliableStatuses = m_avaliableStatusesListInput->text();
-    router.getRepository().setAvaliableStatuses(avaliableStatuses.split(";"));
+        QDialog *dialog = new QDialog(this);
+        dialog->setWindowTitle("Unarchive Task?");
+        dialog->setMinimumSize(300, 150);
+        dialog->setBaseSize(300, 150);
+        dialog->setStyleSheet("QDialog {background-color: #fff;}");
+        QVBoxLayout* dialogLayout = new QVBoxLayout(dialog);
+        dialogLayout->setContentsMargins(15, 15, 15, 0);
+           QWidget* containerWidget = new QWidget(dialog);
+               QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
+               containerWidgetLayout->setContentsMargins(0, 0, 0, 0);
+
+                   QtMaterialTextField *indexInput = new QtMaterialTextField(containerWidget);
+                   indexInput->setText("");
+                   indexInput->setLabel("Index:");
+                   indexInput->setLabelFontSize(16);
+                   indexInput->setInkColor(QColor("#333"));
+                   indexInput->setPlaceholderText("Enter the task [index], please.");
+                   indexInput->setFont(QFont("Roboto", 16, QFont::Normal));
+                   containerWidgetLayout->addWidget(indexInput);
+
+                   QComboBox *statusInput = new QComboBox(containerWidget);
+                   statusInput->setFont(QFont("Roboto", 16, QFont::Normal));
+                   statusInput->addItems(router.getRepository().getAvaliableStatuses());
+                   containerWidgetLayout->addWidget(statusInput);
+
+                   QWidget* actionsContainerWidget = new QWidget(containerWidget);
+                      QHBoxLayout* actionsContainerWidgetLayout = new QHBoxLayout(actionsContainerWidget);
+                      actionsContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
+                          actionsContainerWidgetLayout->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Fixed));
+
+                          QPushButton *unarchiveButton = new QPushButton("Unarchive", actionsContainerWidget);
+                          QObject::connect(unarchiveButton, &QPushButton::clicked, dialog, [=](){
+                              bool ok = false;
+                              size_t index = indexInput->text().toUInt(&ok);
+                              if(!ok) return;
+
+                              QString status = statusInput->currentText();
+
+                              try
+                              {
+                                  Router &router = Router::getInstance();
+                                  Task task = router.getRepository().getArchivedTaskByIndex(index);
+                                  router.getRepository().unarchiveTask(task, status);
+                                  dialog->close();
+                                  this->syncArchivedTasksState();
+                              }
+                              catch(...)
+                              {
+                                  QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+                              }
+                          });
+                          actionsContainerWidgetLayout->addWidget(unarchiveButton);
+
+                          QPushButton *closeButton = new QPushButton("Close", actionsContainerWidget);
+                          QObject::connect(closeButton, SIGNAL(clicked()), dialog, SLOT(close()));
+                          actionsContainerWidgetLayout->addWidget(closeButton);
+                      actionsContainerWidget->setLayout(actionsContainerWidgetLayout);
+                   containerWidgetLayout->addWidget(actionsContainerWidget);
+                containerWidget->setLayout(containerWidgetLayout);
+            dialogLayout->addWidget(containerWidget);
+        dialog->setLayout(dialogLayout);
+        dialog->exec();
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
+}
+
+void MainWindow::syncArchivedTasksState()
+{
+    try
+    {
+        Router& router = Router::getInstance();
+        QList<Task> archivedTasks = router.getRepository().getArchivedTasks();
+        m_archivedTaskListWidget->clear();
+        for(auto task : archivedTasks)
+        {
+            m_archivedTaskListWidget->addItem(task.decoratedBaseInformation());
+        }
+    }
+    catch(...)
+    {
+        QMessageBox(QMessageBox::Warning, "Error", "???").exec();
+    }
 }
 

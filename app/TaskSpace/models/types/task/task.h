@@ -8,6 +8,7 @@ class Task
 {
 public:
     Task(size_t index, QString title, QString status, QString descripion = "");
+    Task(size_t index, const Task &task);
     bool operator<(const Task &task) const;
     bool operator==(const Task &task) const;
 
