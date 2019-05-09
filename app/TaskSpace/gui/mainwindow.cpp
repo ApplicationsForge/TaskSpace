@@ -59,8 +59,8 @@ void MainWindow::setupWidgets()
     this->setupArchiveTab();
     this->setupSettingsTab();
 
-    this->showBacklogTab();
-    //this->showDashboardTab();
+    this->showDashboardTab();
+    //this->showBacklogTab();
     this->onRouter_TasksUpdated();
 }
 
@@ -208,23 +208,7 @@ void MainWindow::setupDashboardTab()
                     chartsContainerWidget->layout()->addWidget(taskStatusChartWidget);
 
                 subContainerLayout->addWidget(chartsContainerWidget);
-                subContainerLayout->setStretch(0, 4);
-
-                QWidget *toolsContainerWidget = new QWidget(subContainer);
-                QVBoxLayout *toolsContainerWidgetLayout = new QVBoxLayout(toolsContainerWidget);
-                toolsContainerWidgetLayout->setContentsMargins(0, 0, 0, 0);
-                toolsContainerWidget->setLayout(toolsContainerWidgetLayout);
-                    QLabel *toolsTitleLabel = new QLabel("Tools", toolsContainerWidget);
-                    toolsTitleLabel->setAlignment(Qt::AlignCenter | Qt::AlignCenter);
-                    toolsTitleLabel->setFont(QFont("Roboto", 16, QFont::Normal));
-                    toolsContainerWidget->layout()->addWidget(toolsTitleLabel);
-
-                    /*toolsContainerWidgetLayout->addWidget(new QPushButton("Export", toolsContainerWidget));
-                    toolsContainerWidgetLayout->addWidget(new QPushButton("History", toolsContainerWidget));*/
-
-                    toolsContainerWidgetLayout->layout()->addItem(new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding));
-                subContainerLayout->addWidget(toolsContainerWidget);
-                subContainerLayout->setStretch(1, 1);
+                subContainerLayout->setStretch(0, 1);
             subContainer->setLayout(subContainerLayout);
          containerLayout->addWidget(subContainer);
     container->setLayout(containerLayout);
