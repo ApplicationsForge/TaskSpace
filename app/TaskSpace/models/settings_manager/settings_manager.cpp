@@ -112,7 +112,7 @@ void SettingsManager::generateDefaultSettings()
 {
     settings->beginGroup("Main");
         settings->setValue("StoreDirectory", qApp->applicationDirPath());
-        settings->setValue("CalendarUrl", "https://calendar.google.com/calendar/r");
+        settings->setValue("CalendarUrl", "https://calendar.google.com/calendar");
     settings->endGroup();
 
     settings->beginGroup("Statuses");

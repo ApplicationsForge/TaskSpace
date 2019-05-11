@@ -15,6 +15,7 @@
 #include <QFormLayout>
 #include <QWebEngineView>
 #include <QComboBox>
+#include <QDockWidget>
 
 #include "models/router.h"
 #include "libs/qt-material-widgets-master/components/qtmaterialappbar.h"
@@ -103,7 +104,7 @@ private slots:
 
     void showFocusTimerDialog();
 
-    void showCalendarDialog();
+    void showCalendar();
 
     void showTaskDialog(Task task, bool newTask = false, bool archived = false);
 

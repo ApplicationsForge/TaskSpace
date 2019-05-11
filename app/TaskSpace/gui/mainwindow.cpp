@@ -93,7 +93,7 @@ void MainWindow::setupAppBar()
     calendarButton->setIconSize(QSize(24, 24));
     calendarButton->setColor(Qt::white);
     calendarButton->setFixedWidth(42);
-    QObject::connect(calendarButton, SIGNAL(pressed()), this, SLOT(showCalendarDialog()));
+    QObject::connect(calendarButton, SIGNAL(pressed()), this, SLOT(showCalendar()));
     m_appBar->appBarLayout()->addWidget(calendarButton);
 
     ui->mainToolBar->addWidget(m_appBar);
@@ -546,30 +546,40 @@ void MainWindow::showFocusTimerDialog()
     focusTimerDialog->show();
 }
 
-void MainWindow::showCalendarDialog()
+void MainWindow::showCalendar()
 {
     try
     {
+        if(m_widgets.contains("CalendarDockWidget"))
+        {
+            QWidget* calendarWidget = m_widgets["CalendarDockWidget"];
+            m_widgets.remove("CalendarDockWidget");
+            QDockWidget* calendarDockWidget = qobject_cast<QDockWidget*>(calendarWidget);
+            if(calendarDockWidget == nullptr) return;
+
+            calendarDockWidget->close();
+            return;
+        }
+
         Router& router = Router::getInstance();
         QString calendarUrl = router.getRepository().getCalendarUrl();
 
-        QDialog *calendarDialog = new QDialog(this);
-        calendarDialog->setWindowTitle("Calendar");
-        calendarDialog->setMinimumSize(800, 600);
-            QVBoxLayout* calendarDialogLayout = new QVBoxLayout(calendarDialog);
-            calendarDialogLayout->setContentsMargins(0, 0, 0, 0);
-                QWidget* container = new QWidget(ui->mainWidget);
-                    QVBoxLayout *containerLayout = new QVBoxLayout(container);
-                    containerLayout->setContentsMargins(0, 0, 0, 0);
-                        QWebEngineView *view = new QWebEngineView(container);
-                        view->load(QUrl(calendarUrl));
-                        view->show();
-                        containerLayout->addWidget(view);
-                    container->setLayout(containerLayout);
-                calendarDialogLayout->addWidget(container);
-            calendarDialog->setLayout(calendarDialogLayout);
-        //calendarDialog->showMaximized();
-        calendarDialog->showNormal();
+        QDockWidget *calendarDockWidget = new QDockWidget(calendarUrl, this);
+        m_widgets.insert("CalendarDockWidget", calendarDockWidget);
+        calendarDockWidget->setFloating(false);
+        calendarDockWidget->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
+        calendarDockWidget->setAllowedAreas(Qt::DockWidgetArea::RightDockWidgetArea);
+        calendarDockWidget->setMinimumWidth(int(ui->centralWidget->width() * 0.25));
+        QWidget* containerWidget = new QWidget(calendarDockWidget);
+            QVBoxLayout* containerWidgetLayout = new QVBoxLayout(containerWidget);
+            containerWidgetLayout->setContentsMargins(0, 0, 0, 0);
+                QWebEngineView *view = new QWebEngineView(containerWidget);
+                view->load(QUrl(calendarUrl));
+                view->show();
+                containerWidgetLayout->addWidget(view);
+            containerWidget->setLayout(containerWidgetLayout);
+        calendarDockWidget->setWidget(containerWidget);
+        this->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, calendarDockWidget);
     }
     catch(...)
     {
