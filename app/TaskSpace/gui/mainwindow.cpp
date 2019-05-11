@@ -567,7 +567,7 @@ void MainWindow::showCalendar()
         QDockWidget *calendarDockWidget = new QDockWidget(calendarUrl, this);
         m_widgets.insert("CalendarDockWidget", calendarDockWidget);
         calendarDockWidget->setFloating(false);
-        calendarDockWidget->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
+        calendarDockWidget->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
         calendarDockWidget->setAllowedAreas(Qt::DockWidgetArea::RightDockWidgetArea);
         calendarDockWidget->setMinimumWidth(int(ui->centralWidget->width() * 0.25));
         QWidget* containerWidget = new QWidget(calendarDockWidget);
